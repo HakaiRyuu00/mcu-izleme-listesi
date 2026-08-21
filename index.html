@@ -283,7 +283,7 @@
 
   /* ---------- Sütun başlığı ---------- */
   .list-head{
-    display:grid;grid-template-columns:22px 30px 92px minmax(0,1fr) 150px 62px 62px 104px 26px;gap:0 16px;
+    display:grid;grid-template-columns:48px 30px 92px minmax(0,1fr) 150px 62px 62px 104px 26px;gap:0 16px;
     padding:11px 18px;background:#F4F7F9;border:1px solid var(--line);border-bottom:none;
     font-family:"Barlow Semi Condensed",sans-serif;font-size:13px;font-weight:700;
     letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);
@@ -312,7 +312,7 @@
   /* ---------- Satırlar ---------- */
   ol.list{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-top:none;}
   ol.list li{
-    display:grid;grid-template-columns:22px 30px 92px minmax(0,1fr) 150px 62px 62px 104px 26px;
+    display:grid;grid-template-columns:48px 30px 92px minmax(0,1fr) 150px 62px 62px 104px 26px;
     align-items:center;gap:0 16px;padding:12px 18px;border-bottom:1px solid #EDF0F3;
     cursor:pointer;-webkit-user-select:none;user-select:none;
   }
@@ -323,7 +323,7 @@
   @keyframes flash{0%,100%{background:transparent;}20%{background:#FFF0B8;}}
   .box{
     width:15px;height:15px;border:1.5px solid #9AA7B4;display:block;position:relative;
-    transition:background-color .12s,border-color .12s;
+    transition:background-color .12s,border-color .12s;pointer-events:none;
   }
   li.soon .box{border-style:dashed;}
   li.done .box{background:var(--accent);border-color:var(--accent);border-style:solid;}
@@ -331,6 +331,18 @@
     content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;
     border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);
   }
+  .watch-toggle{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    background:none;border:none;padding:2px 0;margin:0;cursor:pointer;
+    font-family:"IBM Plex Mono",monospace;-webkit-user-select:none;user-select:none;
+  }
+  .watch-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .wt-label{
+    font-size:8px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;
+    color:#9AA7B4;line-height:1;white-space:nowrap;
+  }
+  .watch-toggle:hover .wt-label{color:var(--ink);}
+  li.done .wt-label{color:var(--accent);}
   .n{font-family:"IBM Plex Mono",monospace;font-size:12px;color:#9AA7B4;align-self:center;}
   .t{font-weight:700;font-size:26px;line-height:1.15;min-width:0;}
   .t::before{content:none;}
@@ -408,6 +420,8 @@
   .headshot img{width:100%;height:100%;object-fit:cover;display:block;}
   .headshot span{font-family:"Anton",sans-serif;font-size:18px;color:#A9B4BE;}
   .actor-name{font-weight:700;font-size:19px;line-height:1.2;}
+  .actor-link{color:var(--ink);text-decoration:none;border-bottom:2px solid transparent;transition:border-color .15s ease,color .15s ease;}
+  .actor-link:hover,.actor-link:focus-visible{color:var(--p3);border-bottom-color:var(--p3);}
   .actor-name b{
     font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;
     letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--p3);
@@ -616,7 +630,7 @@
   }
   @media (max-width:1120px) and (min-width:821px){
     ol.list li,.list-head{
-      grid-template-columns:20px 26px 72px minmax(0,1fr) 124px 52px 52px 88px 22px;gap:0 12px;
+      grid-template-columns:44px 26px 72px minmax(0,1fr) 124px 52px 52px 88px 22px;gap:0 12px;
     }
     .poster{width:70px;height:105px;}
     .t{font-size:21px;}
@@ -627,10 +641,10 @@
     body{font-size:17px;}
     .list-head{display:none;}
     ol.list li{
-      grid-template-columns:18px 74px minmax(0,1fr) auto;
+      grid-template-columns:40px 74px minmax(0,1fr) auto;
       padding:10px 14px;gap:4px 10px;align-items:start;
     }
-    .box{grid-row:1;grid-column:1;margin-top:3px;}
+    .watch-toggle{grid-row:1 / span 3;grid-column:1;align-self:start;margin-top:3px;}
     .poster{grid-row:1 / span 3;grid-column:2;width:74px;height:111px;align-self:start;}
     .n{display:none;}
     .t{grid-row:1;grid-column:3 / span 2;font-size:20px;}
@@ -1555,11 +1569,31 @@ var PRELOAD = {};
   }
 
   all.forEach(function (row) {
-    row.setAttribute("role", "checkbox");
+    var boxEl = row.querySelector(".box");
+    if (boxEl) {
+      var wt = document.createElement("button");
+      wt.type = "button";
+      wt.className = "watch-toggle";
+      wt.setAttribute("aria-pressed", "false");
+      wt.setAttribute("aria-label", "İzledim");
+      var lbl = document.createElement("span");
+      lbl.className = "wt-label";
+      lbl.textContent = "İzledim";
+      lbl.setAttribute("aria-hidden", "true");
+      boxEl.parentNode.replaceChild(wt, boxEl);
+      wt.appendChild(lbl);
+      wt.appendChild(boxEl);
+      wt.addEventListener("click", function (e) {
+        e.stopPropagation();
+        toggle(row.dataset.id);
+      });
+    }
+    row.setAttribute("role", "button");
     row.setAttribute("tabindex", "0");
-    row.addEventListener("click", function () { toggle(row.dataset.id); });
+    row.setAttribute("aria-label", "Detayları gör: " + row.dataset.title);
+    row.addEventListener("click", function () { openSheet(row.dataset.id); });
     row.addEventListener("keydown", function (e) {
-      if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggle(row.dataset.id); }
+      if (e.key === " " || e.key === "Enter") { e.preventDefault(); openSheet(row.dataset.id); }
     });
   });
 
@@ -1567,7 +1601,8 @@ var PRELOAD = {};
     all.forEach(function (row) {
       var on = !!watched[row.dataset.id];
       row.classList.toggle("done", on);
-      row.setAttribute("aria-checked", on ? "true" : "false");
+      var wt = row.querySelector(".watch-toggle");
+      if (wt) wt.setAttribute("aria-pressed", on ? "true" : "false");
     });
   }
 
@@ -1918,7 +1953,7 @@ var PRELOAD = {};
   var OMDB_KEY = "95b00b72";
   var IMG = "https://image.tmdb.org/t/p/w185";
   var API = "https://en.wikipedia.org/w/api.php";
-  var MKEY = "mcu-veri-v2";
+  var MKEY = "mcu-veri-v3";
 
   var meta = {};
   try { meta = JSON.parse(localStorage.getItem(MKEY)) || {}; } catch (e) { meta = {}; }
@@ -2102,7 +2137,7 @@ var PRELOAD = {};
           return v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser");
         })[0];
         var cast = ((d.credits && d.credits.cast) || []).slice(0, 12).map(function (c) {
-          return [c.name, c.character || "", c.profile_path || ""];
+          return [c.name, c.character || "", c.profile_path || "", c.id || ""];
         });
         store(id, {
           o: d.overview || "", d: dir, y: vid ? vid.key : "",
@@ -2664,8 +2699,9 @@ var PRELOAD = {};
     mcu.forEach(function (r) {
       var m = meta[r.dataset.id];
       ((m && m.c) || []).forEach(function (c) {
-        var p = people[c[0]] || (people[c[0]] = { photo: "", roles: {}, n: 0 });
+        var p = people[c[0]] || (people[c[0]] = { photo: "", roles: {}, n: 0, pid: "" });
         if (!p.photo && c[2]) p.photo = IMG + c[2];
+        if (!p.pid && c[3]) p.pid = c[3];
         var ch = c[1] || "—";
         (p.roles[ch] = p.roles[ch] || []).push(titleOf[r.dataset.id]);
         p.n++;
@@ -2696,7 +2732,11 @@ var PRELOAD = {};
       var roles = Object.keys(p.roles).map(function (ch) {
         return '<div class="role"><b>' + ch + '</b> — ' + p.roles[ch].join(", ") + '</div>';
       }).join("");
-      return '<div class="actor">' + head + '<div><div class="actor-name">' + name +
+      var link = p.pid
+        ? "https://www.themoviedb.org/person/" + p.pid
+        : "https://www.google.com/search?q=" + encodeURIComponent(name + " oyuncu");
+      var nameHtml = '<a class="actor-link" href="' + link + '" target="_blank" rel="noopener noreferrer">' + name + '</a>';
+      return '<div class="actor">' + head + '<div><div class="actor-name">' + nameHtml +
         '<b>' + p.n + ' yapım</b></div>' + roles + '</div></div>';
     }).join("");
   }
