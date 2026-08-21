@@ -1718,16 +1718,25 @@ var PRELOAD = {};
       host.insertBefore(sortPanel, anchor);
       var list = rows.slice();
       var dirMul = view.sortDir === "asc" ? 1 : -1;
-      if (view.sort === "score") {
-        list.sort(function (a, b) {
-          return dirMul * ((parseFloat((meta[a.dataset.id] || {}).v) || -1) -
-                 (parseFloat((meta[b.dataset.id] || {}).v) || -1));
-        });
-      } else if (view.sort === "mine") {
-        list.sort(function (a, b) {
-          return dirMul * ((mine[a.dataset.id] || -1) - (mine[b.dataset.id] || -1));
-        });
+      function scoreVal(r) {
+        var v = parseFloat((meta[r.dataset.id] || {}).v);
+        return isNaN(v) ? null : v;
       }
+      function mineVal(r) {
+        var v = mine[r.dataset.id];
+        return (v === undefined || v === null || v === 0) ? null : v;
+      }
+      function byVal(getter) {
+        return function (a, b) {
+          var va = getter(a), vb = getter(b);
+          if (va === null && vb === null) return 0;
+          if (va === null) return 1;
+          if (vb === null) return -1;
+          return dirMul * (va - vb);
+        };
+      }
+      if (view.sort === "score") list.sort(byVal(scoreVal));
+      else if (view.sort === "mine") list.sort(byVal(mineVal));
       list.forEach(function (r) { sortList.appendChild(r); });
       sortPanel.classList.remove("hidden");
       if (view.filter === "key") {
@@ -2939,7 +2948,134 @@ var PRELOAD = {};
     { n: "Mister Fantastic", a: "Reed Richards", q: "Mister Fantastic", b: "Fantastic Four'un dâhi lideri Reed Richards, kozmik ışınlara maruz kaldıktan sonra bedenini sınırsızca uzatıp şekillendirebilen bir bilim insanıdır." },
     { n: "Invisible Woman", a: "Sue Storm", q: "Invisible Woman", b: "Görünmezlik ve güçlü enerji kalkanları oluşturabilen Sue Storm, Fantastic Four'un hem duygusal hem de stratejik omurgasıdır." },
     { n: "Human Torch", a: "Johnny Storm", q: "Human Torch (Jonathan Storm)", b: "Vücudunu tamamen ateşe verip uçabilen genç ve maceracı Johnny Storm, Fantastic Four'un en atılgan ve şakacı üyesidir." },
-    { n: "Thing", a: "Ben Grimm", q: "Thing (comics)", b: "Kozmik ışınların etkisiyle bedeni taş gibi turuncu, dev güçlü bir kabuğa dönüşen Ben Grimm, dış görünüşüne rağmen sıcakkanlı ve sadık bir dosttur." }
+    { n: "Thing", a: "Ben Grimm", q: "Thing (comics)", b: "Kozmik ışınların etkisiyle bedeni taş gibi turuncu, dev güçlü bir kabuğa dönüşen Ben Grimm, dış görünüşüne rağmen sıcakkanlı ve sadık bir dosttur." },
+
+    // — Kötüler —
+    { n: "Red Skull", a: "Johann Schmidt", q: "Red Skull", b: "Naziler'in bilim programında güçlendirilen Johann Schmidt, Kaptan Amerika'nın ezeli düşmanı ve Hydra'nın en tehlikeli liderlerindendir." },
+    { n: "Baron Zemo", a: "Helmut Zemo", q: "Baron Zemo", b: "Aristokrat bir Sokovyalı olan Helmut Zemo, Avengers'ı kendi içinden bölmek için soğukkanlı planlar kuran usta bir stratejisttir." },
+    { n: "Hela", a: "Hela", q: "Hela (Marvel Comics)", b: "Odin'in ilk çocuğu ve Ölüm Tanrıçası olan Hela, sınırsız güce sahiptir ve Asgard tahtına olan hakkını geri almak ister." },
+    { n: "Malekith", a: "Malekith the Accursed", q: "Malekith the Accursed", b: "Karanlık Elfler'in acımasız kralı Malekith, evreni ilkel karanlığa geri döndürmek için Aether'in gücünü ele geçirmeye çalışır." },
+    { n: "Ronan the Accuser", a: "Ronan", q: "Ronan the Accuser", b: "Kree İmparatorluğu'nun fanatik askeri lideri Ronan, kozmik bir çekiçle savaşan acımasız bir din adamı-savaşçıdır." },
+    { n: "Ego", a: "Ego the Living Planet", q: "Ego the Living Planet", b: "Kendini bir gezegen olarak şekillendirebilen kozmik bir varlık olan Ego, evreni kendi bilincinin bir uzantısına dönüştürmeyi hayal eder." },
+    { n: "Ghost", a: "Ava Starr", q: "Ghost (Marvel Comics)", b: "Bir kaza sonucu bedeni kararsız hâle gelen Ava Starr, duvarlardan geçebilen ve maddesizleşebilen gizemli bir figürdür." },
+    { n: "M.O.D.O.K.", a: "George Tarleton", q: "M.O.D.O.K.", b: "Dev bir kafaya ve cılız bir bedene sahip bu bilim insanı, A.I.M. örgütü tarafından üstün zekâ için mutasyona uğratılmış bir silaha dönüştürülmüştür." },
+    { n: "Abomination", a: "Emil Blonsky", q: "Abomination (character)", b: "Gama radyasyonuyla kasıtlı olarak güçlendirilen ajan Emil Blonsky, Hulk'tan bile daha acımasız ve stratejik bir canavara dönüşür." },
+    { n: "Whiplash", a: "Ivan Vanko", q: "Whiplash (comics)", b: "Elektrikli kırbaçlarla savaşan Rus bir mühendis olan Ivan Vanko, Stark ailesine duyduğu kin yüzünden Iron Man'e karşı intikam peşindedir." },
+    { n: "Yellowjacket", a: "Darren Cross", q: "Yellowjacket (Marvel Comics)", b: "Hank Pym'in eski öğrencisi Darren Cross, küçülme teknolojisini silahlaştırarak kendi ölümcül zırhını yaratır." },
+    { n: "Green Goblin", a: "Norman Osborn", q: "Green Goblin", b: "Zengin bir işadamı olan Norman Osborn, deneysel bir formülle hem üstün güç hem de delilik kazanır ve Spider-Man'in en büyük düşmanı olur." },
+    { n: "Doctor Octopus", a: "Otto Octavius", q: "Doctor Octopus", b: "Dört mekanik kola bağlanan bilim insanı Otto Octavius, bir kaza sonrası bu kollarla kontrolünü kaybederek tehlikeli bir suçluya dönüşür." },
+    { n: "Sandman", a: "Flint Marko", q: "Sandman (Marvel Comics)", b: "Bir deney sonucu bedenini kuma dönüştürebilen eski bir suçlu olan Flint Marko, şekil değiştirebilen güçlü bir düşmandır." },
+    { n: "Lizard", a: "Curt Connors", q: "Lizard (character)", b: "Kolunu yeniden büyütmek isteyen bilim insanı Curt Connors, kendi geliştirdiği serumla dev bir sürüngen canavara dönüşür." },
+    { n: "Electro", a: "Max Dillon", q: "Electro (Marvel Comics)", b: "Bir kaza sonucu elektrik enerjisiyle dolan Max Dillon, bu gücü kontrol edip fırlatabilen tehlikeli bir düşmana dönüşür." },
+    { n: "Vulture", a: "Adrian Toomes", q: "Vulture (character)", b: "Mekanik kanatlı bir zırhla uçan hurda tüccarı Adrian Toomes, hayatta kalmak için yasa dışı silah ticaretine bulaşır." },
+    { n: "Mysterio", a: "Quentin Beck", q: "Mysterio", b: "Eski bir özel efekt ustası olan Quentin Beck, hologramlar ve illüzyonlarla kendini sahte bir kahraman olarak sunan bir dolandırıcıdır." },
+    { n: "Kraven the Hunter", a: "Sergei Kravinoff", q: "Kraven the Hunter", b: "Dünyanın en büyük avcısı olduğunu iddia eden Sergei Kravinoff, Spider-Man'i avlamayı hayatının nihai sınavı olarak görür." },
+    { n: "Venom", a: "Eddie Brock", q: "Venom (character)", b: "Uzaylı bir simbiyotla birleşen gazeteci Eddie Brock, hem korkunç hem de kendine göre bir adalet anlayışı olan karanlık bir anti-kahramana dönüşür." },
+    { n: "Carnage", a: "Cletus Kasady", q: "Carnage (character)", b: "Seri katil Cletus Kasady'nin Venom'un simbiyotundan doğan bir yavruyla birleşmesiyle ortaya çıkan Carnage, tamamen kontrolsüz ve kanlı bir katildir." },
+    { n: "Doctor Doom", a: "Victor von Doom", q: "Doctor Doom", b: "Latveria'nın dâhi ve gururlu hükümdarı Victor von Doom, hem büyü hem bilime hâkim olup dünyayı kendi kusursuz düzenine sokmak ister." },
+    { n: "Galactus", a: "Galan", q: "Galactus", b: "Evrenin en eski kozmik varlıklarından biri olan Galactus, hayatta kalmak için gezegenlerin enerjisini yutmak zorundadır." },
+    { n: "Silver Surfer", a: "Norrin Radd", q: "Silver Surfer", b: "Gezegenini kurtarmak için Galactus'a hizmetkâr olan Norrin Radd, kozmik güçle donanmış gümüş rengi bir sörfçüye dönüşür ve sonunda özgürlüğüne kavuşur." },
+    { n: "Taskmaster", a: "Anthony Masters", q: "Taskmaster (character)", b: "Gördüğü her dövüş hareketini anında taklit edebilen fotografik-refleks hafızasına sahip Taskmaster, paralı bir suikastçı ve eğitmendir." },
+    { n: "Crossbones", a: "Brock Rumlow", q: "Crossbones (comics)", b: "Eski bir S.T.R.I.K.E. ajanı olan Brock Rumlow, Hydra'ya katıldıktan sonra acımasız bir paralı asker ve suikastçıya dönüşür." },
+    { n: "Grandmaster", a: "En Dwi Gast", q: "Grandmaster (Marvel Comics)", b: "Evrenin en eski varlıklarından biri olan Grandmaster, ölümsüzlüğünün getirdiği can sıkıntısını gladyatör dövüşleri ve oyunlarla gidermeye çalışır." },
+    { n: "Surtur", a: "Surtur", q: "Surtur (Marvel Comics)", b: "Ateş devlerinin devasa efendisi Surtur, kehanetlere göre alevli kılıcıyla Asgard'ın sonunu (Ragnarök) getirecek kozmik bir varlıktır." },
+    { n: "High Evolutionary", a: "Herbert Wyndham", q: "High Evolutionary", b: "Yaşamı 'mükemmelleştirmeyi' saplantı hâline getiren dâhi bilim insanı Herbert Wyndham, sayısız türü genetik olarak değiştirip evrimleştirir." },
+    { n: "Mandarin", a: "Xu Wenwu", q: "Mandarin (Marvel Comics)", b: "On yüzük denen efsanevi silahları kuşanan Xu Wenwu, yüzyıllar boyunca yaşayan ve dünyayı gölgeden yöneten bir suç lordudur." },
+    { n: "Bullseye", a: "Bullseye", q: "Bullseye (Marvel Comics)", b: "Eline aldığı hemen her nesneyi öldürücü bir silaha dönüştürebilen Bullseye, Daredevil'ın en acımasız ve zalim düşmanlarından biridir." },
+    { n: "Mister Sinister", a: "Nathaniel Essex", q: "Mister Sinister", b: "Genetik mühendisliğine takıntılı Viktorya dönemi bilim insanı Nathaniel Essex, mutant evrimini kontrol etmeye çalışan gizemli bir düşmandır." },
+    { n: "Apocalypse", a: "En Sabah Nur", q: "Apocalypse (character)", b: "Bilinen ilk mutant olduğuna inanılan En Sabah Nur, 'ancak en güçlü hayatta kalır' felsefesiyle binlerce yıldır dünyayı şekillendirmeye çalışır." },
+    { n: "Juggernaut", a: "Cain Marko", q: "Juggernaut (comics)", b: "Mistik bir mücevherin gücüyle durdurulamaz hâle gelen Cain Marko, önüne çıkan her şeyi ezip geçen devasa bir güç canavarıdır." },
+    { n: "Sabretooth", a: "Victor Creed", q: "Sabretooth (character)", b: "Wolverine'e benzer iyileşme ve pençe yeteneklerine sahip Victor Creed, vahşi içgüdüleriyle hareket eden acımasız bir mutant katildir." },
+    { n: "Mystique", a: "Raven Darkholme", q: "Mystique (Marvel Comics)", b: "Herhangi birinin görünümüne bürünebilen şekil değiştirici mutant Mystique, kendi gündemine göre taraf değiştiren gizemli bir figürdür." },
+
+    // — X-Men —
+    { n: "Jean Grey", a: "Jean Grey", q: "Jean Grey", b: "Güçlü bir telepat ve telekinetik olan Jean Grey, kozmik Phoenix Gücü'yle birleştiğinde evreni yeniden şekillendirebilecek bir varlığa dönüşür." },
+    { n: "Beast", a: "Hank McCoy", q: "Beast (Marvel Comics)", b: "Hem dâhi bir bilim insanı hem de mavi kürklü, çevik bir mutant olan Hank McCoy, X-Men'in entelektüel omurgasıdır." },
+    { n: "Iceman", a: "Bobby Drake", q: "Iceman (Marvel Comics)", b: "Bedenini tamamen buza çevirebilen Bobby Drake, X-Men'in en genç kurucu üyelerinden biri ve şakacı karakteriyle tanınır." },
+    { n: "Archangel", a: "Warren Worthington III", q: "Archangel (comics)", b: "Doğuştan meleksi kanatlara sahip zengin bir mutant olan Warren Worthington III, sonradan metalik ve daha karanlık bir dönüşüm de geçirir." },
+    { n: "Colossus", a: "Piotr Rasputin", q: "Colossus (comics)", b: "Bedenini organik çeliğe dönüştürebilen Rus mutant Piotr Rasputin, inanılmaz gücüne rağmen nazik ve sanatçı ruhlu bir karakterdir." },
+    { n: "Nightcrawler", a: "Kurt Wagner", q: "Nightcrawler (character)", b: "Mavi tenli, kuyruklu ve ışınlanma gücüne sahip Kurt Wagner, dindar kişiliği ve akrobatik dövüş tarzıyla tanınan sevilen bir X-Men üyesidir." },
+    { n: "Rogue", a: "Anna Marie", q: "Rogue (Marvel Comics)", b: "Dokunduğu kişinin anılarını ve güçlerini emen Rogue, bu yeteneği yüzünden fiziksel temastan kaçınmak zorunda kalan trajik bir mutanttır." },
+    { n: "Gambit", a: "Remy LeBeau", q: "Gambit (comics)", b: "İskambil kâğıtlarını patlayıcıya dönüştürebilen karizmatik Cajun mutant Remy LeBeau, gizemli geçmişiyle bilinen bir kumarbaz-savaşçıdır." },
+    { n: "Emma Frost", a: "Emma Frost", q: "Emma Frost", b: "Bedenini elmasa çevirebilen güçlü bir telepat olan Emma Frost, keskin dili ve stratejik zekâsıyla hem kötü hem kahraman saflarında yer almıştır." },
+    { n: "Bishop", a: "Lucas Bishop", q: "Bishop (comics)", b: "Distopik bir gelecekten gelen zaman yolcusu Bishop, enerjiyi emip fırlatabilen güçlü bir mutant asker ve X-Men üyesidir." },
+    { n: "Cable", a: "Nathan Summers", q: "Cable (character)", b: "Cyclops ile Jean Grey'in gelecekten gelen oğlu Cable, ağır silahlar ve telekinetik güçlerle savaşan sert bir zaman askeridir." },
+    { n: "Domino", a: "Neena Thurman", q: "Domino (character)", b: "Olasılıkları kendi lehine çevirebilen 'şanslı' mutasyona sahip Neena Thurman, keskin nişancılığıyla ünlü bir paralı askerdir." },
+    { n: "X-23", a: "Laura Kinney", q: "X-23", b: "Wolverine'in genetik klonu olarak yaratılan Laura Kinney, benzer pençelere ve iyileşme gücüne sahip genç ve travmatize bir savaşçıdır." },
+    { n: "Jubilee", a: "Jubilation Lee", q: "Jubilee (comics)", b: "Ellerinden renkli ve patlayıcı enerji parçacıkları fırlatan genç mutant Jubilee, X-Men'in en enerjik üyelerinden biridir." },
+    { n: "Kitty Pryde", a: "Katherine Pryde", q: "Kitty Pryde", b: "Katı nesnelerin içinden geçebilen Kitty Pryde, X-Men'e genç yaşta katılıp zamanla saygın bir liderlik konumuna yükselir." },
+    { n: "Banshee", a: "Sean Cassidy", q: "Banshee (comics)", b: "Ses tellerinden güçlü sonik çığlıklar atabilen İrlandalı mutant Sean Cassidy, bu sesle hem uçabilir hem de düşmanlarını sersemletebilir." },
+    { n: "Havok", a: "Alex Summers", q: "Havok (comics)", b: "Cyclops'un kardeşi Alex Summers, bedeninden yıkıcı plazma enerjisi halkaları fırlatabilen güçlü bir mutanttır." },
+    { n: "Polaris", a: "Lorna Dane", q: "Polaris (Marvel Comics)", b: "Magnetizmayı kontrol eden Lorna Dane, Magneto'nun kızı olarak karmaşık bir aile mirasıyla boğuşan güçlü bir mutandır." },
+    { n: "Forge", a: "Forge", q: "Forge (comics)", b: "Doğaüstü bir icat yeteneğine sahip Cheyenne kökenli mutant Forge, X-Men için gelişmiş teknoloji ve silahlar üretir." },
+
+    // — Kozmik & uzay —
+    { n: "Adam Warlock", a: "Adam Warlock", q: "Adam Warlock", b: "Yapay olarak yaratılan kozmik bir varlık olan Adam Warlock, muazzam güce sahiptir ve evrenin kaderinde kilit bir rol oynar." },
+    { n: "Beta Ray Bill", a: "Beta Ray Bill", q: "Beta Ray Bill", b: "At benzeri uzaylı bir ırkın savaşçısı olan Beta Ray Bill, Thor'un çekicini kaldırmaya layık bulunan az sayıdaki varlıktan biridir." },
+    { n: "Valkyrie", a: "Brunnhilde", q: "Valkyrie (Marvel Comics)", b: "Asgard'ın efsanevi kadın savaşçı birliği Valkyrior'un son üyesi Brunnhilde, ölmüş savaşçıların ruhlarını Valhalla'ya taşımakla görevliydi." },
+    { n: "Korg", a: "Korg", q: "Korg (character)", b: "Taştan yapılma dev bedenli Kronanlı bir savaşçı olan Korg, sakin ve mizahi tavrıyla tanınan sadık bir dosttur." },
+    { n: "Hercules", a: "Heracles", q: "Hercules (Marvel Comics)", b: "Yunan mitolojisinin efsanevi kahramanı Heracles, Marvel evreninde inanılmaz güce sahip yarı-tanrı bir Olympian olarak yaşamaya devam eder." },
+    { n: "Nova", a: "Richard Rider", q: "Nova (Richard Rider)", b: "Nova Corps'un enerjisiyle donanan genç Richard Rider, uçuş ve süper güce sahip galaktik bir muhafız hâline gelir." },
+    { n: "Quasar", a: "Wendell Vaughn", q: "Quasar (comics)", b: "Kozmik enerjiyi bilekliklerinden yönlendiren Wendell Vaughn, evrenin koruyucularından biri olarak görev yapan güçlü bir kahramandır." },
+    { n: "Yondu Udonta", a: "Yondu Udonta", q: "Yondu", b: "Ravager kaptanı Yondu, ıslıkla yönlendirdiği öldürücü bir okla savaşan sert ama sonunda derin bir sadakat gösteren bir uzay korsanıdır." },
+
+    // — Eternals —
+    { n: "Sersi", a: "Sersi", q: "Sersi (Marvel Comics)", b: "Maddeyi moleküler düzeyde dönüştürebilen Eternal Sersi, insanlığa en çok bağlanan ve onları koruyan üyelerden biridir." },
+    { n: "Ikaris", a: "Ikaris", q: "Ikaris", b: "Uçabilen ve gözlerinden kozmik enerji fırlatabilen Ikaris, Eternals'ın en güçlü ve göreve en bağlı savaşçılarından biridir." },
+    { n: "Sprite", a: "Sprite", q: "Sprite (Marvel Comics)", b: "Sonsuza dek genç bir bedende kalan Eternal Sprite, illüzyonlar yaratma gücüne sahip olup bu ölümsüz çocukluğa dair derin bir hoşnutsuzluk taşır." },
+    { n: "Kingo", a: "Kingo", q: "Kingo (Marvel Comics)", b: "Enerji fırlatma gücüne sahip Eternal Kingo, yüzyıllar boyunca insan kuşaklarına aktarılan bir samuray/aktör kimliği sürdürür." },
+    { n: "Phastos", a: "Phastos", q: "Phastos", b: "İnsanlığa teknolojik icatlar armağan eden Eternal Phastos, yarattığı buluşların hem iyi hem kötüye kullanılmasıyla yüzleşir." },
+    { n: "Makkari", a: "Makkari", q: "Makkari", b: "Işık hızında koşabilen Eternal Makkari, grubun en hızlı ve en meraklı kâşiflerinden biridir." },
+    { n: "Druig", a: "Druig", q: "Druig (Marvel Comics)", b: "Zihin kontrolü gücüne sahip Eternal Druig, insanlığın acılarına müdahale etme konusunda diğer Eternals'la sık sık çatışır." },
+    { n: "Ajak", a: "Ajak", q: "Ajak", b: "Eternals'ın lideri ve insanlıkla doğrudan iletişim kurabilen tek üye olan Ajak, grubun manevi rehberi konumundadır." },
+    { n: "Thena", a: "Thena", q: "Thena (comics)", b: "Kozmik enerjiden her türlü silahı yaratabilen Eternal Thena, olağanüstü bir savaş yeteneğine sahip usta bir dövüşçüdür." },
+    { n: "Gilgamesh", a: "Gilgamesh", q: "Gilgamesh (Marvel Comics)", b: "İnanılmaz fiziksel güce sahip Eternal Gilgamesh, grubun en güçlü savaşçısı olarak bilinir ve sadakatiyle öne çıkar." },
+
+    // — Sokak seviyesi kahramanlar —
+    { n: "Jessica Jones", a: "Jessica Jones", q: "Jessica Jones", b: "Süper güçlerinden vazgeçip özel dedektif olan Jessica Jones, geçmişindeki travmalarla boğuşan sert mizaçlı bir kahramandır." },
+    { n: "Luke Cage", a: "Carl Lucas", q: "Luke Cage", b: "Haksız yere hapse atılan bir deneyle çelik gibi cilt ve süper güç kazanan Carl Lucas, Harlem'in koruyucusu bir kahramana dönüşür." },
+    { n: "Iron Fist", a: "Danny Rand", q: "Iron Fist (character)", b: "Mistik K'un-Lun şehrinde eğitilen Danny Rand, yumruğunu ateşe dönüştürebilen efsanevi bir dövüş sanatları ustasıdır." },
+    { n: "Elektra", a: "Elektra Natchios", q: "Elektra (Marvel Comics)", b: "Usta bir suikastçı olan Elektra Natchios, sai adlı silahlarla savaşan ve Daredevil'la karmaşık bir geçmişi paylaşan gizemli bir figürdür." },
+    { n: "Blade", a: "Eric Brooks", q: "Blade (character)", b: "Yarı-vampir olarak doğan Eric Brooks, vampirlerin zayıf yönlerine sahip olup onlara karşı acımasızca savaşan bir avcıdır." },
+    { n: "Ghost Rider", a: "Johnny Blaze", q: "Ghost Rider (Johnny Blaze)", b: "Şeytani bir varlıkla anlaşma yapan Johnny Blaze, geceleri kafatası alevli bir intikam ruhuna, Ceza Bakışı gücüne sahip bir varlığa dönüşür." },
+    { n: "Man-Thing", a: "Ted Sallis", q: "Man-Thing", b: "Bataklıkta bir kazada mutasyona uğrayan bilim insanı Ted Sallis, korku hissedenleri yakan bitki-insan bir yaratığa dönüşür." },
+
+    // — Thunderbolts ve müttefikleri —
+    { n: "Yelena Belova", a: "Yelena Belova", q: "Yelena Belova", b: "Natasha Romanoff ile aynı programda yetiştirilen Yelena Belova, keskin mizahı ve üstün suikastçılık becerileriyle tanınan bir Kara Dul'dur." },
+    { n: "Red Guardian", a: "Alexei Shostakov", q: "Red Guardian", b: "Sovyetler Birliği'nin kendi Kaptan Amerika'sı sayılan Alexei Shostakov, güçlü zırhı ve abartılı gururuyla tanınan bir süper askerdir." },
+    { n: "U.S. Agent", a: "John Walker", q: "U.S. Agent", b: "Kaptan Amerika unvanını geçici olarak devralan asker John Walker, güç ve onur arasındaki çizgide sık sık zorlanan sert bir figürdür." },
+    { n: "Sentry", a: "Robert Reynolds", q: "Sentry (Marvel Comics)", b: "Bir milyon güneşin gücüne sahip olduğuna inanılan Robert Reynolds, kendi karanlık yönü Void ile sürekli iç mücadele hâlindedir." },
+    { n: "Contessa Valentina", a: "Valentina Allegra de Fontaine", q: "Valentina Allegra de Fontaine", b: "Gizli ajandalarla hareket eden çok yönlü bir casus olan Valentina, kahramanları kendi çıkarları için bir araya getiren manipülatif bir figürdür." },
+
+    // — Diğer genç kahramanlar —
+    { n: "Ironheart", a: "Riri Williams", q: "Riri Williams", b: "Genç yaşta kendi zırhını sıfırdan tasarlayan dâhi mühendis Riri Williams, Tony Stark'ın mirasını yeni bir kuşağa taşır." },
+
+    // — Loki dizisi —
+    { n: "Sylvie", a: "Sylvie Laufeydottir", q: "Sylvie (Loki)", b: "Zaman Çeşitliliği Otoritesi'nden kaçan bir Loki varyantı olan Sylvie, zihin manipülasyonu gücüyle savaşan öfkeli ve kararlı bir figürdür." },
+    { n: "Mobius M. Mobius", a: "Mobius M. Mobius", q: "Mobius M. Mobius", b: "Zaman Çeşitliliği Otoritesi'nin deneyimli analisti Mobius, zaman çizgisini korumakla görevli sakin ama keskin zekâlı bir soruşturmacıdır." },
+    { n: "Ravonna Renslayer", a: "Ravonna Renslayer", q: "Ravonna Renslayer", b: "Zaman Çeşitliliği Otoritesi'nde yüksek rütbeli bir yargıç olan Ravonna Renslayer, kendi geçmişinin sırlarını çözmeye çalışan gizemli bir figürdür." },
+    { n: "He Who Remains", a: "He Who Remains", q: "Kang the Conqueror", b: "Kang'ın erken bir varyantı olan bu gizemli figür, sonsuz bir çoklu evren savaşını önlemek için Zaman Çizgisi'ni tek bir hatta sıkıştırmıştır." },
+
+    // — Doctor Strange evreni —
+    { n: "Wong", a: "Wong", q: "Wong (Marvel Comics)", b: "Kamar-Taj'ın kütüphanecisi ve usta bir büyücü olan Wong, Baş Büyücü unvanını da taşıyan sadık ve disiplinli bir müttefiktir." },
+    { n: "Baron Mordo", a: "Karl Mordo", q: "Baron Mordo", b: "Eskiden Doctor Strange'in yol arkadaşı olan Karl Mordo, mistik güçlerin kötüye kullanımına duyduğu takıntıyla zamanla bir düşmana dönüşür." },
+    { n: "Clea", a: "Clea", q: "Clea (comics)", b: "Karanlık Boyut'un prensesi Clea, güçlü bir büyücü olarak Doctor Strange'in hem sevgilisi hem de mistik sanatlar konusunda denk bir ortağıdır." },
+
+    // — Shang-Chi —
+    { n: "Xu Xialing", a: "Xu Xialing", q: "Xu Xialing", b: "Shang-Chi'nin kız kardeşi Xu Xialing, dövüş sanatlarında usta olup babasının suç imparatorluğunu kendi vizyonuyla yeniden şekillendirir." },
+
+    // — Moon Knight —
+    { n: "Layla El-Faouly", a: "Layla El-Faouly / Scarlet Scarab", q: "Layla El-Faouly", b: "Marc Spector'ın eşi olan Layla, Mısırlı tanrıça Taweret'in gücünü kazanarak kendi süper kahraman kimliği Scarlet Scarab'a dönüşür." },
+
+    // — Werewolf by Night —
+    { n: "Jack Russell", a: "Werewolf by Night", q: "Werewolf by Night (character)", b: "Ailesindeki bir lanet yüzünden dolunayda kurda dönüşen Jack Russell, hem insanlığını hem canavarlığını dengelemeye çalışan trajik bir figürdür." },
+    { n: "Elsa Bloodstone", a: "Elsa Bloodstone", q: "Elsa Bloodstone", b: "Efsanevi bir canavar avcısı ailesinden gelen Elsa Bloodstone, doğaüstü tehditlere karşı acımasızca savaşan sert bir avcıdır." },
+
+    // — Echo —
+    { n: "Echo", a: "Maya Lopez", q: "Echo (Marvel Comics)", b: "Gördüğü her hareketi kusursuzca taklit edebilen sağır kahraman Maya Lopez, hem Kingpin'in evlatlığı hem de kendi kimliğini arayan güçlü bir savaşçıdır." },
+
+    // — Diğer —
+    { n: "Titania", a: "Mary MacPherran", q: "Titania (comics)", b: "Kozmik bir olayda inanılmaz güç ve dayanıklılık kazanan Mary MacPherran, She-Hulk'a duyduğu kişisel kinle tanınan güçlü bir düşmandır." }
   ];
 
   var CHAR_API = "https://en.wikipedia.org/w/api.php";
@@ -2948,15 +3084,27 @@ var PRELOAD = {};
 
   function fetchCharImg(i) {
     var c = CHARACTERS[i];
-    return fetch(CHAR_API + "?action=query&format=json&origin=*&generator=search&gsrlimit=1" +
-      "&prop=pageimages&piprop=thumbnail&pithumbsize=300&gsrsearch=" + encodeURIComponent(c.q))
-      .then(function (r) { return r.json(); })
+    var restUrl = "https://en.wikipedia.org/api/rest_v1/page/summary/" +
+      encodeURIComponent(c.q).replace(/%20/g, "_");
+    function viaSearch() {
+      return fetch(CHAR_API + "?action=query&format=json&origin=*&generator=search&gsrlimit=1" +
+        "&prop=pageimages&piprop=thumbnail&pithumbsize=300&gsrsearch=" + encodeURIComponent(c.q))
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var pages = d && d.query && d.query.pages;
+          var p = pages && pages[Object.keys(pages)[0]];
+          charImg[i] = (p && p.thumbnail && p.thumbnail.source) || "";
+        })
+        .catch(function () { charImg[i] = ""; });
+    }
+    return fetch(restUrl)
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (d) {
-        var pages = d && d.query && d.query.pages;
-        var p = pages && pages[Object.keys(pages)[0]];
-        charImg[i] = (p && p.thumbnail && p.thumbnail.source) || "";
+        var src = (d.thumbnail && d.thumbnail.source) || (d.originalimage && d.originalimage.source) || "";
+        if (!src) throw 0;
+        charImg[i] = src;
       })
-      .catch(function () { charImg[i] = ""; })
+      .catch(viaSearch)
       .then(function () { charStatus.loaded++; });
   }
 
