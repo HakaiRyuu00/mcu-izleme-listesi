@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCU İzleme Sırası — Marvel Sinematik Evreni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#101720;
+    --ink-soft:#5A6675;
+    --paper:#E6EAEE;
+    --card:#FFFFFF;
+    --line:#D3DAE1;
+    --p1:#12457F;
+    --p2:#1E7A6E;
+    --p3:#C8102E;
+    --p4:#5B3E8E;
+    --p5:#B57A12;
+    --p6:#101720;
+    --accent:#C8102E;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Barlow Semi Condensed",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:18px;line-height:1.45;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:0 16px 72px;}
+
+  /* ---------- Başlık ---------- */
+  .masthead{
+    background:var(--ink);color:#fff;margin:0 -16px 28px;
+    padding:44px 24px 34px;position:relative;overflow:hidden;
+  }
+  .masthead::after{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.16) 1.1px, transparent 1.2px);
+    background-size:9px 9px;opacity:.55;pointer-events:none;
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.22em;
+    text-transform:uppercase;color:#8FA3B8;margin:0 0 14px;position:relative;z-index:1;
+  }
+  h1{
+    font-family:"Archivo Black",sans-serif;font-size:clamp(38px,9vw,72px);
+    line-height:.92;letter-spacing:-.02em;margin:0;text-transform:uppercase;
+    position:relative;z-index:1;
+  }
+  h1 em{font-style:normal;color:var(--p3);}
+  .deck{margin:16px 0 0;max-width:54ch;color:#C3CEDA;font-size:17px;position:relative;z-index:1;}
+
+  .progress{position:relative;z-index:1;max-width:460px;margin-top:24px;}
+  .progress-track{height:8px;background:rgba(255,255,255,.18);}
+  .progress-fill{height:100%;width:0;background:var(--p3);transition:width .25s ease;}
+  .progress-text{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:9px;
+    font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.12em;
+    text-transform:uppercase;color:#C3CEDA;
+  }
+  .reset{
+    background:none;border:1px solid rgba(255,255,255,.32);color:#C3CEDA;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;padding:5px 10px;cursor:pointer;
+  }
+  .reset:hover{background:rgba(255,255,255,.12);color:#fff;}
+
+  /* ---------- Açıklama şeridi ---------- */
+  .legend{
+    display:flex;flex-wrap:wrap;gap:9px 20px;padding:14px 16px;margin:0 0 30px;
+    background:var(--card);border:1px solid var(--line);
+    font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--ink-soft);
+  }
+  .legend b{color:var(--ink);font-weight:600;}
+  .legend .dot{color:var(--p3);letter-spacing:1px;}
+
+  /* ---------- Faz ---------- */
+  .p1{--accent:var(--p1);} .p2{--accent:var(--p2);} .p3{--accent:var(--p3);}
+  .p4{--accent:var(--p4);} .p5{--accent:var(--p5);} .p6{--accent:var(--p6);}
+  .phase{margin:0 0 34px;}
+  .phase-head{
+    display:flex;align-items:center;gap:16px;padding:16px 18px;color:#fff;
+    background:var(--accent);position:relative;overflow:hidden;
+  }
+  .phase-head::after{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.18) 1.1px, transparent 1.2px);
+    background-size:8px 8px;opacity:.5;
+  }
+  .phase-no{
+    font-family:"Archivo Black",sans-serif;font-size:52px;line-height:.8;
+    color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.85);
+    position:relative;z-index:1;
+  }
+  .phase-meta{position:relative;z-index:1;}
+  .phase-name{
+    font-family:"Archivo Black",sans-serif;font-size:22px;
+    text-transform:uppercase;line-height:1.1;
+  }
+  .phase-years{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;
+    letter-spacing:.14em;opacity:.82;margin-top:4px;
+  }
+  .phase-count{
+    margin-left:auto;position:relative;z-index:1;
+    font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.1em;opacity:.9;
+  }
+  .phase-note{
+    margin:0;padding:11px 18px;background:#F4F7F9;
+    border:1px solid var(--line);border-top:none;border-bottom:none;
+    font-size:15px;color:var(--ink-soft);
+  }
+
+  /* ---------- Satırlar ---------- */
+  ol.list{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-top:none;}
+  ol.list li{
+    display:grid;grid-template-columns:20px 30px 1fr auto auto;
+    align-items:baseline;gap:14px;padding:11px 18px;border-bottom:1px solid #EDF0F3;
+    cursor:pointer;-webkit-user-select:none;user-select:none;
+  }
+  ol.list li:last-child{border-bottom:none;}
+  ol.list li:hover{background:#F6F9FB;}
+  ol.list li:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+  .box{
+    width:15px;height:15px;border:1.5px solid #9AA7B4;display:block;position:relative;
+    align-self:center;transition:background-color .12s,border-color .12s;
+  }
+  li.soon .box{border-style:dashed;}
+  li.done .box{background:var(--accent);border-color:var(--accent);border-style:solid;}
+  li.done .box::after{
+    content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;
+    border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);
+  }
+  .n{font-family:"IBM Plex Mono",monospace;font-size:12px;color:#9AA7B4;}
+  .t{font-weight:600;font-size:19px;}
+  .t small{display:block;font-weight:400;font-size:14px;color:var(--ink-soft);margin-top:1px;}
+  .r{
+    font-size:11px;letter-spacing:1.5px;white-space:nowrap;
+    align-self:center;line-height:1;
+  }
+  .r b{color:var(--accent);font-weight:400;}
+  .r i{color:#CCD5DD;font-style:normal;}
+  .y{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-soft);white-space:nowrap;}
+  .kind{
+    display:inline-block;vertical-align:2px;margin-left:8px;
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;padding:2px 6px;border:1px solid var(--line);color:var(--ink-soft);
+  }
+  .kind.dizi{border-color:#B8C6D4;color:#12457F;}
+  .kind.ozel{border-color:#E0C79A;color:#8A5D0C;}
+  .kind.anim{border-color:#C8BBDD;color:#5B3E8E;}
+  li.soon .t{color:var(--ink-soft);}
+  li.done .t{color:#9AA7B4;text-decoration:line-through;text-decoration-thickness:1.5px;}
+  li.done .t small{color:#B4BEC8;text-decoration:none;}
+  li.done .y{color:#B4BEC8;}
+  li.done .r b{color:#B4BEC8;}
+  li.done .r i{color:#DFE5EA;}
+
+  /* ---------- Notlar ---------- */
+  .note{
+    background:var(--card);border:1px solid var(--line);border-left:5px solid var(--p3);
+    padding:18px 20px;margin:0 0 30px;
+  }
+  .note h2{
+    font-family:"Archivo Black",sans-serif;font-size:15px;
+    text-transform:uppercase;letter-spacing:.04em;margin:0 0 10px;
+  }
+  .note p{margin:0 0 10px;}
+  .note p:last-child{margin-bottom:0;}
+  .note ul{margin:0;padding-left:20px;}
+  .note li{margin-bottom:6px;}
+  .note.blue{border-left-color:var(--p1);}
+  .note.violet{border-left-color:var(--p4);}
+
+  /* ---------- Alt sayaç ---------- */
+  .scoreboard{
+    background:var(--ink);color:#fff;margin:0 -16px 26px;padding:34px 24px 30px;
+    position:relative;overflow:hidden;
+  }
+  .scoreboard::after{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.14) 1.1px, transparent 1.2px);
+    background-size:9px 9px;opacity:.5;pointer-events:none;
+  }
+  .sb-inner{position:relative;z-index:1;}
+  .sb-label{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.22em;
+    text-transform:uppercase;color:#8FA3B8;margin:0 0 12px;
+  }
+  .sb-big{display:flex;align-items:baseline;gap:10px;}
+  .sb-num{font-family:"Archivo Black",sans-serif;font-size:clamp(52px,14vw,86px);line-height:.85;color:var(--p3);}
+  .sb-den{font-family:"Archivo Black",sans-serif;font-size:26px;color:#5F7285;}
+  .sb-word{
+    font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.18em;
+    text-transform:uppercase;color:#C3CEDA;margin-left:6px;
+  }
+  .sb-track{height:8px;background:rgba(255,255,255,.18);margin:20px 0 18px;}
+  .sb-fill{height:100%;width:0;background:var(--p3);transition:width .25s ease;}
+  .sb-grid{display:flex;flex-wrap:wrap;gap:26px;}
+  .sb-grid div{min-width:88px;}
+  .sb-grid b{
+    display:block;font-family:"Archivo Black",sans-serif;font-size:22px;color:#fff;line-height:1.1;
+  }
+  .sb-grid span{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:#8FA3B8;
+  }
+
+  footer{
+    margin-top:36px;padding-top:16px;border-top:1px solid var(--line);
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-soft);
+  }
+
+  @media (max-width:560px){
+    body{font-size:17px;}
+    ol.list li{grid-template-columns:18px 26px 1fr auto;padding:10px 14px;gap:6px 10px;}
+    .box,.n,.t{grid-row:1;}
+    .t{grid-column:3 / span 2;}
+    .r{grid-row:2;grid-column:3;justify-self:start;}
+    .y{grid-row:2;grid-column:4;justify-self:end;font-size:12px;}
+    .t{font-size:17px;}
+    .phase-no{font-size:40px;}
+    .phase-name{font-size:18px;}
+    .sb-grid{gap:18px;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+  @media print{
+    body{background:#fff;font-size:12px;}
+    .progress,.reset,.sb-track{display:none;}
+    .masthead,.scoreboard{padding:20px;}
+    .phase{break-inside:avoid;}
+    ol.list li{padding:5px 12px;cursor:default;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Marvel Sinematik Evreni · Ağustos 2026</p>
+    <h1>MCU<br>İzleme<br><em>Sırası</em></h1>
+    <p class="deck">Vizyona çıkış tarihine göre sıralı. Her satırda 5 üzerinden bir önem puanı var: ana hikâyeyi takip etmek için o yapımın ne kadar gerekli olduğunu gösterir. İzlediğin satıra tıkla, işaretlensin.</p>
+    <div class="progress">
+      <div class="progress-track"><div class="progress-fill" id="fillTop"></div></div>
+      <div class="progress-text">
+        <span id="tallyTop">0 / 70 izlendi</span>
+        <button type="button" class="reset" id="reset">Sıfırla</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span><b>Etiketsiz</b> = Film</span>
+    <span><b>Dizi</b> · <b>Özel</b> · <b>Animasyon</b></span>
+    <span><span class="dot">●●●●●</span> <b>= 5</b> kaçırma</span>
+    <span><span class="dot">●</span> <b>= 1</b> tamamen keyfî</span>
+    <span><b>Kesikli kutu</b> = Henüz çıkmadı</span>
+  </div>
+
+  <section class="phase p1">
+    <div class="phase-head">
+      <div class="phase-no">01</div>
+      <div class="phase-meta">
+        <div class="phase-name">Yumruklar Havada</div>
+        <div class="phase-years">2008 – 2012 · İlk ekip toplanıyor</div>
+      </div>
+    </div>
+    <ol class="list">
+      <li data-kind="film" data-rating="5"><span class="box"></span><span class="n">01</span><span class="t">Iron Man</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">2 May 2008</span></li>
+      <li data-kind="film" data-rating="2"><span class="box"></span><span class="n">02</span><span class="t">The Incredible Hulk</span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">13 Haz 2008</span></li>
+      <li data-kind="film" data-rating="3"><span class="box"></span><span class="n">03</span><span class="t">Iron Man 2</span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">7 May 2010</span></li>
+      <li data-kind="film" data-rating="3"><span class="box"></span><span class="n">04</span><span class="t">Thor</span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">6 May 2011</span></li>
+      <li data-kind="film" data-rating="4"><span class="box"></span><span class="n">05</span><span class="t">Captain America: The First Avenger</span><span class="r" title="Önem 4/5" aria-label="Önem 4 bölü 5"><b>●●●●</b><i>●</i></span><span class="y">22 Tem 2011</span></li>
+      <li data-kind="film" data-rating="5"><span class="box"></span><span class="n">06</span><span class="t">The Avengers</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">4 May 2012</span></li>
+    </ol>
+  </section>
+  <section class="phase p2">
+    <div class="phase-head">
+      <div class="phase-no">02</div>
+      <div class="phase-meta">
+        <div class="phase-name">Evren Genişliyor</div>
+        <div class="phase-years">2013 – 2015 · Uzay ve casusluk</div>
+      </div>
+    </div>
+    <ol class="list">
+      <li data-kind="film" data-rating="2"><span class="box"></span><span class="n">07</span><span class="t">Iron Man 3</span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">3 May 2013</span></li>
+      <li data-kind="film" data-rating="3"><span class="box"></span><span class="n">08</span><span class="t">Thor: The Dark World</span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">8 Kas 2013</span></li>
+      <li data-kind="film" data-rating="5"><span class="box"></span><span class="n">09</span><span class="t">Captain America: The Winter Soldier</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">4 Nis 2014</span></li>
+      <li data-kind="film" data-rating="4"><span class="box"></span><span class="n">10</span><span class="t">Guardians of the Galaxy</span><span class="r" title="Önem 4/5" aria-label="Önem 4 bölü 5"><b>●●●●</b><i>●</i></span><span class="y">1 Ağu 2014</span></li>
+      <li data-kind="film" data-rating="5"><span class="box"></span><span class="n">11</span><span class="t">Avengers: Age of Ultron</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">1 May 2015</span></li>
+      <li data-kind="film" data-rating="3"><span class="box"></span><span class="n">12</span><span class="t">Ant-Man</span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">17 Tem 2015</span></li>
+    </ol>
+  </section>
+  <section class="phase p3">
+    <div class="phase-head">
+      <div class="phase-no">03</div>
+      <div class="phase-meta">
+        <div class="phase-name">Sonsuzluk Sagası Finali</div>
+        <div class="phase-years">2016 – 2019 · Thanos yolda</div>
+      </div>
+    </div>
+    <ol class="list">
+      <li data-kind="film" data-rating="5"><span class="box"></span><span class="n">13</span><span class="t">Captain America: Civil War</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">6 May 2016</span></li>
+      <li data-kind="film" data-rating="4"><span class="box"></span><span class="n">14</span><span class="t">Doctor Strange</span><span class="r" title="Önem 4/5" aria-label="Önem 4 bölü 5"><b>●●●●</b><i>●</i></span><span class="y">4 Kas 2016</span></li>
+      <li data-kind="film" data-rating="3"><span class="box"></span><span class="n">15</span><span class="t">Guardians of the Galaxy Vol. 2</span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">5 May 2017</span></li>
+      <li data-kind="film" data-rating="4"><span class="box"></span><span class="n">16</span><span class="t">Spider-Man: Homecoming</span><span class="r" title="Önem 4/5" aria-label="Önem 4 bölü 5"><b>●●●●</b><i>●</i></span><span class="y">7 Tem 2017</span></li>
+      <li data-kind="film" data-rating="5"><span class="box"></span><span class="n">17</span><span class="t">Thor: Ragnarok</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">3 Kas 2017</span></li>
+      <li data-kind="film" data-rating="4"><span class="box"></span><span class="n">18</span><span class="t">Black Panther</span><span class="r" title="Önem 4/5" aria-label="Önem 4 bölü 5"><b>●●●●</b><i>●</i></span><span class="y">16 Şub 2018</span></li>
+      <li data-kind="film" data-rating="5"><span class="box"></span><span class="n">19</span><span class="t">Avengers: Infinity War</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">27 Nis 2018</span></li>
+      <li data-kind="film" data-rating="3"><span class="box"></span><span class="n">20</span><span class="t">Ant-Man and the Wasp</span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">6 Tem 2018</span></li>
+      <li data-kind="film" data-rating="4"><span class="box"></span><span class="n">21</span><span class="t">Captain Marvel</span><span class="r" title="Önem 4/5" aria-label="Önem 4 bölü 5"><b>●●●●</b><i>●</i></span><span class="y">8 Mar 2019</span></li>
+      <li data-kind="film" data-rating="5"><span class="box"></span><span class="n">22</span><span class="t">Avengers: Endgame</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">26 Nis 2019</span></li>
+      <li data-kind="film" data-rating="4"><span class="box"></span><span class="n">23</span><span class="t">Spider-Man: Far From Home</span><span class="r" title="Önem 4/5" aria-label="Önem 4 bölü 5"><b>●●●●</b><i>●</i></span><span class="y">2 Tem 2019</span></li>
+    </ol>
+  </section>
+  <div class="note">
+    <h2>Burada durabilirsin</h2>
+    <p>Yukarıdaki 23 film, Sonsuzluk Sagası'nı baştan sona kapatır. Devamı yeni bir hikâye: Çoklu Evren Sagası. Diziler buradan sonra listeye giriyor — istersen sadece 4 ve 5 puanlıları takip edip gerisini atlayabilirsin, ana olay örgüsünü kaçırmazsın.</p>
+  </div>
+  <section class="phase p4">
+    <div class="phase-head">
+      <div class="phase-no">04</div>
+      <div class="phase-meta">
+        <div class="phase-name">Çoklu Evren Açılıyor</div>
+        <div class="phase-years">2021 – 2022 · Disney+ dönemi başlıyor</div>
+      </div>
+    </div>
+    <ol class="list">
+      <li data-kind="dizi" data-rating="5"><span class="box"></span><span class="n">24</span><span class="t">WandaVision<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">15 Oca 2021</span></li>
+      <li data-kind="dizi" data-rating="4"><span class="box"></span><span class="n">25</span><span class="t">The Falcon and the Winter Soldier<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 4/5" aria-label="Önem 4 bölü 5"><b>●●●●</b><i>●</i></span><span class="y">19 Mar 2021</span></li>
+      <li data-kind="dizi" data-rating="5"><span class="box"></span><span class="n">26</span><span class="t">Loki — 1. Sezon<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">9 Haz 2021</span></li>
+      <li data-kind="film" data-rating="2"><span class="box"></span><span class="n">27</span><span class="t">Black Widow</span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">9 Tem 2021</span></li>
+      <li data-kind="anim" data-rating="2"><span class="box"></span><span class="n">28</span><span class="t">What If…? — 1. Sezon<span class="kind anim">Animasyon</span><small>Alternatif evrenler; ana hikâye için şart değil.</small></span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">11 Ağu 2021</span></li>
+      <li data-kind="film" data-rating="3"><span class="box"></span><span class="n">29</span><span class="t">Shang-Chi and the Legend of the Ten Rings</span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">3 Eyl 2021</span></li>
+      <li data-kind="film" data-rating="2"><span class="box"></span><span class="n">30</span><span class="t">Eternals</span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">5 Kas 2021</span></li>
+      <li data-kind="dizi" data-rating="3"><span class="box"></span><span class="n">31</span><span class="t">Hawkeye<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">24 Kas 2021</span></li>
+      <li data-kind="film" data-rating="5"><span class="box"></span><span class="n">32</span><span class="t">Spider-Man: No Way Home</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">17 Ara 2021</span></li>
+      <li data-kind="dizi" data-rating="2"><span class="box"></span><span class="n">33</span><span class="t">Moon Knight<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">30 Mar 2022</span></li>
+      <li data-kind="film" data-rating="4"><span class="box"></span><span class="n">34</span><span class="t">Doctor Strange in the Multiverse of Madness<small>Öncesinde WandaVision ve No Way Home şart.</small></span><span class="r" title="Önem 4/5" aria-label="Önem 4 bölü 5"><b>●●●●</b><i>●</i></span><span class="y">6 May 2022</span></li>
+      <li data-kind="dizi" data-rating="3"><span class="box"></span><span class="n">35</span><span class="t">Ms. Marvel<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">8 Haz 2022</span></li>
+      <li data-kind="film" data-rating="2"><span class="box"></span><span class="n">36</span><span class="t">Thor: Love and Thunder</span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">8 Tem 2022</span></li>
+      <li data-kind="ozel" data-rating="1"><span class="box"></span><span class="n">37</span><span class="t">I Am Groot<span class="kind ozel">Özel</span><small>Kısa filmler; tamamen keyfî.</small></span><span class="r" title="Önem 1/5" aria-label="Önem 1 bölü 5"><b>●</b><i>●●●●</i></span><span class="y">10 Ağu 2022</span></li>
+      <li data-kind="dizi" data-rating="2"><span class="box"></span><span class="n">38</span><span class="t">She-Hulk: Attorney at Law<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">18 Ağu 2022</span></li>
+      <li data-kind="ozel" data-rating="1"><span class="box"></span><span class="n">39</span><span class="t">Werewolf by Night<span class="kind ozel">Özel</span></span><span class="r" title="Önem 1/5" aria-label="Önem 1 bölü 5"><b>●</b><i>●●●●</i></span><span class="y">7 Eki 2022</span></li>
+      <li data-kind="film" data-rating="3"><span class="box"></span><span class="n">40</span><span class="t">Black Panther: Wakanda Forever</span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">11 Kas 2022</span></li>
+      <li data-kind="ozel" data-rating="2"><span class="box"></span><span class="n">41</span><span class="t">The Guardians of the Galaxy Holiday Special<span class="kind ozel">Özel</span></span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">25 Kas 2022</span></li>
+    </ol>
+  </section>
+  <section class="phase p5">
+    <div class="phase-head">
+      <div class="phase-no">05</div>
+      <div class="phase-meta">
+        <div class="phase-name">Yeni Kadro Kuruluyor</div>
+        <div class="phase-years">2023 – 2025 · Sokak seviyesi geri döndü</div>
+      </div>
+    </div>
+    <ol class="list">
+      <li data-kind="film" data-rating="4"><span class="box"></span><span class="n">42</span><span class="t">Ant-Man and the Wasp: Quantumania</span><span class="r" title="Önem 4/5" aria-label="Önem 4 bölü 5"><b>●●●●</b><i>●</i></span><span class="y">17 Şub 2023</span></li>
+      <li data-kind="film" data-rating="4"><span class="box"></span><span class="n">43</span><span class="t">Guardians of the Galaxy Vol. 3</span><span class="r" title="Önem 4/5" aria-label="Önem 4 bölü 5"><b>●●●●</b><i>●</i></span><span class="y">5 May 2023</span></li>
+      <li data-kind="dizi" data-rating="2"><span class="box"></span><span class="n">44</span><span class="t">Secret Invasion<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">21 Haz 2023</span></li>
+      <li data-kind="dizi" data-rating="5"><span class="box"></span><span class="n">45</span><span class="t">Loki — 2. Sezon<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">5 Eki 2023</span></li>
+      <li data-kind="film" data-rating="3"><span class="box"></span><span class="n">46</span><span class="t">The Marvels<small>Öncesinde Ms. Marvel ve Secret Invasion faydalı.</small></span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">10 Kas 2023</span></li>
+      <li data-kind="anim" data-rating="1"><span class="box"></span><span class="n">47</span><span class="t">What If…? — 2. Sezon<span class="kind anim">Animasyon</span></span><span class="r" title="Önem 1/5" aria-label="Önem 1 bölü 5"><b>●</b><i>●●●●</i></span><span class="y">22 Ara 2023</span></li>
+      <li data-kind="dizi" data-rating="2"><span class="box"></span><span class="n">48</span><span class="t">Echo<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">9 Oca 2024</span></li>
+      <li data-kind="anim" data-rating="1"><span class="box"></span><span class="n">49</span><span class="t">X-Men &#x27;97 — 1. Sezon<span class="kind anim">Animasyon</span><small>Ayrı bir evren; sevenler için, gerekli değil.</small></span><span class="r" title="Önem 1/5" aria-label="Önem 1 bölü 5"><b>●</b><i>●●●●</i></span><span class="y">20 Mar 2024</span></li>
+      <li data-kind="film" data-rating="3"><span class="box"></span><span class="n">50</span><span class="t">Deadpool &amp; Wolverine</span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">26 Tem 2024</span></li>
+      <li data-kind="dizi" data-rating="3"><span class="box"></span><span class="n">51</span><span class="t">Agatha All Along<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">18 Eyl 2024</span></li>
+      <li data-kind="anim" data-rating="1"><span class="box"></span><span class="n">52</span><span class="t">What If…? — 3. Sezon<span class="kind anim">Animasyon</span></span><span class="r" title="Önem 1/5" aria-label="Önem 1 bölü 5"><b>●</b><i>●●●●</i></span><span class="y">22 Ara 2024</span></li>
+      <li data-kind="anim" data-rating="1"><span class="box"></span><span class="n">53</span><span class="t">Your Friendly Neighborhood Spider-Man — 1. Sezon<span class="kind anim">Animasyon</span><small>Alternatif evren; bağımsız izlenebilir.</small></span><span class="r" title="Önem 1/5" aria-label="Önem 1 bölü 5"><b>●</b><i>●●●●</i></span><span class="y">29 Oca 2025</span></li>
+      <li data-kind="film" data-rating="3"><span class="box"></span><span class="n">54</span><span class="t">Captain America: Brave New World</span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">14 Şub 2025</span></li>
+      <li data-kind="dizi" data-rating="3"><span class="box"></span><span class="n">55</span><span class="t">Daredevil: Born Again — 1. Sezon<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">4 Mar 2025</span></li>
+      <li data-kind="film" data-rating="5"><span class="box"></span><span class="n">56</span><span class="t">Thunderbolts*</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">2 May 2025</span></li>
+      <li data-kind="dizi" data-rating="2"><span class="box"></span><span class="n">57</span><span class="t">Ironheart<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">24 Haz 2025</span></li>
+      <li data-kind="anim" data-rating="1"><span class="box"></span><span class="n">58</span><span class="t">Eyes of Wakanda<span class="kind anim">Animasyon</span></span><span class="r" title="Önem 1/5" aria-label="Önem 1 bölü 5"><b>●</b><i>●●●●</i></span><span class="y">6 Ağu 2025</span></li>
+      <li data-kind="anim" data-rating="1"><span class="box"></span><span class="n">59</span><span class="t">Marvel Zombies<span class="kind anim">Animasyon</span><small>Ana hikâyeden bağımsız.</small></span><span class="r" title="Önem 1/5" aria-label="Önem 1 bölü 5"><b>●</b><i>●●●●</i></span><span class="y">24 Eyl 2025</span></li>
+    </ol>
+  </section>
+  <section class="phase p6">
+    <div class="phase-head">
+      <div class="phase-no">06</div>
+      <div class="phase-meta">
+        <div class="phase-name">Doomsday&#x27;e Doğru</div>
+        <div class="phase-years">2025 – 2027 · Sagayı kapatan faz</div>
+      </div>
+    </div>
+    <p class="phase-note">Faz 6, Fantastic Four ile Temmuz 2025&#x27;te başladı; Faz 5&#x27;in son iki animasyonu ondan sonra yayınlandı. O yüzden buradaki ilk tarih biraz geriye sarıyor.</p>
+    <ol class="list">
+      <li data-kind="film" data-rating="5"><span class="box"></span><span class="n">60</span><span class="t">The Fantastic Four: First Steps</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">25 Tem 2025</span></li>
+      <li data-kind="dizi" data-rating="1"><span class="box"></span><span class="n">61</span><span class="t">Wonder Man<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 1/5" aria-label="Önem 1 bölü 5"><b>●</b><i>●●●●</i></span><span class="y">Oca 2026</span></li>
+      <li data-kind="dizi" data-rating="3"><span class="box"></span><span class="n">62</span><span class="t">Daredevil: Born Again — 2. Sezon<span class="kind dizi">Dizi</span><small>Brand New Day ile doğrudan bağlantılı.</small></span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">24 Mar 2026</span></li>
+      <li data-kind="ozel" data-rating="2"><span class="box"></span><span class="n">63</span><span class="t">The Punisher: One Last Kill<span class="kind ozel">Özel</span></span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">Bahar 2026</span></li>
+      <li data-kind="anim" data-rating="1"><span class="box"></span><span class="n">64</span><span class="t">X-Men &#x27;97 — 2. Sezon<span class="kind anim">Animasyon</span></span><span class="r" title="Önem 1/5" aria-label="Önem 1 bölü 5"><b>●</b><i>●●●●</i></span><span class="y">Yaz 2026</span></li>
+      <li data-kind="film" data-rating="4"><span class="box"></span><span class="n">65</span><span class="t">Spider-Man: Brand New Day</span><span class="r" title="Önem 4/5" aria-label="Önem 4 bölü 5"><b>●●●●</b><i>●</i></span><span class="y">31 Tem 2026</span></li>
+      <li class="soon" data-kind="dizi" data-rating="3"><span class="box"></span><span class="n">66</span><span class="t">VisionQuest<span class="kind dizi">Dizi</span><small>WandaVision – Agatha All Along üçlemesinin finali.</small></span><span class="r" title="Önem 3/5" aria-label="Önem 3 bölü 5"><b>●●●</b><i>●●</i></span><span class="y">Sonbahar 2026</span></li>
+      <li class="soon" data-kind="anim" data-rating="1"><span class="box"></span><span class="n">67</span><span class="t">Your Friendly Neighborhood Spider-Man — 2. Sezon<span class="kind anim">Animasyon</span></span><span class="r" title="Önem 1/5" aria-label="Önem 1 bölü 5"><b>●</b><i>●●●●</i></span><span class="y">Sonbahar 2026</span></li>
+      <li class="soon" data-kind="film" data-rating="5"><span class="box"></span><span class="n">68</span><span class="t">Avengers: Doomsday</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">18 Ara 2026</span></li>
+      <li class="soon" data-kind="dizi" data-rating="2"><span class="box"></span><span class="n">69</span><span class="t">Daredevil: Born Again — 3. Sezon<span class="kind dizi">Dizi</span></span><span class="r" title="Önem 2/5" aria-label="Önem 2 bölü 5"><b>●●</b><i>●●●</i></span><span class="y">2027</span></li>
+      <li class="soon" data-kind="film" data-rating="5"><span class="box"></span><span class="n">70</span><span class="t">Avengers: Secret Wars</span><span class="r" title="Önem 5/5" aria-label="Önem 5 bölü 5"><b>●●●●●</b></span><span class="y">17 Ara 2027</span></li>
+    </ol>
+  </section>
+
+  <section class="scoreboard">
+    <div class="sb-inner">
+      <p class="sb-label">Toplam ilerlemen</p>
+      <div class="sb-big">
+        <span class="sb-num" id="sbNum">0</span>
+        <span class="sb-den">/ 70</span>
+        <span class="sb-word">izlendi</span>
+      </div>
+      <div class="sb-track"><div class="sb-fill" id="fillBottom"></div></div>
+      <div class="sb-grid">
+        <div><b id="cFilm">0</b><span>Film</span></div>
+        <div><b id="cDizi">0</b><span>Dizi</span></div>
+        <div><b id="cOther">0</b><span>Özel &amp; anim.</span></div>
+        <div><b id="cKey">0</b><span>Önem 5</span></div>
+        <div><b id="cLeft">0</b><span>Kalan</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="note blue">
+    <h2>İsteğe bağlı yan yollar</h2>
+    <ul>
+      <li><b>Netflix dörtlüsü:</b> Daredevil (3 sezon), Jessica Jones, Luke Cage, Iron Fist, The Defenders, The Punisher. <em>Echo</em> ve <em>Daredevil: Born Again</em> öncesinde izlenirse çok daha anlamlı olur.</li>
+      <li><b>Eski TV kuşağı:</b> Agents of S.H.I.E.L.D., Agent Carter, Runaways, Cloak &amp; Dagger. Filmlerle bağı gevşek, tamamen keyfî.</li>
+      <li><b>Sony tarafı:</b> Venom serisi ve Spider-Verse animasyonları ayrı evrenlerde geçer, bu listenin parçası değildir.</li>
+    </ul>
+  </div>
+
+  <div class="note violet">
+    <h2>Kronolojik sıra mı olsun?</h2>
+    <p>Olayların geçtiği zamana göre izlemek istersen sıra <em>Captain America: The First Avenger</em> (1940'lar) ile başlar, sonra <em>Captain Marvel</em> (1995) gelir, ardından <em>Iron Man</em>'den itibaren liste normal seyrine döner. İlk izleyiş için önerilmez: bazı filmler, sürprizlerin daha önce açıklandığı varsayımıyla çekildi.</p>
+  </div>
+
+  <footer>
+    Çıkış tarihine göre · 70 yapım · Ağustos 2026 itibarıyla güncel · İleri tarihler değişebilir
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var KEY = "mcu-izleme-sirasi-v2";
+  var rows = Array.prototype.slice.call(document.querySelectorAll("ol.list li"));
+
+  // Kaydetme, tarayıcı izin verirse çalışır; vermezse liste yine tıklanabilir kalır.
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+  }
+  function save(data) {
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+  }
+
+  var watched = load();
+
+  rows.forEach(function (row) {
+    var id = row.querySelector(".n").textContent.trim();
+    row.dataset.id = id;
+    row.setAttribute("role", "checkbox");
+    row.setAttribute("tabindex", "0");
+    if (watched[id]) row.classList.add("done");
+    row.setAttribute("aria-checked", watched[id] ? "true" : "false");
+    row.addEventListener("click", function () { toggle(row); });
+    row.addEventListener("keydown", function (e) {
+      if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggle(row); }
+    });
+  });
+
+  function toggle(row) {
+    var on = !row.classList.contains("done");
+    row.classList.toggle("done", on);
+    row.setAttribute("aria-checked", on ? "true" : "false");
+    if (on) { watched[row.dataset.id] = 1; } else { delete watched[row.dataset.id]; }
+    save(watched);
+    render();
+  }
+
+  function set(id, value) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = value;
+  }
+
+  function countDone(list) {
+    return list.filter(function (r) { return r.classList.contains("done"); }).length;
+  }
+
+  function render() {
+    var done = countDone(rows);
+    var pct = (done / rows.length * 100) + "%";
+    document.getElementById("fillTop").style.width = pct;
+    document.getElementById("fillBottom").style.width = pct;
+    set("tallyTop", done + " / " + rows.length + " izlendi");
+    set("sbNum", done);
+
+    var byKind = function (k) {
+      return rows.filter(function (r) { return r.dataset.kind === k; });
+    };
+    var films = byKind("film"), series = byKind("dizi");
+    var others = rows.filter(function (r) {
+      return r.dataset.kind === "ozel" || r.dataset.kind === "anim";
+    });
+    var key = rows.filter(function (r) { return r.dataset.rating === "5"; });
+
+    set("cFilm", countDone(films) + "/" + films.length);
+    set("cDizi", countDone(series) + "/" + series.length);
+    set("cOther", countDone(others) + "/" + others.length);
+    set("cKey", countDone(key) + "/" + key.length);
+    set("cLeft", rows.length - done);
+
+    document.querySelectorAll(".phase").forEach(function (phase) {
+      var all = phase.querySelectorAll("ol.list li");
+      var hit = phase.querySelectorAll("ol.list li.done").length;
+      var badge = phase.querySelector(".phase-count");
+      if (!badge) {
+        badge = document.createElement("div");
+        badge.className = "phase-count";
+        phase.querySelector(".phase-head").appendChild(badge);
+      }
+      badge.textContent = hit + "/" + all.length;
+    });
+  }
+
+  document.getElementById("reset").addEventListener("click", function () {
+    rows.forEach(function (r) {
+      r.classList.remove("done");
+      r.setAttribute("aria-checked", "false");
+    });
+    watched = {};
+    save(watched);
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
