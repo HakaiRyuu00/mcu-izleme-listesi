@@ -483,6 +483,21 @@
     width:30px;height:30px;cursor:pointer;font-size:16px;line-height:1;
   }
 
+  /* ---------- Oyuncu biyografi kartı ---------- */
+  .actor-link{background:none;border:none;padding:0;margin:0;font:inherit;color:inherit;
+    cursor:pointer;text-align:left;}
+  .actor-link:hover{color:var(--accent);text-decoration:underline;}
+  .abio-top{display:flex;gap:20px;padding:24px;border-bottom:1px solid var(--line);}
+  .abio-photo{width:110px;height:150px;flex:none;background:#DCE2E7;overflow:hidden;}
+  .abio-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .abio-meta{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);
+    letter-spacing:.04em;margin-bottom:10px;}
+  .abio-link{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-soft);text-decoration:none;border-bottom:1px solid var(--line);
+  }
+  .abio-link:hover{color:var(--accent);border-color:var(--accent);}
+
   .statgrid{display:flex;flex-wrap:wrap;gap:14px;margin:0 0 22px;}
   .statgrid div{
     flex:1 1 180px;background:var(--card);border:1px solid var(--line);padding:18px;
@@ -720,7 +735,7 @@
         <div class="phase-years" id="sortYears">Tüm liste tek sırada</div>
       </div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span></div>
     <ol class="list" id="sortList"></ol>
   </section>
 
@@ -1497,6 +1512,26 @@
         color:var(--ink);font-family:inherit;font-size:16px;margin-bottom:18px"></textarea>
       <h3>Oyuncular</h3>
       <div class="castgrid" id="mCast"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="actorModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="aTitle">
+    <button type="button" class="sheet-close" id="aClose" aria-label="Kapat">×</button>
+    <div class="abio-top">
+      <div class="abio-photo" id="aPhoto"></div>
+      <div>
+        <h2 id="aTitle"></h2>
+        <div class="abio-meta" id="aMeta"></div>
+        <a class="abio-link" id="aTmdbLink" href="#" target="_blank" rel="noopener noreferrer">TMDB'de görüntüle</a>
+      </div>
+    </div>
+    <div class="sheet-body">
+      <h3>Biyografi</h3>
+      <p id="aBio">Yükleniyor…</p>
+      <h3>Rolleri</h3>
+      <div class="castgrid" id="aRoles"></div>
     </div>
   </div>
 </div>
@@ -2745,14 +2780,68 @@ var PRELOAD = {};
       var roles = Object.keys(p.roles).map(function (ch) {
         return '<div class="role"><b>' + ch + '</b> — ' + p.roles[ch].join(", ") + '</div>';
       }).join("");
-      var link = p.pid
-        ? "https://www.themoviedb.org/person/" + p.pid
-        : "https://www.google.com/search?q=" + encodeURIComponent(name + " oyuncu");
-      var nameHtml = '<a class="actor-link" href="' + link + '" target="_blank" rel="noopener noreferrer">' + name + '</a>';
+      var nameHtml = p.pid
+        ? '<button type="button" class="actor-link" data-pid="' + p.pid + '" data-name="' +
+          name.replace(/"/g, "&quot;") + '">' + name + '</button>'
+        : '<a class="actor-link" href="https://www.google.com/search?q=' +
+          encodeURIComponent(name + " oyuncu") + '" target="_blank" rel="noopener noreferrer">' + name + '</a>';
       return '<div class="actor">' + head + '<div><div class="actor-name">' + nameHtml +
         '<b>' + p.n + ' yapım</b></div>' + roles + '</div></div>';
     }).join("");
+
+    box.querySelectorAll(".actor-link[data-pid]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        openActorSheet(btn.dataset.pid, btn.dataset.name, people[btn.dataset.name]);
+      });
+    });
   }
+
+  /* ---- Oyuncu biyografi kartı ---- */
+  var actorModal = $("actorModal");
+  var actorCache = {};
+  function openActorSheet(pid, name, p) {
+    actorModal.hidden = false;
+    $("aTitle").textContent = name;
+    $("aMeta").textContent = "";
+    $("aBio").textContent = "Yükleniyor…";
+    $("aPhoto").innerHTML = p && p.photo
+      ? '<img src="' + p.photo + '" alt="" loading="lazy">' : "";
+    $("aTmdbLink").href = "https://www.themoviedb.org/person/" + pid;
+    $("aRoles").innerHTML = p ? Object.keys(p.roles).map(function (ch) {
+      return '<div><b>' + ch + '</b><span> — ' + p.roles[ch].join(", ") + '</span></div>';
+    }).join("") : "";
+
+    if (actorCache[pid]) { fillActorBio(actorCache[pid]); return; }
+    fetch(tmdbUrl("/person/" + pid, "&language=tr-TR"))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d.biography) {
+          return fetch(tmdbUrl("/person/" + pid, "&language=en-US"))
+            .then(function (r) { return r.json(); })
+            .then(function (d2) { return d2.biography ? d2 : d; });
+        }
+        return d;
+      })
+      .then(function (d) {
+        actorCache[pid] = d;
+        if (!actorModal.hidden && $("aTitle").textContent === name) fillActorBio(d);
+      })
+      .catch(function () { $("aBio").textContent = "Biyografi alınamadı."; });
+  }
+  function fillActorBio(d) {
+    $("aBio").textContent = d.biography || "Bu oyuncu için biyografi bulunamadı.";
+    var bits = [];
+    if (d.birthday) bits.push("Doğum: " + d.birthday);
+    if (d.place_of_birth) bits.push(d.place_of_birth);
+    $("aMeta").textContent = bits.join(" · ");
+    if (!$("aPhoto").innerHTML && d.profile_path) {
+      $("aPhoto").innerHTML = '<img src="' + IMG + d.profile_path + '" alt="" loading="lazy">';
+    }
+  }
+  function closeActorSheet() { actorModal.hidden = true; }
+  $("aClose").addEventListener("click", closeActorSheet);
+  actorModal.addEventListener("click", function (e) { if (e.target === actorModal) closeActorSheet(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !actorModal.hidden) closeActorSheet(); });
 
   $("castSearch").addEventListener("input", function () { if (castStarted) renderCast(); });
   $("castAll").addEventListener("click", function () {
