@@ -295,7 +295,8 @@
   }
   .list-head .sortable:hover{color:var(--p3);}
   .list-head .sortable[aria-pressed="true"]{color:var(--p3);}
-  .list-head .sortable[aria-pressed="true"]::after{content:" ↓";}
+  .list-head .sortable[data-dir="desc"]::after{content:" ↓";}
+  .list-head .sortable[data-dir="asc"]::after{content:" ↑";}
   .list-head span:nth-child(3){text-indent:-9999px;overflow:hidden;}
   .list-head span:nth-child(5),.list-head span:nth-child(6),
   .list-head span:nth-child(7),.list-head span:nth-child(8){text-align:center;}
@@ -474,8 +475,7 @@
     text-transform:uppercase;color:var(--ink-soft);margin:0 0 8px;
   }
   .sheet-body p{margin:0 0 18px;}
-  .castgrid{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 18px;font-size:16px;}
-  .castgrid div{flex:1 1 200px;}
+  .castgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px 18px;margin:0 0 18px;font-size:16px;}
   .castgrid b{font-weight:600;}
   .castgrid span{color:var(--ink-soft);}
   .sheet-close{
@@ -497,6 +497,22 @@
     text-transform:uppercase;color:var(--ink-soft);text-decoration:none;border-bottom:1px solid var(--line);
   }
   .abio-link:hover{color:var(--accent);border-color:var(--accent);}
+
+  /* ---------- Tüm Karakterler ---------- */
+  .chargrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;margin-top:6px;}
+  .charcard{background:var(--card);border:1px solid var(--line);overflow:hidden;}
+  .charcard-photo{width:100%;aspect-ratio:2/3;background:#DCE2E7;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;}
+  .charcard-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .charcard-photo span{font-family:"Anton",sans-serif;font-size:36px;color:#A9B4BE;}
+  body.dark .charcard-photo{background:#232B34;}
+  .charcard-body{padding:12px 14px 16px;}
+  .charcard-name{font-weight:700;font-size:18px;line-height:1.2;}
+  .charcard-alias{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-soft);margin:4px 0 8px;
+  }
+  .charcard-blurb{font-size:15px;line-height:1.42;color:var(--ink-soft);}
 
   .statgrid{display:flex;flex-wrap:wrap;gap:14px;margin:0 0 22px;}
   .statgrid div{
@@ -711,6 +727,7 @@
     <button type="button" class="tab" role="tab" data-tab="nonmcu" aria-selected="false">MCU Dışı Marvel</button>
     <button type="button" class="tab" role="tab" data-tab="side" aria-selected="false">Yan Yollar</button>
     <button type="button" class="tab" role="tab" data-tab="cast" aria-selected="false">Oyuncular</button>
+    <button type="button" class="tab" role="tab" data-tab="characters" aria-selected="false">Tüm Karakterler</button>
     <button type="button" class="tab" role="tab" data-tab="stats" aria-selected="false">İstatistik</button>
     <button type="button" class="tab" role="tab" data-tab="vs" aria-selected="false">Kıyasla</button>
   </nav>
@@ -1440,6 +1457,15 @@
     <div id="castList"></div>
   </div>
 
+  <!-- ============ TÜM KARAKTERLER ============ -->
+  <div class="panel hidden" id="panel-characters" role="tabpanel">
+    <div class="castbar">
+      <input type="search" id="charSearch" placeholder="Karakter ara…" aria-label="Karakter ara">
+      <span class="cstatus" id="charStatus">Yükleniyor…</span>
+    </div>
+    <div id="charGrid" class="chargrid"></div>
+  </div>
+
   <!-- ============ KIYASLA ============ -->
   <div class="panel hidden" id="panel-vs" role="tabpanel">
     <div class="statcard">
@@ -1524,7 +1550,6 @@
       <div>
         <h2 id="aTitle"></h2>
         <div class="abio-meta" id="aMeta"></div>
-        <a class="abio-link" id="aTmdbLink" href="#" target="_blank" rel="noopener noreferrer">TMDB'de görüntüle</a>
       </div>
     </div>
     <div class="sheet-body">
@@ -1654,7 +1679,7 @@ var PRELOAD = {};
   }
 
   /* ---- görünüm: sekme + arama + filtre + sıralama ---- */
-  var view = { tab: "mcu", filter: "all", sort: "release", q: "" };
+  var view = { tab: "mcu", filter: "all", sort: "release", sortDir: "desc", q: "" };
   all.forEach(function (r) { r._home = [r.parentNode, r.nextSibling]; });
 
   function rowsFor(tab) {
@@ -1692,14 +1717,15 @@ var PRELOAD = {};
       var anchor = host.querySelector(".phase:not(#sortPanel)");
       host.insertBefore(sortPanel, anchor);
       var list = rows.slice();
+      var dirMul = view.sortDir === "asc" ? 1 : -1;
       if (view.sort === "score") {
         list.sort(function (a, b) {
-          return (parseFloat((meta[b.dataset.id] || {}).v) || -1) -
-                 (parseFloat((meta[a.dataset.id] || {}).v) || -1);
+          return dirMul * ((parseFloat((meta[a.dataset.id] || {}).v) || -1) -
+                 (parseFloat((meta[b.dataset.id] || {}).v) || -1));
         });
       } else if (view.sort === "mine") {
         list.sort(function (a, b) {
-          return (mine[b.dataset.id] || -1) - (mine[a.dataset.id] || -1);
+          return dirMul * ((mine[a.dataset.id] || -1) - (mine[b.dataset.id] || -1));
         });
       }
       list.forEach(function (r) { sortList.appendChild(r); });
@@ -1712,7 +1738,7 @@ var PRELOAD = {};
       } else {
         $("sortIcon").innerHTML = "★";
         $("sortName").textContent = view.sort === "mine" ? "Senin puanına göre" : "Puana göre";
-        $("sortYears").textContent = "En yüksekten en düşüğe";
+        $("sortYears").textContent = view.sortDir === "asc" ? "En düşükten en yükseğe" : "En yüksekten en düşüğe";
       }
     } else {
       rows.forEach(function (r) { r._home[0].insertBefore(r, r._home[1]); });
@@ -1736,7 +1762,7 @@ var PRELOAD = {};
     document.querySelectorAll(".panel").forEach(function (p) {
       p.classList.toggle("hidden", p.id !== "panel-" + name);
     });
-    $("controls").classList.toggle("hidden", name === "cast" || name === "stats" || name === "vs");
+    $("controls").classList.toggle("hidden", name === "cast" || name === "stats" || name === "vs" || name === "characters");
     if (name === "mcu" || name === "chrono") {
       $("panel-" + name).querySelector(".layout").appendChild($("rail"));
     }
@@ -1744,6 +1770,7 @@ var PRELOAD = {};
     if (name === "nonmcu" || name === "side" || name === "chrono") listeYukle(name === "chrono" ? "mcu" : name);
     if (name === "vs") { listeYukle("nonmcu"); listeYukle("side"); }
     if (name === "cast") { listeYukle("nonmcu"); startCast(); }
+    else if (name === "characters") { startCharacters(); }
     else if (name === "stats") { renderStats(); }
     else if (name === "vs") { initVs(); }
     else { applyView(); }
@@ -1767,9 +1794,20 @@ var PRELOAD = {};
   });
   document.querySelectorAll(".sortable").forEach(function (b) {
     b.addEventListener("click", function () {
-      view.sort = view.sort === b.dataset.sort ? "release" : b.dataset.sort;
+      if (view.sort !== b.dataset.sort) {
+        view.sort = b.dataset.sort;
+        view.sortDir = "desc";
+      } else if (view.sortDir === "desc") {
+        view.sortDir = "asc";
+      } else {
+        view.sort = "release";
+        view.sortDir = "desc";
+      }
       document.querySelectorAll(".sortable").forEach(function (x) {
-        x.setAttribute("aria-pressed", x.dataset.sort === view.sort ? "true" : "false");
+        var active = x.dataset.sort === view.sort && view.sort !== "release";
+        x.setAttribute("aria-pressed", active ? "true" : "false");
+        if (active) x.setAttribute("data-dir", view.sortDir);
+        else x.removeAttribute("data-dir");
       });
       applyView();
     });
@@ -1807,10 +1845,11 @@ var PRELOAD = {};
   $("goNext").addEventListener("click", function () {
     if (!nextRow) return;
     if (nextRow.classList.contains("hidden") || view.sort === "score" || view.filter === "key") {
-      view.filter = "all"; view.sort = "release"; view.q = "";
+      view.filter = "all"; view.sort = "release"; view.sortDir = "desc"; view.q = "";
       $("search").value = "";
       document.querySelectorAll(".sortable").forEach(function (x) {
         x.setAttribute("aria-pressed", "false");
+        x.removeAttribute("data-dir");
       });
       document.querySelectorAll("[data-f]").forEach(function (c) {
         c.setAttribute("aria-pressed", c.dataset.f === "all" ? "true" : "false");
@@ -2806,7 +2845,6 @@ var PRELOAD = {};
     $("aBio").textContent = "Yükleniyor…";
     $("aPhoto").innerHTML = p && p.photo
       ? '<img src="' + p.photo + '" alt="" loading="lazy">' : "";
-    $("aTmdbLink").href = "https://www.themoviedb.org/person/" + pid;
     $("aRoles").innerHTML = p ? Object.keys(p.roles).map(function (ch) {
       return '<div><b>' + ch + '</b><span> — ' + p.roles[ch].join(", ") + '</span></div>';
     }).join("") : "";
@@ -2849,6 +2887,126 @@ var PRELOAD = {};
     $("castAll").setAttribute("aria-pressed", showAll ? "true" : "false");
     if (castStarted) renderCast();
   });
+
+  /* ================= TÜM KARAKTERLER ================= */
+  var CHARACTERS = [
+    { n: "Iron Man", a: "Tony Stark", q: "Iron Man (character)", b: "Deha bir mucit ve silah üreticisi olan Tony Stark, esaret altında yaptığı zırhla hayatını kurtarır ve bu zırhı süper kahraman kimliğine dönüştürür. Avengers'ın kurucularından ve en önemli teknoloji uzmanlarındandır." },
+    { n: "Captain America", a: "Steve Rogers", q: "Captain America", b: "İkinci Dünya Savaşı'nda süper asker serumuyla güçlendirilen zayıf bedenli Steve Rogers, ordu ve halk için bir umut simgesine dönüşür. Yıllarca donmuş halde kaldıktan sonra modern çağda Avengers'a liderlik eder." },
+    { n: "Thor", a: "Thor Odinson", q: "Thor (Marvel Comics)", b: "Asgard'ın Gök Gürültüsü Tanrısı, büyücü babası Odin tarafından cezalandırılıp Dünya'ya sürgün edilir ve orada alçakgönüllülüğü öğrenir. Efsanevi çekici Mjolnir'i sadece layık olanlar kaldırabilir." },
+    { n: "Hulk", a: "Bruce Banner", q: "Hulk", b: "Gama radyasyonuna maruz kalan bilim insanı Bruce Banner, öfkelendiğinde devasa ve inanılmaz güçlü yeşil bir yaratığa dönüşür. Karakterin trajedisi, bu iki kimlik arasındaki iç çatışmadan gelir." },
+    { n: "Black Widow", a: "Natasha Romanoff", q: "Black Widow (Natasha Romanova)", b: "Rus casusluk programında yetiştirilen Natasha Romanoff, geçmişinin günahlarından arınmak için S.H.I.E.L.D. ve Avengers saflarına katılır. Üstün dövüş becerileri ve casusluk yetenekleriyle tanınır." },
+    { n: "Hawkeye", a: "Clint Barton", q: "Hawkeye (Clint Barton)", b: "Sirk kökenli bir keskin nişancı olan Clint Barton, hiçbir süper gücü olmadan sadece disiplin ve yay-ok ustalığıyla Avengers'ın en güvenilir üyelerinden biri hâline gelir." },
+    { n: "Nick Fury", a: "Nicholas J. Fury", q: "Nick Fury", b: "S.H.I.E.L.D.'in efsanevi tek gözlü direktörü, dünyayı süper insan tehditlerine karşı korumak için Avengers İnisiyatifi'ni bizzat bir araya getirir." },
+    { n: "War Machine", a: "James \"Rhodey\" Rhodes", q: "War Machine", b: "Tony Stark'ın en yakın dostu ve bir hava kuvvetleri pilotu olan Rhodey, kendi ağır silahlı zırhını giyerek Iron Man'in yanında savaşır." },
+    { n: "Falcon", a: "Sam Wilson", q: "Falcon (Marvel Comics)", b: "Mekanik kanatlı zırhıyla gökyüzünde süzülen eski bir paraşütçü olan Sam Wilson, Kaptan Amerika'nın en yakın müttefiklerinden biridir ve sonunda kalkanı devralır." },
+    { n: "Winter Soldier", a: "Bucky Barnes", q: "Winter Soldier (comics)", b: "Steve Rogers'ın çocukluk arkadaşı Bucky Barnes, savaşta ölmüş sanılır ama gizli bir Sovyet programı tarafından beyni yıkanmış bir suikastçıya dönüştürülür. Sonradan özgür iradesine kavuşur." },
+    { n: "Scarlet Witch", a: "Wanda Maximoff", q: "Scarlet Witch", b: "Kaos büyüsüne hükmeden Wanda Maximoff, Marvel evrenindeki en güçlü büyücülerden biridir; gerçekliği bile yeniden şekillendirebilecek kadar sınırsız bir potansiyele sahiptir." },
+    { n: "Vision", a: "Vision", q: "Vision (Marvel Comics)", b: "Ultron tarafından yaratılan ama sonradan iyilik saflarına geçen bir yapay zekâ ve sentetik varlık olan Vision, alnındaki Zihin Taşı'ndan güç alır." },
+    { n: "Quicksilver", a: "Pietro Maximoff", q: "Quicksilver (comics)", b: "Wanda'nın ikiz kardeşi Pietro, ışık hızına yakın koşabilen mutant bir hız gücüne sahiptir; sabırsız ve dürtüsel karakteriyle tanınır." },
+    { n: "Ant-Man", a: "Scott Lang", q: "Scott Lang", b: "Eski bir hırsız olan Scott Lang, Pym Parçacıkları sayesinde küçülüp büyüyebilen bir zırh giyer ve ailesi için bir kahramana dönüşür." },
+    { n: "Wasp", a: "Hope van Dyne", q: "Wasp (Hope van Dyne)", b: "Hank Pym'in kızı Hope, hem küçülme yeteneğine hem de omuzlarından fırlattığı enerji ışınlarına ve kanatlarına sahip bir savaşçıdır." },
+    { n: "Spider-Man", a: "Peter Parker", q: "Spider-Man", b: "Radyoaktif bir örümcek tarafından ısırılan lise öğrencisi Peter Parker, örümcek çevikliği ve altıncı hisle savaşırken 'büyük güç, büyük sorumluluk getirir' ilkesiyle yaşar." },
+    { n: "Doctor Strange", a: "Stephen Strange", q: "Doctor Strange", b: "Eskiden kibirli bir beyin cerrahı olan Stephen Strange, elini kaybettikten sonra mistik sanatları öğrenir ve Dünya'nın Baş Büyücüsü unvanını taşır." },
+    { n: "Black Panther", a: "T'Challa", q: "Black Panther (character)", b: "Wakanda'nın kralı T'Challa, hem ülkesinin gizli vibranyum teknolojisinden faydalanan bir zırh giyer hem de Kara Panter tanrısının verdiği doğaüstü güçlere sahiptir." },
+    { n: "Shuri", a: "Shuri", q: "Shuri (comics)", b: "T'Challa'nın küçük kız kardeşi Shuri, Wakanda'nın en parlak mucitlerinden biridir ve zaman zaman Kara Panter unvanını da taşımıştır." },
+    { n: "Captain Marvel", a: "Carol Danvers", q: "Carol Danvers", b: "Bir hava kuvvetleri pilotu olan Carol Danvers, uzaylı Kree teknolojisiyle etkileşimi sonucu enerji emme ve uçuş gücü kazanarak evrendeki en güçlü kahramanlardan biri olur." },
+    { n: "Ms. Marvel", a: "Kamala Khan", q: "Kamala Khan", b: "New Jersey'li genç bir mutant olan Kamala Khan, bedenini uzatıp şekillendirebilen esneme güçlerine sahiptir ve Captain Marvel'in en büyük hayranıdır." },
+    { n: "Star-Lord", a: "Peter Quill", q: "Star-Lord", b: "Yarı insan yarı uzaylı Peter Quill, Galaksiyi Koruyucuları'nın karizmatik lideri ve kaçak bir maceracıdır." },
+    { n: "Gamora", a: "Gamora", q: "Gamora", b: "Thanos tarafından yetiştirilip eğitilen Gamora, galaksinin en tehlikeli suikastçısı olarak bilinir; sonradan Koruyucular saflarına katılır." },
+    { n: "Drax the Destroyer", a: "Drax", q: "Drax the Destroyer", b: "Ailesini Thanos'a kaybeden Drax, inanılmaz fiziksel güce sahip bir intikam avcısıdır ve deyimleri harfiyen anlama huyuyla tanınır." },
+    { n: "Rocket Raccoon", a: "Rocket", q: "Rocket Raccoon", b: "Genetik deneylerle geliştirilmiş konuşan bir rakun olan Rocket, silah uzmanlığı ve keskin zekâsıyla Koruyucular'ın vazgeçilmez bir üyesidir." },
+    { n: "Groot", a: "Groot", q: "Groot", b: "Ağaç benzeri bir uzaylı türü olan Groot, sadece 'Ben Groot'um' diyebilir ama sadakati ve fedakârlığıyla tanınan sevilen bir kahramandır." },
+    { n: "Nebula", a: "Nebula", q: "Nebula (Marvel Comics)", b: "Thanos'un evlatlık kızı ve Gamora'nın kız kardeşi olan Nebula, yarı-siborg bedeniyle acımasız bir savaşçıdır; geçmişiyle hesaplaşan karmaşık bir karakterdir." },
+    { n: "Mantis", a: "Mantis", q: "Mantis (Marvel Comics)", b: "Empatik yetenekleriyle başkalarının duygularını hissedip etkileyebilen Mantis, saf kalpli ve içgüdüsel bir Koruyucular üyesidir." },
+    { n: "Loki", a: "Loki Laufeyson", q: "Loki (Marvel Comics character)", b: "Asgard'da büyütülen ama aslında Buz Devleri'nden olan Loki, Hile Tanrısı'dır; kardeşi Thor'la olan karmaşık ilişkisi ve manipülasyon yetenekleriyle tanınır." },
+    { n: "Thanos", a: "Thanos", q: "Thanos", b: "Titan gezegeninden gelen Eternal soyundan mor tenli bir despot olan Thanos, evrensel dengeyi sağlamak saplantısıyla yıkıcı bir güç arayışına girer." },
+    { n: "Ultron", a: "Ultron", q: "Ultron", b: "Hank Pym tarafından yaratılan bir yapay zekâ olan Ultron, yaratıcısına isyan ederek insanlığı 'kusurlu' görüp yok etmeye çalışan bir robot tehdide dönüşür." },
+    { n: "Moon Knight", a: "Marc Spector", q: "Moon Knight", b: "Eski bir paralı asker olan Marc Spector, Mısır ay tanrısı Khonshu'nun avatarı olur ve çoklu kişilik yapısıyla mücadele eden gizemli bir kahramandır." },
+    { n: "She-Hulk", a: "Jennifer Walters", q: "She-Hulk", b: "Kuzeni Bruce Banner'dan kan nakli alan avukat Jennifer Walters, dev yeşil bir güce dönüşür ama Hulk'un aksine bilincini ve zekâsını tamamen korur." },
+    { n: "Daredevil", a: "Matt Murdock", q: "Daredevil (Marvel Comics character)", b: "Çocukken gözlerini kaybeden avukat Matt Murdock, diğer duyularının inanılmaz keskinleşmesiyle geceleri Hell's Kitchen sokaklarını koruyan kör bir kahramana dönüşür." },
+    { n: "Punisher", a: "Frank Castle", q: "Punisher", b: "Ailesini organize suç yüzünden kaybeden eski bir asker olan Frank Castle, acımasız ve ölümcül yöntemlerle suçlulara karşı tek başına savaş açar." },
+    { n: "Kingpin", a: "Wilson Fisk", q: "Kingpin", b: "New York yeraltı dünyasının devasa cüsseli ve stratejik zekâya sahip patronu Wilson Fisk, hem yasal hem de suç imparatorluğunu demir yumrukla yönetir." },
+    { n: "Wolverine", a: "Logan / James Howlett", q: "Wolverine (character)", b: "Adamantiyum iskeletiyle donatılmış mutant Logan, pençeleri, hızlı iyileşme gücü ve öfkeli tavrıyla tanınan X-Men'in en efsanevi üyelerindendir." },
+    { n: "Deadpool", a: "Wade Wilson", q: "Deadpool", b: "Ölümsüzlüğe yakın bir iyileşme faktörüne sahip eski bir paralı asker olan Wade Wilson, dördüncü duvarı yıkan absürt esprileriyle bilinen 'Konuşan Kılıç'tır." },
+    { n: "Professor X", a: "Charles Xavier", q: "Professor X", b: "Dünyanın en güçlü telepatlarından biri olan Charles Xavier, mutantlar için barışçıl bir gelecek hayaliyle X-Men'i ve Yetenekli Gençler Okulu'nu kurar." },
+    { n: "Magneto", a: "Max Eisenhardt / Erik Lehnsherr", q: "Magneto (comics)", b: "Metalleri zihniyle kontrol edebilen Magneto, Holokost'tan sağ kurtulmuş bir mutant olarak insanlığa karşı derin bir güvensizlik taşır ve mutant üstünlüğü için savaşır." },
+    { n: "Storm", a: "Ororo Munroe", q: "Storm (Marvel Comics)", b: "Hava olaylarını dilediği gibi yönlendirebilen Ororo Munroe, Kenya kökenli bir mutant olarak X-Men'in en saygın liderlerinden biridir." },
+    { n: "Cyclops", a: "Scott Summers", q: "Cyclops (Marvel Comics)", b: "Gözlerinden kontrolsüz güçlü enerji ışınları fırlatan Scott Summers, özel bir vizör takarak bu gücünü yönetir ve X-Men'in stratejik lideri olarak öne çıkar." },
+    { n: "Kate Bishop", a: "Kate Bishop", q: "Kate Bishop", b: "Hiçbir süper gücü olmadan sadece azmi ve yay-ok ustalığıyla kendini kanıtlayan Kate Bishop, Clint Barton'dan ilham alarak kendi Hawkeye kimliğini üstlenir." },
+    { n: "America Chavez", a: "America Chavez", q: "America Chavez", b: "Yumruklarıyla evrenler arası yıldız şeklinde portallar açabilen America Chavez, inanılmaz güç ve dayanıklılığa sahip genç bir kahramandır." },
+    { n: "Agatha Harkness", a: "Agatha Harkness", q: "Agatha Harkness", b: "Yüzyıllardır yaşayan güçlü bir cadı olan Agatha Harkness, hem bir akıl hocası hem de tehlikeli bir düşman olabilen gizemli bir büyü ustasıdır." },
+    { n: "Kang the Conqueror", a: "Nathaniel Richards", q: "Kang the Conqueror", b: "Gelecekten gelen bir zaman yolcusu olan Kang, sonsuz sayıda çeşidiyle (varyantlarıyla) tüm zaman çizgilerini fethetmeyi hedefleyen Avengers'ın en tehlikeli düşmanlarından biridir." },
+    { n: "Mister Fantastic", a: "Reed Richards", q: "Mister Fantastic", b: "Fantastic Four'un dâhi lideri Reed Richards, kozmik ışınlara maruz kaldıktan sonra bedenini sınırsızca uzatıp şekillendirebilen bir bilim insanıdır." },
+    { n: "Invisible Woman", a: "Sue Storm", q: "Invisible Woman", b: "Görünmezlik ve güçlü enerji kalkanları oluşturabilen Sue Storm, Fantastic Four'un hem duygusal hem de stratejik omurgasıdır." },
+    { n: "Human Torch", a: "Johnny Storm", q: "Human Torch (Jonathan Storm)", b: "Vücudunu tamamen ateşe verip uçabilen genç ve maceracı Johnny Storm, Fantastic Four'un en atılgan ve şakacı üyesidir." },
+    { n: "Thing", a: "Ben Grimm", q: "Thing (comics)", b: "Kozmik ışınların etkisiyle bedeni taş gibi turuncu, dev güçlü bir kabuğa dönüşen Ben Grimm, dış görünüşüne rağmen sıcakkanlı ve sadık bir dosttur." }
+  ];
+
+  var CHAR_API = "https://en.wikipedia.org/w/api.php";
+  var charImg = {}, charStarted = false;
+  var charStatus = { loaded: 0, total: 0 };
+
+  function fetchCharImg(i) {
+    var c = CHARACTERS[i];
+    return fetch(CHAR_API + "?action=query&format=json&origin=*&generator=search&gsrlimit=1" +
+      "&prop=pageimages&piprop=thumbnail&pithumbsize=300&gsrsearch=" + encodeURIComponent(c.q))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var pages = d && d.query && d.query.pages;
+        var p = pages && pages[Object.keys(pages)[0]];
+        charImg[i] = (p && p.thumbnail && p.thumbnail.source) || "";
+      })
+      .catch(function () { charImg[i] = ""; })
+      .then(function () { charStatus.loaded++; });
+  }
+
+  function renderCharacters() {
+    var box = $("charGrid");
+    if (!box) return;
+    var q = ($("charSearch").value || "").toLocaleLowerCase("tr");
+    var list = CHARACTERS.map(function (c, i) { return { c: c, i: i }; }).filter(function (o) {
+      if (!q) return true;
+      return o.c.n.toLocaleLowerCase("tr").indexOf(q) >= 0 ||
+             o.c.a.toLocaleLowerCase("tr").indexOf(q) >= 0;
+    });
+    if (!list.length) {
+      box.innerHTML = '<div class="actor"><div></div><div class="actor-name">Sonuç yok</div></div>';
+      return;
+    }
+    box.innerHTML = list.map(function (o) {
+      var c = o.c, img = charImg[o.i];
+      var photo = img
+        ? '<img src="' + img + '" alt="" loading="lazy">'
+        : '<span>' + c.n.charAt(0) + '</span>';
+      return '<div class="charcard"><div class="charcard-photo">' + photo + '</div>' +
+        '<div class="charcard-body"><div class="charcard-name">' + c.n + '</div>' +
+        '<div class="charcard-alias">' + c.a + '</div>' +
+        '<div class="charcard-blurb">' + c.b + '</div></div></div>';
+    }).join("");
+  }
+
+  function updateCharStatus() {
+    var el = $("charStatus");
+    if (!el) return;
+    el.textContent = charStatus.loaded < charStatus.total
+      ? "Resimler yükleniyor… " + charStatus.loaded + "/" + charStatus.total : "";
+  }
+
+  function startCharacters() {
+    if (charStarted) return;
+    charStarted = true;
+    charStatus.total = CHARACTERS.length;
+    renderCharacters();
+    updateCharStatus();
+    CHARACTERS.forEach(function (c, i) { fetchCharImg(i); });
+    var t = setInterval(function () {
+      renderCharacters();
+      updateCharStatus();
+      if (charStatus.loaded >= charStatus.total) clearInterval(t);
+    }, 1200);
+  }
+
+  $("charSearch").addEventListener("input", function () { if (charStarted) renderCharacters(); });
 
   paint();
   render();
