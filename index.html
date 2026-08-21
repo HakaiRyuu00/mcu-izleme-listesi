@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MCU İzleme Sırası — Marvel Sinematik Evreni</title>
+<title>MCU İzleme Rehberi — Marvel Sinematik Evreni</title>
 <meta name="description" content="Marvel Sinematik Evreni çıkış sırasına göre, kronolojik sıra, MCU dışı Marvel filmleri ve yan diziler. Önem derecesi ve süre takibiyle.">
-<meta property="og:title" content="MCU İzleme Sırası">
+<meta property="og:title" content="MCU İzleme Rehberi">
 <meta property="og:description" content="Çıkış sırası, kronolojik sıra, MCU dışı Marvel ve yan yollar — tek listede.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://hakairyuu00.github.io/mcu-izleme-listesi/og.png">
@@ -71,8 +71,8 @@
     text-transform:uppercase;color:#8FA3B8;margin:0 0 14px;position:relative;z-index:1;
   }
   h1{
-    font-family:"Anton",sans-serif;letter-spacing:.01em;font-size:clamp(38px,9vw,72px);
-    line-height:.92;letter-spacing:-.02em;margin:0;text-transform:uppercase;
+    font-family:"Anton",sans-serif;letter-spacing:.01em;font-size:clamp(32px,6.4vw,64px);
+    line-height:1.02;letter-spacing:-.02em;margin:0;text-transform:uppercase;
     position:relative;z-index:1;
   }
   h1 em{font-style:normal;color:var(--p3);}
@@ -254,7 +254,7 @@
   /* ---------- Faz / grup ---------- */
   .p1{--accent:var(--p1);} .p2{--accent:var(--p2);} .p3{--accent:var(--p3);}
   .p4{--accent:var(--p4);} .p5{--accent:var(--p5);} .p6{--accent:var(--p6);} .p7{--accent:var(--p7);}
-  .phase{margin:0 0 34px;}
+  .phase{margin:0 0 34px;content-visibility:auto;contain-intrinsic-size:auto 1200px;}
   .phase-head{
     display:flex;align-items:center;gap:16px;padding:16px 18px;color:#fff;
     background:var(--accent);position:relative;overflow:hidden;
@@ -284,10 +284,17 @@
   /* ---------- Sütun başlığı ---------- */
   .list-head{
     display:grid;grid-template-columns:22px 30px 92px minmax(0,1fr) 150px 62px 62px 104px 26px;gap:0 16px;
-    padding:9px 18px;background:#F4F7F9;border:1px solid var(--line);border-bottom:none;
-    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;
-    text-transform:uppercase;color:#8B97A3;
+    padding:11px 18px;background:#F4F7F9;border:1px solid var(--line);border-bottom:none;
+    font-family:"Barlow Semi Condensed",sans-serif;font-size:13px;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);
   }
+  .list-head .sortable{
+    font:inherit;color:inherit;background:none;border:none;padding:0;cursor:pointer;
+    text-transform:uppercase;text-align:center;position:relative;
+  }
+  .list-head .sortable:hover{color:var(--p3);}
+  .list-head .sortable[aria-pressed="true"]{color:var(--p3);}
+  .list-head .sortable[aria-pressed="true"]::after{content:" ↓";}
   .list-head span:nth-child(3){text-indent:-9999px;overflow:hidden;}
   .list-head span:nth-child(5),.list-head span:nth-child(6),
   .list-head span:nth-child(7),.list-head span:nth-child(8){text-align:center;}
@@ -389,6 +396,7 @@
     flex:1 1 100%;
   }
   .actor{
+    content-visibility:auto;contain-intrinsic-size:auto 96px;
     display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px;align-items:start;
     background:var(--card);border:1px solid var(--line);border-top:none;padding:12px 16px;
   }
@@ -473,6 +481,50 @@
     letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);
   }
   .statcard{background:var(--card);border:1px solid var(--line);padding:20px;margin:0 0 22px;}
+  .vspick{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .vspick select{
+    flex:1 1 260px;padding:10px 12px;border:1px solid var(--line);background:var(--card);
+    color:var(--ink);font-family:inherit;font-size:16px;
+  }
+  .vspick span{font-family:"Anton",sans-serif;font-size:18px;color:var(--p3);}
+  .vsgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .vscol{background:var(--card);border:1px solid var(--line);padding:18px;}
+  .vscol img{width:100%;max-width:180px;display:block;margin:0 0 14px;}
+  .vscol h4{font-family:"Anton",sans-serif;font-size:21px;margin:0 0 4px;line-height:1.15;}
+  .vsrow{
+    display:flex;justify-content:space-between;gap:10px;padding:8px 0;
+    border-bottom:1px solid var(--line);font-size:16px;
+  }
+  .vsrow:last-child{border-bottom:none;}
+  .vsrow b{font-family:"IBM Plex Mono",monospace;text-align:right;}
+  .vsrow b.win{color:var(--p3);}
+  .vsover{margin:14px 0 0;font-size:16px;color:var(--ink-soft);}
+  @media (max-width:820px){.vsgrid{grid-template-columns:1fr;}}
+
+  .badges{display:flex;flex-wrap:wrap;gap:12px;}
+  .badge{
+    flex:0 0 132px;text-align:center;padding:16px 10px;border:1px solid var(--line);
+    background:var(--paper);opacity:.45;
+  }
+  .badge.on{opacity:1;border-color:var(--p3);background:var(--card);}
+  .badge b{
+    display:block;font-family:"Anton",sans-serif;font-size:26px;color:var(--ink-soft);line-height:1;
+  }
+  .badge.on b{color:var(--p3);}
+  .badge span{
+    display:block;margin-top:8px;font-size:14px;line-height:1.25;
+  }
+  .badge em{
+    display:block;margin-top:5px;font-style:normal;font-family:"IBM Plex Mono",monospace;
+    font-size:10px;letter-spacing:.1em;color:var(--ink-soft);
+  }
+  .months{display:flex;align-items:flex-end;gap:5px;height:120px;margin-bottom:10px;}
+  .months div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;}
+  .months i{display:block;background:var(--p3);min-height:2px;}
+  .months small{
+    display:block;text-align:center;margin-top:6px;font-family:"IBM Plex Mono",monospace;
+    font-size:9px;color:var(--ink-soft);
+  }
   .statcard h3{
     font-family:"Anton",sans-serif;font-size:17px;text-transform:uppercase;
     letter-spacing:.03em;margin:0 0 14px;
@@ -613,8 +665,8 @@
 <div class="wrap">
 
   <header class="masthead">
-    <p class="eyebrow">Marvel Sinematik Evreni · Ağustos 2026</p>
-    <h1>MCU<br>İzleme<br><em>Sırası</em></h1>
+    <p class="eyebrow">Marvel Sinematik Evreni</p>
+    <h1>MCU İzleme <em>Rehberi</em></h1>
     <p class="deck">Vizyona çıkış tarihine göre sıralı. Sağdaki önem derecesi, ana hikâyeyi takip etmek için o yapımın ne kadar gerekli olduğunu gösterir. İzlediğin satıra tıkla, işaretlensin.</p>
     <div class="progress">
       <div class="progress-track"><div class="progress-fill" id="fillTop"></div></div>
@@ -633,6 +685,7 @@
     <button type="button" class="tab" role="tab" data-tab="side" aria-selected="false">Yan Yollar</button>
     <button type="button" class="tab" role="tab" data-tab="cast" aria-selected="false">Oyuncular</button>
     <button type="button" class="tab" role="tab" data-tab="stats" aria-selected="false">İstatistik</button>
+    <button type="button" class="tab" role="tab" data-tab="vs" aria-selected="false">Kıyasla</button>
   </nav>
 
   <div class="searchbar" id="controls">
@@ -643,7 +696,6 @@
       <button type="button" class="chip" data-f="tv" aria-pressed="false">Dizi &amp; özel</button>
       <button type="button" class="chip" data-f="key" aria-pressed="false">Doomsday İçin Neler İzlenmeli</button>
       <button type="button" class="chip" data-f="unseen" aria-pressed="false">İzlemediklerim</button>
-      <button type="button" class="chip" id="sortScore" data-s="score" aria-pressed="false">Puana göre</button>
     </div>
     <span id="posterStatus" class="pstatus"></span>
   </div>
@@ -675,7 +727,7 @@
       <div class="phase-no">01</div>
       <div class="phase-meta"><div class="phase-name">Yumruklar Havada</div><div class="phase-years">2008 – 2012 · İlk ekip toplanıyor</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="im1" data-list="mcu" data-kind="film" data-rating="5" data-min="126" data-title="Iron Man" data-date="2 May 2008" data-search="Iron Man" data-season="" data-type="movie" data-year="2008"><span class="box"></span><span class="n">01</span><span class="poster" data-wiki="Iron_Man_(2008_film)"><span class="ph">I</span></span><span class="t" data-num="01">Iron Man</span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2 May 2008<i>2s 06dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="hulk08" data-list="mcu" data-kind="film" data-rating="2" data-min="112" data-title="The Incredible Hulk" data-date="13 Haz 2008" data-search="The Incredible Hulk" data-season="" data-type="movie" data-year="2008"><span class="box"></span><span class="n">02</span><span class="poster" data-wiki="The_Incredible_Hulk_(film)"><span class="ph">T</span></span><span class="t" data-num="02">The Incredible Hulk</span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">13 Haz 2008<i>1s 52dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -690,7 +742,7 @@
       <div class="phase-no">02</div>
       <div class="phase-meta"><div class="phase-name">Evren Genişliyor</div><div class="phase-years">2013 – 2015 · Uzay ve casusluk</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="im3" data-list="mcu" data-kind="film" data-rating="2" data-min="130" data-title="Iron Man 3" data-date="3 May 2013" data-search="Iron Man 3" data-season="" data-type="movie" data-year="2013"><span class="box"></span><span class="n">07</span><span class="poster" data-wiki="Iron_Man_3"><span class="ph">I</span></span><span class="t" data-num="07">Iron Man 3</span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">3 May 2013<i>2s 10dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="thor2" data-list="mcu" data-kind="film" data-rating="3" data-min="112" data-title="Thor: The Dark World" data-date="8 Kas 2013" data-search="Thor: The Dark World" data-season="" data-type="movie" data-year="2013"><span class="box"></span><span class="n">08</span><span class="poster" data-wiki="Thor:_The_Dark_World"><span class="ph">T</span></span><span class="t" data-num="08">Thor: The Dark World</span><span class="r lv3" title="Önem 3/5">Orta şeker</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">8 Kas 2013<i>1s 52dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -705,7 +757,7 @@
       <div class="phase-no">03</div>
       <div class="phase-meta"><div class="phase-name">Sonsuzluk Sagası Finali</div><div class="phase-years">2016 – 2019 · Thanos yolda</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="civilwar" data-list="mcu" data-kind="film" data-rating="5" data-min="147" data-title="Captain America: Civil War" data-date="6 May 2016" data-search="Captain America: Civil War" data-season="" data-type="movie" data-year="2016"><span class="box"></span><span class="n">13</span><span class="poster" data-wiki="Captain_America:_Civil_War"><span class="ph">C</span></span><span class="t" data-num="13">Captain America: Civil War</span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">6 May 2016<i>2s 27dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="ds1" data-list="mcu" data-kind="film" data-rating="4" data-min="115" data-title="Doctor Strange" data-date="4 Kas 2016" data-search="Doctor Strange" data-season="" data-type="movie" data-year="2016"><span class="box"></span><span class="n">14</span><span class="poster" data-wiki="Doctor_Strange_(2016_film)"><span class="ph">D</span></span><span class="t" data-num="14">Doctor Strange</span><span class="r lv4" title="Önem 4/5">Önemli</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">4 Kas 2016<i>1s 55dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -729,7 +781,7 @@
       <div class="phase-no">04</div>
       <div class="phase-meta"><div class="phase-name">Çoklu Evren Açılıyor</div><div class="phase-years">2021 – 2022 · Disney+ dönemi başlıyor</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="wandavision" data-list="mcu" data-kind="dizi" data-rating="5" data-min="350" data-title="WandaVision" data-date="15 Oca 2021" data-search="WandaVision" data-season="" data-type="tv" data-year="2021"><span class="box"></span><span class="n">24</span><span class="poster" data-wiki="WandaVision"><span class="ph">W</span></span><span class="t" data-num="24">WandaVision<span class="kind dizi">Dizi</span></span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">15 Oca 2021<i>5s 50dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="tfatws" data-list="mcu" data-kind="dizi" data-rating="4" data-min="300" data-title="The Falcon and the Winter Soldier" data-date="19 Mar 2021" data-search="The Falcon and the Winter Soldier" data-season="" data-type="tv" data-year="2021"><span class="box"></span><span class="n">25</span><span class="poster" data-wiki="The_Falcon_and_the_Winter_Soldier"><span class="ph">T</span></span><span class="t" data-num="25">The Falcon and the Winter Soldier<span class="kind dizi">Dizi</span></span><span class="r lv4" title="Önem 4/5">Önemli</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">19 Mar 2021<i>5s 00dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -756,7 +808,7 @@
       <div class="phase-no">05</div>
       <div class="phase-meta"><div class="phase-name">Yeni Kadro Kuruluyor</div><div class="phase-years">2023 – 2025 · Sokak seviyesi geri döndü</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="quantumania" data-list="mcu" data-kind="film" data-rating="4" data-min="124" data-title="Ant-Man and the Wasp: Quantumania" data-date="17 Şub 2023" data-search="Ant-Man and the Wasp: Quantumania" data-season="" data-type="movie" data-year="2023"><span class="box"></span><span class="n">42</span><span class="poster" data-wiki="Ant-Man_and_the_Wasp:_Quantumania"><span class="ph">A</span></span><span class="t" data-num="42">Ant-Man and the Wasp: Quantumania</span><span class="r lv4" title="Önem 4/5">Önemli</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">17 Şub 2023<i>2s 04dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="gotg3" data-list="mcu" data-kind="film" data-rating="4" data-min="150" data-title="Guardians of the Galaxy Vol. 3" data-date="5 May 2023" data-search="Guardians of the Galaxy Vol. 3" data-season="" data-type="movie" data-year="2023"><span class="box"></span><span class="n">43</span><span class="poster" data-wiki="Guardians_of_the_Galaxy_Vol._3"><span class="ph">G</span></span><span class="t" data-num="43">Guardians of the Galaxy Vol. 3</span><span class="r lv4" title="Önem 4/5">Önemli</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">5 May 2023<i>2s 30dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -784,7 +836,7 @@
       <div class="phase-meta"><div class="phase-name">Doomsday&#x27;e Doğru</div><div class="phase-years">2025 – 2027 · Çoklu Evren Sagası&#x27;nın finali</div></div>
     </div>
     <p class="phase-note">Faz 6, Fantastic Four ile Temmuz 2025&#x27;te başladı; Faz 5&#x27;in son iki animasyonu ondan sonra yayınlandı. O yüzden buradaki ilk tarih biraz geriye sarıyor.</p>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="ff4" data-list="mcu" data-kind="film" data-rating="5" data-min="115" data-title="The Fantastic Four: First Steps" data-date="25 Tem 2025" data-search="The Fantastic Four: First Steps" data-season="" data-type="movie" data-year="2025"><span class="box"></span><span class="n">60</span><span class="poster" data-wiki="The_Fantastic_Four:_First_Steps"><span class="ph">T</span></span><span class="t" data-num="60">The Fantastic Four: First Steps</span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">25 Tem 2025<i>1s 55dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="wonderman" data-list="mcu" data-kind="dizi" data-rating="1" data-min="240" data-title="Wonder Man" data-date="Oca 2026" data-search="Wonder Man" data-season="" data-type="tv" data-year="2026"><span class="box"></span><span class="n">61</span><span class="poster" data-wiki="Wonder_Man_(TV_series)"><span class="ph">W</span></span><span class="t" data-num="61">Wonder Man<span class="kind dizi">Dizi</span><small>2. sezon onaylandı, tarihi belli değil.</small></span><span class="r lv1" title="Önem 1/5">İzlemesen de olur</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">Oca 2026<i>4s 00dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -805,7 +857,7 @@
       <div class="phase-meta"><div class="phase-name">Mutant Sagası</div><div class="phase-years">2028 – · Feige&#x27;nin adlandırdığı yeni saga</div></div>
     </div>
     <p class="phase-note">Secret Wars&#x27;tan sonrası. Kevin Feige yeni dönemi &quot;Mutant Sagası&quot; diye anıyor ve odağın Avengers&#x27;tan X-Men&#x27;e kaydığını söylüyor. Aşağıdakilerden yalnızca tarihi yazılı olanlar resmî; başlıksız tarihler Disney&#x27;in takvimde ayırdığı boş yuvalar.</p>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li class="soon" data-id="xmen" data-list="mcu" data-kind="film" data-rating="5" data-min="150" data-title="X-Men" data-date="5 May 2028" data-search="" data-season="" data-type="movie" data-year="2028"><span class="box"></span><span class="n">71</span><span class="poster"><span class="ph">X</span></span><span class="t" data-num="71">X-Men<small>Jake Schreier yönetiyor; tarih Disney takviminde ayrılı ama başlık resmî değil.</small></span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">5 May 2028<i>2s 30dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li class="soon" data-id="untitled2028" data-list="mcu" data-kind="film" data-rating="3" data-min="130" data-title="İsimsiz Marvel filmi" data-date="28 Tem 2028" data-search="" data-season="" data-type="movie" data-year="2028"><span class="box"></span><span class="n">72</span><span class="poster"><span class="ph">İ</span></span><span class="t" data-num="72">İsimsiz Marvel filmi<small>Takvimde ayrılmış yuva.</small></span><span class="r lv3" title="Önem 3/5">Orta şeker</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">28 Tem 2028<i>2s 10dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -935,7 +987,7 @@
       <div class="phase-no">01</div>
       <div class="phase-meta"><div class="phase-name">İkinci Dünya Savaşı</div><div class="phase-years">1943 – 1945</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="cap1" data-list="chrono" data-kind="film" data-rating="4" data-min="124" data-title="Captain America: The First Avenger" data-date="22 Tem 2011" data-search="Captain America: The First Avenger" data-season="" data-type="movie" data-year="2011"><span class="box"></span><span class="n">01</span><span class="poster" data-wiki="Captain_America:_The_First_Avenger"><span class="ph">C</span></span><span class="t" data-num="01">Captain America: The First Avenger</span><span class="r lv4" title="Önem 4/5">Önemli</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">22 Tem 2011<i>2s 04dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
     </ol>
@@ -945,7 +997,7 @@
       <div class="phase-no">02</div>
       <div class="phase-meta"><div class="phase-name">Kayıp Yıllar</div><div class="phase-years">1995</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="capmarvel" data-list="chrono" data-kind="film" data-rating="4" data-min="123" data-title="Captain Marvel" data-date="8 Mar 2019" data-search="Captain Marvel" data-season="" data-type="movie" data-year="2019"><span class="box"></span><span class="n">02</span><span class="poster" data-wiki="Captain_Marvel_(film)"><span class="ph">C</span></span><span class="t" data-num="02">Captain Marvel</span><span class="r lv4" title="Önem 4/5">Önemli</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">8 Mar 2019<i>2s 03dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
     </ol>
@@ -955,7 +1007,7 @@
       <div class="phase-no">03</div>
       <div class="phase-meta"><div class="phase-name">Kahramanlar Çağı</div><div class="phase-years">2010 – 2012</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="im1" data-list="chrono" data-kind="film" data-rating="5" data-min="126" data-title="Iron Man" data-date="2 May 2008" data-search="Iron Man" data-season="" data-type="movie" data-year="2008"><span class="box"></span><span class="n">03</span><span class="poster" data-wiki="Iron_Man_(2008_film)"><span class="ph">I</span></span><span class="t" data-num="03">Iron Man</span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2 May 2008<i>2s 06dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="im2" data-list="chrono" data-kind="film" data-rating="3" data-min="124" data-title="Iron Man 2" data-date="7 May 2010" data-search="Iron Man 2" data-season="" data-type="movie" data-year="2010"><span class="box"></span><span class="n">04</span><span class="poster" data-wiki="Iron_Man_2"><span class="ph">I</span></span><span class="t" data-num="04">Iron Man 2</span><span class="r lv3" title="Önem 3/5">Orta şeker</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">7 May 2010<i>2s 04dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -969,7 +1021,7 @@
       <div class="phase-no">04</div>
       <div class="phase-meta"><div class="phase-name">Ultron&#x27;a Doğru</div><div class="phase-years">2012 – 2015</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="im3" data-list="chrono" data-kind="film" data-rating="2" data-min="130" data-title="Iron Man 3" data-date="3 May 2013" data-search="Iron Man 3" data-season="" data-type="movie" data-year="2013"><span class="box"></span><span class="n">08</span><span class="poster" data-wiki="Iron_Man_3"><span class="ph">I</span></span><span class="t" data-num="08">Iron Man 3</span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">3 May 2013<i>2s 10dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="thor2" data-list="chrono" data-kind="film" data-rating="3" data-min="112" data-title="Thor: The Dark World" data-date="8 Kas 2013" data-search="Thor: The Dark World" data-season="" data-type="movie" data-year="2013"><span class="box"></span><span class="n">09</span><span class="poster" data-wiki="Thor:_The_Dark_World"><span class="ph">T</span></span><span class="t" data-num="09">Thor: The Dark World</span><span class="r lv3" title="Önem 3/5">Orta şeker</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">8 Kas 2013<i>1s 52dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -985,7 +1037,7 @@
       <div class="phase-no">05</div>
       <div class="phase-meta"><div class="phase-name">Bölünme</div><div class="phase-years">2016 – 2018</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="civilwar" data-list="chrono" data-kind="film" data-rating="5" data-min="147" data-title="Captain America: Civil War" data-date="6 May 2016" data-search="Captain America: Civil War" data-season="" data-type="movie" data-year="2016"><span class="box"></span><span class="n">15</span><span class="poster" data-wiki="Captain_America:_Civil_War"><span class="ph">C</span></span><span class="t" data-num="15">Captain America: Civil War</span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">6 May 2016<i>2s 27dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="blackwidow" data-list="chrono" data-kind="film" data-rating="2" data-min="134" data-title="Black Widow" data-date="9 Tem 2021" data-search="Black Widow" data-season="" data-type="movie" data-year="2021"><span class="box"></span><span class="n">16</span><span class="poster" data-wiki="Black_Widow_(2021_film)"><span class="ph">B</span></span><span class="t" data-num="16">Black Widow</span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">9 Tem 2021<i>2s 14dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1001,7 +1053,7 @@
       <div class="phase-no">06</div>
       <div class="phase-meta"><div class="phase-name">Parmak Şıklaması</div><div class="phase-years">2018 – 2023</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="infinitywar" data-list="chrono" data-kind="film" data-rating="5" data-min="149" data-title="Avengers: Infinity War" data-date="27 Nis 2018" data-search="Avengers: Infinity War" data-season="" data-type="movie" data-year="2018"><span class="box"></span><span class="n">22</span><span class="poster" data-wiki="Avengers:_Infinity_War"><span class="ph">A</span></span><span class="t" data-num="22">Avengers: Infinity War</span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">27 Nis 2018<i>2s 29dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="endgame" data-list="chrono" data-kind="film" data-rating="5" data-min="181" data-title="Avengers: Endgame" data-date="26 Nis 2019" data-search="Avengers: Endgame" data-season="" data-type="movie" data-year="2019"><span class="box"></span><span class="n">23</span><span class="poster" data-wiki="Avengers:_Endgame"><span class="ph">A</span></span><span class="t" data-num="23">Avengers: Endgame</span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">26 Nis 2019<i>3s 01dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1012,7 +1064,7 @@
       <div class="phase-no">07</div>
       <div class="phase-meta"><div class="phase-name">Blip Sonrası</div><div class="phase-years">2023 – 2024</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="wandavision" data-list="chrono" data-kind="dizi" data-rating="5" data-min="350" data-title="WandaVision" data-date="15 Oca 2021" data-search="WandaVision" data-season="" data-type="tv" data-year="2021"><span class="box"></span><span class="n">24</span><span class="poster" data-wiki="WandaVision"><span class="ph">W</span></span><span class="t" data-num="24">WandaVision<span class="kind dizi">Dizi</span></span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">15 Oca 2021<i>5s 50dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="tfatws" data-list="chrono" data-kind="dizi" data-rating="4" data-min="300" data-title="The Falcon and the Winter Soldier" data-date="19 Mar 2021" data-search="The Falcon and the Winter Soldier" data-season="" data-type="tv" data-year="2021"><span class="box"></span><span class="n">25</span><span class="poster" data-wiki="The_Falcon_and_the_Winter_Soldier"><span class="ph">T</span></span><span class="t" data-num="25">The Falcon and the Winter Soldier<span class="kind dizi">Dizi</span></span><span class="r lv4" title="Önem 4/5">Önemli</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">19 Mar 2021<i>5s 00dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1029,7 +1081,7 @@
       <div class="phase-no">08</div>
       <div class="phase-meta"><div class="phase-name">Yeni Kuşak</div><div class="phase-years">2025</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="moonknight" data-list="chrono" data-kind="dizi" data-rating="2" data-min="280" data-title="Moon Knight" data-date="30 Mar 2022" data-search="Moon Knight" data-season="" data-type="tv" data-year="2022"><span class="box"></span><span class="n">32</span><span class="poster" data-wiki="Moon_Knight_(miniseries)"><span class="ph">M</span></span><span class="t" data-num="32">Moon Knight<span class="kind dizi">Dizi</span></span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">30 Mar 2022<i>4s 40dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="msmarvel" data-list="chrono" data-kind="dizi" data-rating="3" data-min="270" data-title="Ms. Marvel" data-date="8 Haz 2022" data-search="Ms. Marvel" data-season="" data-type="tv" data-year="2022"><span class="box"></span><span class="n">33</span><span class="poster" data-wiki="Ms._Marvel_(miniseries)"><span class="ph">M</span></span><span class="t" data-num="33">Ms. Marvel<span class="kind dizi">Dizi</span></span><span class="r lv3" title="Önem 3/5">Orta şeker</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">8 Haz 2022<i>4s 30dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1047,7 +1099,7 @@
       <div class="phase-no">09</div>
       <div class="phase-meta"><div class="phase-name">Çoklu Evren Kaynıyor</div><div class="phase-years">2026 ve sonrası</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="quantumania" data-list="chrono" data-kind="film" data-rating="4" data-min="124" data-title="Ant-Man and the Wasp: Quantumania" data-date="17 Şub 2023" data-search="Ant-Man and the Wasp: Quantumania" data-season="" data-type="movie" data-year="2023"><span class="box"></span><span class="n">41</span><span class="poster" data-wiki="Ant-Man_and_the_Wasp:_Quantumania"><span class="ph">A</span></span><span class="t" data-num="41">Ant-Man and the Wasp: Quantumania</span><span class="r lv4" title="Önem 4/5">Önemli</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">17 Şub 2023<i>2s 04dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="secretinvasion" data-list="chrono" data-kind="dizi" data-rating="2" data-min="300" data-title="Secret Invasion" data-date="21 Haz 2023" data-search="Secret Invasion" data-season="" data-type="tv" data-year="2023"><span class="box"></span><span class="n">42</span><span class="poster" data-wiki="Secret_Invasion_(miniseries)"><span class="ph">S</span></span><span class="t" data-num="42">Secret Invasion<span class="kind dizi">Dizi</span></span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">21 Haz 2023<i>5s 00dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1083,7 +1135,7 @@
       <div class="phase-no">10</div>
       <div class="phase-meta"><div class="phase-name">Alternatif Evrenler</div><div class="phase-years">Ana zaman çizgisi dışında</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="whatif1" data-list="chrono" data-kind="anim" data-rating="2" data-min="280" data-title="What If…? — 1. Sezon" data-date="11 Ağu 2021" data-search="What If...?" data-season="1" data-type="tv" data-year=""><span class="box"></span><span class="n">68</span><span class="poster" data-wiki="What_If...?_(TV_series)"><span class="ph">W</span></span><span class="t" data-num="68">What If…? — 1. Sezon<span class="kind anim">Animasyon</span><small>Alternatif evrenler; ana hikâye için şart değil.</small></span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">11 Ağu 2021<i>4s 40dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="whatif2" data-list="chrono" data-kind="anim" data-rating="1" data-min="270" data-title="What If…? — 2. Sezon" data-date="22 Ara 2023" data-search="What If...?" data-season="2" data-type="tv" data-year=""><span class="box"></span><span class="n">69</span><span class="poster" data-wiki="What_If...?_(TV_series)"><span class="ph">W</span></span><span class="t" data-num="69">What If…? — 2. Sezon<span class="kind anim">Animasyon</span></span><span class="r lv1" title="Önem 1/5">İzlemesen de olur</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">22 Ara 2023<i>4s 30dk</i></span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1102,7 +1154,7 @@
       <div class="phase-meta"><div class="phase-name">Endgame Sonrası</div><div class="phase-years">2023 – · Çıkış sırasıyla aynı</div></div>
     </div>
     <p class="phase-note">Aşağıdakiler yukarıdaki gruplara yerleştirilemedi.</p>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
 
     </ol>
@@ -1130,7 +1182,7 @@
       <div class="phase-no">01</div>
       <div class="phase-meta"><div class="phase-name">Erken Dönem</div><div class="phase-years">1986 – 1998 · Marvel sinemaya ilk adımlar</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="howard" data-list="nonmcu" data-kind="film" data-rating="1" data-min="0" data-title="Howard the Duck" data-date="1986" data-search="Howard the Duck" data-season="" data-type="movie" data-year="1986"><span class="box"></span><span class="n">01</span><span class="poster" data-wiki="Howard_the_Duck_(film)"><span class="ph">H</span></span><span class="t" data-num="01">Howard the Duck<small>Marvel&#x27;ın ilk büyük bütçeli filmi; efsanevi bir fiyasko.</small></span><span class="r lv1" title="Önem 1/5">İzlemesen de olur</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">1986</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="punisher89" data-list="nonmcu" data-kind="film" data-rating="1" data-min="0" data-title="The Punisher" data-date="1989" data-search="The Punisher" data-season="" data-type="movie" data-year="1989"><span class="box"></span><span class="n">02</span><span class="poster" data-wiki="The_Punisher_(1989_film)"><span class="ph">T</span></span><span class="t" data-num="02">The Punisher<small>Dolph Lundgren&#x27;li ilk Punisher.</small></span><span class="r lv1" title="Önem 1/5">İzlemesen de olur</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">1989</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1143,7 +1195,7 @@
       <div class="phase-no">02</div>
       <div class="phase-meta"><div class="phase-name">Fox — X-Men Evreni</div><div class="phase-years">2000 – 2020 · Yirmi yıllık ayrı bir devamlılık</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="xmen00" data-list="nonmcu" data-kind="film" data-rating="4" data-min="0" data-title="X-Men" data-date="2000" data-search="X-Men" data-season="" data-type="movie" data-year="2000"><span class="box"></span><span class="n">05</span><span class="poster" data-wiki="X-Men_(film)"><span class="ph">X</span></span><span class="t" data-num="05">X-Men</span><span class="r lv4" title="Önem 4/5">Önemli</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2000</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="x2" data-list="nonmcu" data-kind="film" data-rating="5" data-min="0" data-title="X2: X-Men United" data-date="2003" data-search="X2: X-Men United" data-season="" data-type="movie" data-year="2003"><span class="box"></span><span class="n">06</span><span class="poster" data-wiki="X2_(film)"><span class="ph">X</span></span><span class="t" data-num="06">X2: X-Men United</span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2003</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1165,7 +1217,7 @@
       <div class="phase-no">03</div>
       <div class="phase-meta"><div class="phase-name">Fox — Fantastic Four</div><div class="phase-years">2005 – 2015</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="ff05" data-list="nonmcu" data-kind="film" data-rating="2" data-min="0" data-title="Fantastic Four" data-date="2005" data-search="Fantastic Four" data-season="" data-type="movie" data-year="2005"><span class="box"></span><span class="n">18</span><span class="poster" data-wiki="Fantastic_Four_(2005_film)"><span class="ph">F</span></span><span class="t" data-num="18">Fantastic Four</span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2005</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="ff07" data-list="nonmcu" data-kind="film" data-rating="2" data-min="0" data-title="Fantastic Four: Rise of the Silver Surfer" data-date="2007" data-search="Fantastic Four: Rise of the Silver Surfer" data-season="" data-type="movie" data-year="2007"><span class="box"></span><span class="n">19</span><span class="poster" data-wiki="Fantastic_Four:_Rise_of_the_Silver_Surfer"><span class="ph">F</span></span><span class="t" data-num="19">Fantastic Four: Rise of the Silver Surfer</span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2007</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1177,7 +1229,7 @@
       <div class="phase-no">04</div>
       <div class="phase-meta"><div class="phase-name">2000&#x27;ler Karışık Dönem</div><div class="phase-years">2002 – 2011 · Farklı stüdyolar, ayrı evrenler</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="blade2" data-list="nonmcu" data-kind="film" data-rating="4" data-min="0" data-title="Blade II" data-date="2002" data-search="Blade II" data-season="" data-type="movie" data-year="2002"><span class="box"></span><span class="n">21</span><span class="poster" data-wiki="Blade_II"><span class="ph">B</span></span><span class="t" data-num="21">Blade II</span><span class="r lv4" title="Önem 4/5">Önemli</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2002</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="daredevil03" data-list="nonmcu" data-kind="film" data-rating="2" data-min="0" data-title="Daredevil" data-date="2003" data-search="Daredevil" data-season="" data-type="movie" data-year="2003"><span class="box"></span><span class="n">22</span><span class="poster" data-wiki="Daredevil_(2003_film)"><span class="ph">D</span></span><span class="t" data-num="22">Daredevil</span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2003</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1196,7 +1248,7 @@
       <div class="phase-no">05</div>
       <div class="phase-meta"><div class="phase-name">Sony — Spider-Man Filmleri</div><div class="phase-years">2002 – 2014 · MCU öncesi iki ayrı Peter Parker</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="sm1" data-list="nonmcu" data-kind="film" data-rating="5" data-min="0" data-title="Spider-Man" data-date="2002" data-search="Spider-Man" data-season="" data-type="movie" data-year="2002"><span class="box"></span><span class="n">31</span><span class="poster" data-wiki="Spider-Man_(2002_film)"><span class="ph">S</span></span><span class="t" data-num="31">Spider-Man<small>Raimi üçlemesinin başlangıcı.</small></span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2002</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="sm2" data-list="nonmcu" data-kind="film" data-rating="5" data-min="0" data-title="Spider-Man 2" data-date="2004" data-search="Spider-Man 2" data-season="" data-type="movie" data-year="2004"><span class="box"></span><span class="n">32</span><span class="poster" data-wiki="Spider-Man_2"><span class="ph">S</span></span><span class="t" data-num="32">Spider-Man 2<small>Türün en iyilerinden sayılır.</small></span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2004</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1210,7 +1262,7 @@
       <div class="phase-no">06</div>
       <div class="phase-meta"><div class="phase-name">Sony — Örümcek Evreni</div><div class="phase-years">2018 – 2024 · Spider-Man&#x27;siz kötü adam evreni</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="venom1" data-list="nonmcu" data-kind="film" data-rating="3" data-min="0" data-title="Venom" data-date="2018" data-search="Venom" data-season="" data-type="movie" data-year="2018"><span class="box"></span><span class="n">36</span><span class="poster" data-wiki="Venom_(2018_film)"><span class="ph">V</span></span><span class="t" data-num="36">Venom</span><span class="r lv3" title="Önem 3/5">Orta şeker</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2018</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="venom2" data-list="nonmcu" data-kind="film" data-rating="2" data-min="0" data-title="Venom: Let There Be Carnage" data-date="2021" data-search="Venom: Let There Be Carnage" data-season="" data-type="movie" data-year="2021"><span class="box"></span><span class="n">37</span><span class="poster" data-wiki="Venom:_Let_There_Be_Carnage"><span class="ph">V</span></span><span class="t" data-num="37">Venom: Let There Be Carnage</span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2021</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1225,7 +1277,7 @@
       <div class="phase-no">07</div>
       <div class="phase-meta"><div class="phase-name">Spider-Verse Animasyonları</div><div class="phase-years">2018 – 2027 · Kendi başına bir seri</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="intoverse" data-list="nonmcu" data-kind="anim" data-rating="5" data-min="0" data-title="Spider-Man: Into the Spider-Verse" data-date="2018" data-search="Spider-Man: Into the Spider-Verse" data-season="" data-type="movie" data-year="2018"><span class="box"></span><span class="n">42</span><span class="poster" data-wiki="Spider-Man:_Into_the_Spider-Verse"><span class="ph">S</span></span><span class="t" data-num="42">Spider-Man: Into the Spider-Verse<span class="kind anim">Animasyon</span><small>Oscar kazanan animasyon.</small></span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2018</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="acrossverse" data-list="nonmcu" data-kind="anim" data-rating="5" data-min="0" data-title="Spider-Man: Across the Spider-Verse" data-date="2023" data-search="Spider-Man: Across the Spider-Verse" data-season="" data-type="movie" data-year="2023"><span class="box"></span><span class="n">43</span><span class="poster" data-wiki="Spider-Man:_Across_the_Spider-Verse"><span class="ph">S</span></span><span class="t" data-num="43">Spider-Man: Across the Spider-Verse<span class="kind anim">Animasyon</span></span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2023</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1237,7 +1289,7 @@
       <div class="phase-no">08</div>
       <div class="phase-meta"><div class="phase-name">Televizyonun İlk Dönemi</div><div class="phase-years">1977 – 2006 · Marvel&#x27;ın erken TV denemeleri</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="hulktv" data-list="nonmcu" data-kind="dizi" data-rating="3" data-min="0" data-title="The Incredible Hulk" data-date="1977" data-search="The Incredible Hulk" data-season="" data-type="tv" data-year="1977"><span class="box"></span><span class="n">45</span><span class="poster"><span class="ph">T</span></span><span class="t" data-num="45">The Incredible Hulk<span class="kind dizi">Dizi</span><small>Lou Ferrigno&#x27;lu efsanevi dizi, beş sezon.</small></span><span class="r lv3" title="Önem 3/5">Orta şeker</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">1977</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="smtv77" data-list="nonmcu" data-kind="dizi" data-rating="1" data-min="0" data-title="The Amazing Spider-Man" data-date="1977" data-search="The Amazing Spider-Man" data-season="" data-type="tv" data-year="1977"><span class="box"></span><span class="n">46</span><span class="poster"><span class="ph">T</span></span><span class="t" data-num="46">The Amazing Spider-Man<span class="kind dizi">Dizi</span><small>CBS&#x27;in kısa ömürlü Spider-Man dizisi.</small></span><span class="r lv1" title="Önem 1/5">İzlemesen de olur</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">1977</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1256,7 +1308,7 @@
       <div class="phase-no">09</div>
       <div class="phase-meta"><div class="phase-name">Klasik Animasyonlar</div><div class="phase-years">1981 – 2017 · Çizgi film kuşağı</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="amazingfriends" data-list="nonmcu" data-kind="anim" data-rating="2" data-min="0" data-title="Spider-Man and His Amazing Friends" data-date="1981" data-search="Spider-Man and His Amazing Friends" data-season="" data-type="tv" data-year="1981"><span class="box"></span><span class="n">55</span><span class="poster"><span class="ph">S</span></span><span class="t" data-num="55">Spider-Man and His Amazing Friends<span class="kind anim">Animasyon</span></span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">1981</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="ff94" data-list="nonmcu" data-kind="anim" data-rating="2" data-min="0" data-title="Fantastic Four" data-date="1994" data-search="Fantastic Four" data-season="" data-type="tv" data-year="1994"><span class="box"></span><span class="n">56</span><span class="poster"><span class="ph">F</span></span><span class="t" data-num="56">Fantastic Four<span class="kind anim">Animasyon</span></span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">1994</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1275,7 +1327,7 @@
       <div class="phase-no">10</div>
       <div class="phase-meta"><div class="phase-name">Yetişkin Animasyonları</div><div class="phase-years">2021 · Hulu kuşağı</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="modok" data-list="nonmcu" data-kind="anim" data-rating="2" data-min="0" data-title="M.O.D.O.K." data-date="2021" data-search="M.O.D.O.K." data-season="" data-type="tv" data-year="2021"><span class="box"></span><span class="n">65</span><span class="poster"><span class="ph">M</span></span><span class="t" data-num="65">M.O.D.O.K.<span class="kind anim">Animasyon</span></span><span class="r lv2" title="Önem 2/5">Pek önemli değil</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2021</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="hitmonkey" data-list="nonmcu" data-kind="anim" data-rating="3" data-min="0" data-title="Hit-Monkey" data-date="2021" data-search="Hit-Monkey" data-season="" data-type="tv" data-year="2021"><span class="box"></span><span class="n">66</span><span class="poster"><span class="ph">H</span></span><span class="t" data-num="66">Hit-Monkey<span class="kind anim">Animasyon</span></span><span class="r lv3" title="Önem 3/5">Orta şeker</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2021</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1286,7 +1338,7 @@
       <div class="phase-no">11</div>
       <div class="phase-meta"><div class="phase-name">Diziler ve Diğer Animasyonlar</div><div class="phase-years">1992 – 2019</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="xmentas" data-list="nonmcu" data-kind="anim" data-rating="4" data-min="0" data-title="X-Men: The Animated Series" data-date="1992" data-search="X-Men: The Animated Series" data-season="" data-type="tv" data-year="1992"><span class="box"></span><span class="n">67</span><span class="poster" data-wiki="X-Men:_The_Animated_Series"><span class="ph">X</span></span><span class="t" data-num="67">X-Men: The Animated Series<span class="kind anim">Animasyon</span><small>X-Men &#x27;97&#x27;nin devamı olduğu orijinal seri.</small></span><span class="r lv4" title="Önem 4/5">Önemli</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">1992</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="smtas" data-list="nonmcu" data-kind="anim" data-rating="3" data-min="0" data-title="Spider-Man: The Animated Series" data-date="1994" data-search="Spider-Man: The Animated Series" data-season="" data-type="tv" data-year="1994"><span class="box"></span><span class="n">68</span><span class="poster" data-wiki="Spider-Man:_The_Animated_Series"><span class="ph">S</span></span><span class="t" data-num="68">Spider-Man: The Animated Series<span class="kind anim">Animasyon</span></span><span class="r lv3" title="Önem 3/5">Orta şeker</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">1994</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1316,7 +1368,7 @@
       <div class="phase-no">01</div>
       <div class="phase-meta"><div class="phase-name">Netflix Kuşağı</div><div class="phase-years">2015 – 2019 · Sokak seviyesi; Born Again&#x27;in temeli</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="dd1" data-list="side" data-kind="dizi" data-rating="5" data-min="0" data-title="Daredevil — 1. Sezon" data-date="2015" data-search="Daredevil" data-season="1" data-type="tv" data-year=""><span class="box"></span><span class="n">01</span><span class="poster" data-wiki="Daredevil_(2015_TV_series)"><span class="ph">D</span></span><span class="t" data-num="01">Daredevil — 1. Sezon<span class="kind dizi">Dizi</span></span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2015</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="jj1" data-list="side" data-kind="dizi" data-rating="4" data-min="0" data-title="Jessica Jones — 1. Sezon" data-date="2015" data-search="Jessica Jones" data-season="1" data-type="tv" data-year=""><span class="box"></span><span class="n">02</span><span class="poster" data-wiki="Jessica_Jones_(TV_series)"><span class="ph">J</span></span><span class="t" data-num="02">Jessica Jones — 1. Sezon<span class="kind dizi">Dizi</span></span><span class="r lv4" title="Önem 4/5">Önemli</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2015</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1338,7 +1390,7 @@
       <div class="phase-no">02</div>
       <div class="phase-meta"><div class="phase-name">ABC Kuşağı</div><div class="phase-years">2013 – 2020 · Filmlerle bağı gevşek</div></div>
     </div>
-    <div class="list-head" aria-hidden="true"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><span>Puan</span><span>Senin Puanın</span><span>Tarih</span><span></span></div>
+    <div class="list-head"><span></span><span>#</span><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span></span></div>
     <ol class="list">
       <li data-id="aos" data-list="side" data-kind="dizi" data-rating="3" data-min="0" data-title="Agents of S.H.I.E.L.D." data-date="2013" data-search="Agents of S.H.I.E.L.D." data-season="" data-type="tv" data-year="2013"><span class="box"></span><span class="n">14</span><span class="poster" data-wiki="Agents_of_S.H.I.E.L.D."><span class="ph">A</span></span><span class="t" data-num="14">Agents of S.H.I.E.L.D.<span class="kind dizi">Dizi</span><small>Yedi sezon; ilk sezonlar Winter Soldier&#x27;la kesişir.</small></span><span class="r lv3" title="Önem 3/5">Orta şeker</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2013</span><button type="button" class="info" aria-label="Detay">i</button></li>
       <li data-id="agentcarter" data-list="side" data-kind="dizi" data-rating="3" data-min="0" data-title="Agent Carter" data-date="2015" data-search="Agent Carter" data-season="" data-type="tv" data-year="2015"><span class="box"></span><span class="n">15</span><span class="poster" data-wiki="Agent_Carter_(TV_series)"><span class="ph">A</span></span><span class="t" data-num="15">Agent Carter<span class="kind dizi">Dizi</span><small>Peggy Carter&#x27;ın 1940&#x27;lar sonrası.</small></span><span class="r lv3" title="Önem 3/5">Orta şeker</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">2015</span><button type="button" class="info" aria-label="Detay">i</button></li>
@@ -1362,9 +1414,25 @@
     <div id="castList"></div>
   </div>
 
+  <!-- ============ KIYASLA ============ -->
+  <div class="panel hidden" id="panel-vs" role="tabpanel">
+    <div class="statcard">
+      <h3>İki yapımı yan yana koy</h3>
+      <div class="vspick">
+        <select id="vsA" aria-label="Birinci yapım"></select>
+        <span>vs</span>
+        <select id="vsB" aria-label="İkinci yapım"></select>
+        <button type="button" class="btn" id="vsRandom">Rastgele ikili</button>
+      </div>
+    </div>
+    <div id="vsOut"></div>
+  </div>
+
   <!-- ============ İSTATİSTİK ============ -->
   <div class="panel hidden" id="panel-stats" role="tabpanel">
     <div class="statgrid" id="statTop"></div>
+    <div class="statcard"><h3>Rozetler</h3><div class="badges" id="statBadges"></div></div>
+    <div class="statcard"><h3>İzleme günlüğü</h3><div id="statLog"></div></div>
     <div class="statcard"><h3>Faz faz ilerleme</h3><div id="statPhases"></div></div>
     <div class="statcard"><h3>Senin puanların ile IMDb</h3><div id="statDiff"></div></div>
     <div class="statcard"><h3>En çok görünen oyuncular</h3><div id="statCast"></div></div>
@@ -1386,7 +1454,7 @@
   </div>
 
   <footer>
-    Çıkış tarihine göre · 76 MCU yapımı · 71 MCU dışı · 19 yan yol · Süreler yaklaşıktır · Ağustos 2026
+    76 MCU yapımı · 71 MCU dışı · 19 yan yol · Süreler yaklaşıktır<br>Son Güncelleme: Ağustos 2026
   </footer>
 
 </div>
@@ -1461,6 +1529,11 @@ var PRELOAD = {};
     return bits;
   }
 
+  var GKEY = "mcu-gunluk-v1";
+  var gunluk = {};
+  try { gunluk = JSON.parse(localStorage.getItem(GKEY)) || {}; } catch (e) { gunluk = {}; }
+  function saveGunluk() { try { localStorage.setItem(GKEY, JSON.stringify(gunluk)); } catch (e) {} }
+
   var NKEY = "mcu-notlar-v1";
   var notes = {};
   try { notes = JSON.parse(localStorage.getItem(NKEY)) || {}; } catch (e) { notes = {}; }
@@ -1500,7 +1573,14 @@ var PRELOAD = {};
   }
 
   function toggle(id) {
-    if (watched[id]) { delete watched[id]; } else { watched[id] = 1; }
+    if (watched[id]) {
+      delete watched[id];
+      delete gunluk[id];
+    } else {
+      watched[id] = 1;
+      gunluk[id] = new Date().toISOString().slice(0, 10);
+    }
+    if (!sharedMode) saveGunluk();
     if (!sharedMode) save(watched);
     paint();
     render();
@@ -1539,7 +1619,7 @@ var PRELOAD = {};
 
     rows.forEach(function (r) { r.classList.toggle("hidden", !matches(r)); });
 
-    var flat = view.sort === "score" || view.filter === "key";
+    var flat = view.sort !== "release" || view.filter === "key";
     if (flat) {
       var host = panel.querySelector(".lists") || panel;
       var anchor = host.querySelector(".phase:not(#sortPanel)");
@@ -1549,6 +1629,10 @@ var PRELOAD = {};
         list.sort(function (a, b) {
           return (parseFloat((meta[b.dataset.id] || {}).v) || -1) -
                  (parseFloat((meta[a.dataset.id] || {}).v) || -1);
+        });
+      } else if (view.sort === "mine") {
+        list.sort(function (a, b) {
+          return (mine[b.dataset.id] || -1) - (mine[a.dataset.id] || -1);
         });
       }
       list.forEach(function (r) { sortList.appendChild(r); });
@@ -1560,8 +1644,8 @@ var PRELOAD = {};
           ? "Önemli ve üstü · puana göre" : "Ana hikâyeyi kaçırmadan takip et";
       } else {
         $("sortIcon").innerHTML = "★";
-        $("sortName").textContent = "Puana göre";
-        $("sortYears").textContent = "En yüksek puandan aşağı";
+        $("sortName").textContent = view.sort === "mine" ? "Senin puanına göre" : "Puana göre";
+        $("sortYears").textContent = "En yüksekten en düşüğe";
       }
     } else {
       rows.forEach(function (r) { r._home[0].insertBefore(r, r._home[1]); });
@@ -1585,13 +1669,16 @@ var PRELOAD = {};
     document.querySelectorAll(".panel").forEach(function (p) {
       p.classList.toggle("hidden", p.id !== "panel-" + name);
     });
-    $("controls").classList.toggle("hidden", name === "cast" || name === "stats");
+    $("controls").classList.toggle("hidden", name === "cast" || name === "stats" || name === "vs");
     if (name === "mcu" || name === "chrono") {
       $("panel-" + name).querySelector(".layout").appendChild($("rail"));
     }
     window.scrollTo({ top: 0 });
+    if (name === "nonmcu" || name === "side" || name === "chrono") listeYukle(name === "chrono" ? "mcu" : name);
+    if (name === "vs") { listeYukle("nonmcu"); listeYukle("side"); }
     if (name === "cast") { startCast(); }
     else if (name === "stats") { renderStats(); }
+    else if (name === "vs") { initVs(); }
     else { applyView(); }
     render();
   }
@@ -1611,10 +1698,14 @@ var PRELOAD = {};
       applyView();
     });
   });
-  $("sortScore").addEventListener("click", function () {
-    view.sort = view.sort === "score" ? "release" : "score";
-    $("sortScore").setAttribute("aria-pressed", view.sort === "score" ? "true" : "false");
-    applyView();
+  document.querySelectorAll(".sortable").forEach(function (b) {
+    b.addEventListener("click", function () {
+      view.sort = view.sort === b.dataset.sort ? "release" : b.dataset.sort;
+      document.querySelectorAll(".sortable").forEach(function (x) {
+        x.setAttribute("aria-pressed", x.dataset.sort === view.sort ? "true" : "false");
+      });
+      applyView();
+    });
   });
   $("search").addEventListener("input", function () {
     view.q = this.value.toLocaleLowerCase("tr").trim();
@@ -1649,7 +1740,9 @@ var PRELOAD = {};
     if (nextRow.classList.contains("hidden") || view.sort === "score" || view.filter === "key") {
       view.filter = "all"; view.sort = "release"; view.q = "";
       $("search").value = "";
-      $("sortScore").setAttribute("aria-pressed", "false");
+      document.querySelectorAll(".sortable").forEach(function (x) {
+        x.setAttribute("aria-pressed", "false");
+      });
       document.querySelectorAll("[data-f]").forEach(function (c) {
         c.setAttribute("aria-pressed", c.dataset.f === "all" ? "true" : "false");
       });
@@ -1718,7 +1811,7 @@ var PRELOAD = {};
     });
 
     renderNext();
-    if (view.filter === "unseen" || view.sort === "score") applyView();
+    if (view.filter === "unseen" || view.sort !== "release") applyView();
   }
 
   /* ---- paylaşım ---- */
@@ -1766,8 +1859,8 @@ var PRELOAD = {};
     a.href = URL.createObjectURL(blob);
     a.download = "mcu-preload.txt";
     a.click();
-    $("shareHint").textContent = "İndirilen dosyanın içeriğini index.html'deki " +
-      "\"var PRELOAD = {};\" satırının yerine yapıştır — site bir daha API beklemez.";
+    $("shareHint").textContent = "İndirilen dosyanın içeriğini index.html'deki \"var PRELOAD = {};\" satırının " +
+      "yerine yapıştır. Not: yalnızca açtığın sekmelerin verisi gömülür.";
   });
 
   /* ---- karşılaştırma ---- */
@@ -1843,7 +1936,7 @@ var PRELOAD = {};
     (want[row.dataset.id] = want[row.dataset.id] || []).push(el);
   });
   var keys = Object.keys(want);
-  var settled = 0, gotPoster = 0;
+  var settled = 0, gotPoster = 0, hedefSayi = 0;
 
   function rowsOf(id) {
     return Array.prototype.slice.call(document.querySelectorAll('li[data-id="' + id + '"]'));
@@ -1853,14 +1946,47 @@ var PRELOAD = {};
   function status() {
     var el = $("posterStatus");
     if (!el) return;
-    if (settled < keys.length) { el.textContent = "Veriler yükleniyor… " + settled + "/" + keys.length; }
+    if (settled < hedefSayi) { el.textContent = "Veriler yükleniyor… " + settled + "/" + hedefSayi; }
     else if (!gotPoster) { el.textContent = "Veri çekilemedi — siteyi adresinden açtığından emin ol."; }
     else { el.textContent = gotPoster + " afiş · puanlar " + (OMDB_KEY ? "IMDb" : "TMDB"); }
+  }
+
+  function renkCikar(id, src) {
+    var m = meta[id] || {};
+    if (m.col || !src || src === "-") return;
+    var im = new Image();
+    im.crossOrigin = "anonymous";
+    im.onload = function () {
+      try {
+        var c = document.createElement("canvas");
+        c.width = 24; c.height = 36;
+        var g = c.getContext("2d");
+        g.drawImage(im, 0, 0, 24, 36);
+        var d = g.getImageData(0, 0, 24, 36).data;
+        var br = 0, bg = 0, bb = 0, n = 0;
+        for (var i = 0; i < d.length; i += 4) {
+          var r = d[i], gg = d[i + 1], b = d[i + 2];
+          var mx = Math.max(r, gg, b), mn = Math.min(r, gg, b);
+          if (mx - mn < 40 || mx < 55) continue;   // gri ve çok koyu pikselleri at
+          br += r; bg += gg; bb += b; n++;
+        }
+        if (!n) return;
+        br = Math.round(br / n); bg = Math.round(bg / n); bb = Math.round(bb / n);
+        // okunabilirlik için biraz koyulaştır
+        var f = 0.82;
+        var hex = "#" + [br, bg, bb].map(function (x) {
+          return ("0" + Math.round(x * f).toString(16)).slice(-2);
+        }).join("");
+        store(id, { col: hex });
+      } catch (e) {}
+    };
+    im.src = src;
   }
 
   function paintMeta(id) {
     var m = meta[id] || {};
     if (m.p && m.p !== "-") {
+      renkCikar(id, m.p);
       (want[id] || []).forEach(function (el) {
         if (el.querySelector("img")) return;
         var img = new Image();
@@ -1879,6 +2005,13 @@ var PRELOAD = {};
       if (ms) {
         ms.textContent = mine[id] ? mine[id] : "★";
         ms.classList.toggle("set", !!mine[id]);
+        if (mine[id] && m.col) {
+          ms.style.background = m.col;
+          ms.style.borderColor = m.col;
+        } else {
+          ms.style.background = "";
+          ms.style.borderColor = "";
+        }
       }
       if (m.r) {
         row.dataset.min = m.r;
@@ -1899,7 +2032,7 @@ var PRELOAD = {};
     settled++;
     if (meta[id] && meta[id].p && meta[id].p !== "-") gotPoster++;
     status();
-    if (settled === keys.length) { render(); if (view.sort === "score") applyView(); }
+    if (settled >= hedefSayi) { render(); if (view.sort !== "release") applyView(); }
   }
 
   function tmdbUrl(path, extra) {
@@ -2025,11 +2158,23 @@ var PRELOAD = {};
   }
 
   keys.forEach(paintMeta);
-  var pending = keys.filter(function (id) { return !(meta[id] && meta[id].p); });
-  settled = keys.length - pending.length;
   keys.forEach(function (id) { if (meta[id] && meta[id].p && meta[id].p !== "-") gotPoster++; });
-  status();
-  pending.forEach(function (id, i) { setTimeout(function () { fetchItem(id); }, i * 55); });
+
+  var yuklendi = {};
+  function listeYukle(liste) {
+    if (yuklendi[liste]) return;
+    yuklendi[liste] = true;
+    var kume = {};
+    all.forEach(function (r) { if (r.dataset.list === liste) kume[r.dataset.id] = 1; });
+    var bekleyen = Object.keys(kume).filter(function (id) {
+      return want[id] && !(meta[id] && meta[id].p);
+    });
+    hedefSayi += Object.keys(kume).length;
+    settled += Object.keys(kume).length - bekleyen.length;
+    status();
+    bekleyen.forEach(function (id, i) { setTimeout(function () { fetchItem(id); }, i * 55); });
+  }
+  listeYukle("mcu");
 
   /* ================= DETAY PENCERESİ ================= */
   var modal = $("modal");
@@ -2244,6 +2389,73 @@ var PRELOAD = {};
       '<div><b>' + ort(mineVals) + '</b><span>senin ortalaman</span></div>' +
       '<div><b>' + ort(imdbVals) + '</b><span>IMDb ortalaması</span></div>';
 
+    // ---- rozetler ----
+    var rozet = [];
+    document.querySelectorAll("#panel-mcu .phase").forEach(function (p) {
+      if (p.id === "sortPanel") return;
+      var name = p.querySelector(".phase-name");
+      var rows = p.querySelectorAll("ol.list li");
+      if (!name || !rows.length) return;
+      var cikmis = 0, izlenen = 0;
+      rows.forEach(function (r) {
+        if (r.classList.contains("soon")) return;
+        cikmis++;
+        if (watched[r.dataset.id]) izlenen++;
+      });
+      rozet.push([name.textContent, izlenen, cikmis, "Faz"]);
+    });
+    var saga = [
+      ["Sonsuzluk Sagası", ["im1","hulk08","im2","thor1","cap1","avengers1","im3","thor2","cap2",
+        "gotg1","aou","antman1","civilwar","ds1","gotg2","homecoming","ragnarok","bp1",
+        "infinitywar","antman2","capmarvel","endgame","ffh"]],
+      ["Tüm Filmler", mcu.filter(function (r) {
+        return r.dataset.kind === "film" && !r.classList.contains("soon");
+      }).map(function (r) { return r.dataset.id; })],
+      ["Tüm MCU", mcu.filter(function (r) {
+        return !r.classList.contains("soon");
+      }).map(function (r) { return r.dataset.id; })]
+    ];
+    saga.forEach(function (sg) {
+      var h = sg[1].filter(function (id) { return watched[id]; }).length;
+      rozet.push([sg[0], h, sg[1].length, "Saga"]);
+    });
+    $("statBadges").innerHTML = rozet.map(function (b) {
+      var tam = b[1] >= b[2] && b[2] > 0;
+      return '<div class="badge' + (tam ? " on" : "") + '"><b>' +
+        (tam ? "✔" : Math.round(b[1] / (b[2] || 1) * 100) + "%") + "</b><span>" + b[0] +
+        "</span><em>" + b[1] + "/" + b[2] + "</em></div>";
+    }).join("");
+
+    // ---- izleme günlüğü ----
+    var AYAD = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
+    var simdi = new Date();
+    var kova = [], etiket = [];
+    for (var mi = 11; mi >= 0; mi--) {
+      var dt = new Date(simdi.getFullYear(), simdi.getMonth() - mi, 1);
+      kova.push({ y: dt.getFullYear(), m: dt.getMonth(), n: 0 });
+      etiket.push(AYAD[dt.getMonth()]);
+    }
+    var buAy = 0, buYil = 0, toplamKayit = 0;
+    Object.keys(gunluk).forEach(function (id) {
+      var d = new Date(gunluk[id]);
+      if (isNaN(d)) return;
+      toplamKayit++;
+      if (d.getFullYear() === simdi.getFullYear()) buYil++;
+      if (d.getFullYear() === simdi.getFullYear() && d.getMonth() === simdi.getMonth()) buAy++;
+      kova.forEach(function (k) {
+        if (k.y === d.getFullYear() && k.m === d.getMonth()) k.n++;
+      });
+    });
+    var enCok = Math.max(1, Math.max.apply(null, kova.map(function (k) { return k.n; })));
+    $("statLog").innerHTML = toplamKayit
+      ? '<p style="margin:0 0 14px">Bu ay <b>' + buAy + '</b> · bu yıl <b>' + buYil +
+        '</b> · kayıtlı toplam <b>' + toplamKayit + '</b></p>' +
+        '<div class="months">' + kova.map(function (k, i) {
+          return '<div><i style="height:' + (k.n / enCok * 100) + '%" title="' + k.n + '"></i>' +
+            "<small>" + etiket[i] + "</small></div>";
+        }).join("") + "</div>"
+      : "<p>Henüz kayıt yok. Bundan sonra işaretlediğin her yapımın tarihi buraya düşecek.</p>";
+
     var phases = [];
     document.querySelectorAll("#panel-mcu .phase").forEach(function (p) {
       if (p.id === "sortPanel") return;
@@ -2306,7 +2518,7 @@ var PRELOAD = {};
 
   /* ---- yedekleme ---- */
   $("backupBtn").addEventListener("click", function () {
-    var paket = { v: 1, tarih: new Date().toISOString(), watched: watched, mine: mine, notes: notes };
+    var paket = { v: 2, tarih: new Date().toISOString(), watched: watched, mine: mine, notes: notes, gunluk: gunluk };
     var blob = new Blob([JSON.stringify(paket)], { type: "application/json" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -2324,6 +2536,7 @@ var PRELOAD = {};
         var p = JSON.parse(fr.result);
         if (p.watched) { watched = p.watched; save(watched); }
         if (p.mine) { mine = p.mine; saveMine(); }
+        if (p.gunluk) { gunluk = p.gunluk; saveGunluk(); }
         if (p.notes) {
           notes = p.notes;
           try { localStorage.setItem(NKEY, JSON.stringify(notes)); } catch (e) {}
@@ -2338,6 +2551,60 @@ var PRELOAD = {};
       }
     };
     fr.readAsText(f);
+  });
+
+  /* ================= KIYASLA ================= */
+  var vsReady = false;
+  function initVs() {
+    if (vsReady) return;
+    vsReady = true;
+    var opts = all.filter(function (r) { return r.dataset.list !== "chrono"; })
+      .map(function (r) {
+        return '<option value="' + r.dataset.id + '">' + r.dataset.title + "</option>";
+      }).join("");
+    $("vsA").innerHTML = opts;
+    $("vsB").innerHTML = opts;
+    $("vsA").value = "im1";
+    $("vsB").value = "endgame";
+    renderVs();
+  }
+  function vsCard(id, other) {
+    var row = document.querySelector('li[data-id="' + id + '"]');
+    var m = meta[id] || {};
+    var o = meta[other] || {};
+    var im = parseFloat(m.v) || 0, imO = parseFloat(o.v) || 0;
+    var mn = mine[id] || 0, mnO = mine[other] || 0;
+    var sr = +row.dataset.min || 0, srO = +document.querySelector('li[data-id="' + other + '"]').dataset.min || 0;
+    var onem = +row.dataset.rating, onemO = +document.querySelector('li[data-id="' + other + '"]').dataset.rating;
+    function sat(ad, deger, kazandi) {
+      return '<div class="vsrow"><span>' + ad + '</span><b class="' + (kazandi ? "win" : "") + '">' +
+        deger + "</b></div>";
+    }
+    return '<div class="vscol">' +
+      (m.p && m.p !== "-" ? '<img src="' + m.p + '" alt="">' : "") +
+      "<h4>" + row.dataset.title + "</h4>" +
+      sat("Tarih", row.dataset.date, false) +
+      sat("Süre", sr ? sure(sr) : "–", sr > 0 && sr < srO) +
+      sat("IMDb", m.v || "–", im > imO) +
+      sat("Senin puanın", mn || "–", mn > mnO) +
+      sat("Önem", row.querySelector(".r").textContent, onem > onemO) +
+      sat("Yönetmen", m.d || "–", false) +
+      sat("İzledin mi", watched[id] ? "evet" : "hayır", false) +
+      '<p class="vsover">' + (m.o ? m.o.slice(0, 260) + (m.o.length > 260 ? "…" : "") : "Özet yok.") + "</p>" +
+      "</div>";
+  }
+  function renderVs() {
+    var a = $("vsA").value, b = $("vsB").value;
+    if (!a || !b) return;
+    $("vsOut").innerHTML = '<div class="vsgrid">' + vsCard(a, b) + vsCard(b, a) + "</div>";
+  }
+  $("vsA").addEventListener("change", renderVs);
+  $("vsB").addEventListener("change", renderVs);
+  $("vsRandom").addEventListener("click", function () {
+    var list = mcu;
+    $("vsA").value = list[Math.floor(Math.random() * list.length)].dataset.id;
+    $("vsB").value = list[Math.floor(Math.random() * list.length)].dataset.id;
+    renderVs();
   });
 
   /* ================= GERİ SAYIM ================= */
@@ -2380,11 +2647,11 @@ var PRELOAD = {};
   function startCast() {
     castStarted = true;
     renderCast();
-    if (settled < keys.length) {
-      $("castStatus").textContent = "Veriler hâlâ yükleniyor… " + settled + "/" + keys.length;
+    if (settled < hedefSayi) {
+      $("castStatus").textContent = "Veriler hâlâ yükleniyor… " + settled + "/" + hedefSayi;
       var t = setInterval(function () {
-        if (settled >= keys.length) { clearInterval(t); $("castStatus").textContent = ""; }
-        else { $("castStatus").textContent = "Veriler hâlâ yükleniyor… " + settled + "/" + keys.length; }
+        if (settled >= hedefSayi) { clearInterval(t); $("castStatus").textContent = ""; }
+        else { $("castStatus").textContent = "Veriler hâlâ yükleniyor… " + settled + "/" + hedefSayi; }
         renderCast();
       }, 1500);
     } else { $("castStatus").textContent = ""; }
