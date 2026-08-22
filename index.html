@@ -236,6 +236,7 @@
     font-family:inherit;font-size:16px;color:var(--ink);
   }
   .searchbar input:focus{outline:2px solid var(--p3);outline-offset:-2px;}
+  .searchbar.only-search .toolbar{display:none;}
   .maskicon{width:46px;height:46px;color:#fff;}
   .phase-no.solid{color:#fff;-webkit-text-stroke:0;font-size:44px;}
 
@@ -370,6 +371,7 @@
   }
   .watch-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   .wt-label{
+    display:none;
     font-size:9px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;
     color:#9AA7B4;line-height:1;white-space:nowrap;
   }
@@ -410,7 +412,7 @@
   }
   .epbtn:hover{border-color:var(--p3);color:var(--p3);}
   .epbtn.set{border-color:var(--p3);color:var(--p3);font-weight:600;}
-  .epbtn[hidden]{display:none;}
+  .epbtn[hidden]{display:block;visibility:hidden;}
 
   .pop.vert{
     width:118px;max-height:300px;overflow-y:auto;flex-direction:column;flex-wrap:nowrap;
@@ -731,6 +733,8 @@
     .score{grid-row:3;grid-column:2;justify-self:start;align-self:center;font-size:14px;}
     .myscore{grid-row:3;grid-column:3;justify-self:center;width:36px;height:36px;font-size:14px;}
     .epbtn{grid-row:3;grid-column:4;justify-self:end;min-width:56px;padding:6px;font-size:12px;}
+    .epbtn[hidden]{display:none;}
+    .wt-label{display:block;}
     .n{display:none;}
     .info{display:none;}
     .y i{display:inline;margin-left:8px;}
@@ -1847,16 +1851,16 @@ var PRELOAD = {};
       p.classList.toggle("hidden", p.id !== "panel-" + name);
     });
     $("controls").classList.toggle("hidden",
-      name === "cast" || name === "stats" || name === "vs" ||
-      name === "characters" || name === "nonmcu" || name === "side");
+      name === "cast" || name === "stats" || name === "vs" || name === "characters");
+    // bu iki listede filtre çipleri anlamsız; yalnızca arama kalsın
+    $("controls").classList.toggle("only-search", name === "nonmcu" || name === "side");
     if (name === "mcu" || name === "chrono") {
       $("panel-" + name).querySelector(".layout").appendChild($("rail"));
     }
     window.scrollTo({ top: 0 });
     if (name === "nonmcu" || name === "side") {
       // bu listelerde filtre ve sıralama anlamsız; sıfırla ki liste eksik görünmesin
-      view.filter = "all"; view.sort = "release"; view.q = "";
-      var ar = $("search"); if (ar) ar.value = "";
+      view.filter = "all"; view.sort = "release";
       document.querySelectorAll("[data-f]").forEach(function (c) {
         c.setAttribute("aria-pressed", c.dataset.f === "all" ? "true" : "false");
       });
@@ -2562,6 +2566,7 @@ var PRELOAD = {};
     epPop.appendChild(sil);
 
     epPop.hidden = false;
+    epPop.scrollTop = 0;
     var r = btn.getBoundingClientRect();
     var top = r.bottom + 6, left = r.left + r.width / 2 - 59;
     if (left < 8) left = 8;
@@ -2574,7 +2579,13 @@ var PRELOAD = {};
     var secili = epPop.querySelector("button.on");
     if (secili) epPop.scrollTop = secili.offsetTop - 80;
   }
-  window.addEventListener("scroll", function () { hidePop(); hideEpPop(); }, true);
+  window.addEventListener("scroll", function (e) {
+    // seçim kutusunun kendi içinde kaydırma yapılıyorsa kapatma
+    if ((e.target && e.target.nodeType === 1) &&
+        (epPop.contains(e.target) || pop.contains(e.target))) return;
+    hidePop();
+    hideEpPop();
+  }, true);
 
   all.forEach(function (row) {
     var ms = row.querySelector(".myscore");
@@ -2585,6 +2596,7 @@ var PRELOAD = {};
     var eb = row.querySelector(".epbtn");
     if (eb) eb.addEventListener("click", function (e) {
       e.stopPropagation();
+      if (eb.hidden) return;
       showEpPop(eb, row.dataset.id);
     });
     var po = row.querySelector(".poster");
