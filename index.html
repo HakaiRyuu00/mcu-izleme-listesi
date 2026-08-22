@@ -298,6 +298,36 @@
   }
   .countbar b{color:var(--ink);font-size:15px;}
 
+  /* ---------- Saga ayracı ---------- */
+  .saga{
+    background:var(--ink);color:#fff;padding:26px 26px 24px;margin:0 0 18px;
+    position:relative;overflow:hidden;border-left:6px solid var(--p3);
+  }
+  .saga::after{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.13) 1.1px, transparent 1.2px);
+    background-size:9px 9px;opacity:.5;pointer-events:none;
+  }
+  .saga > *{position:relative;z-index:1;}
+  .saga-label{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.3em;
+    text-transform:uppercase;color:#7E8C9B;margin-bottom:10px;
+  }
+  .saga h2{
+    font-family:"Anton",sans-serif;font-size:clamp(26px,4vw,40px);line-height:1;
+    text-transform:uppercase;margin:0 0 8px;
+  }
+  .saga-sub{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--p3);margin-bottom:12px;
+  }
+  .saga p{margin:0;max-width:70ch;color:#B9C5D1;font-size:16px;line-height:1.5;}
+  .saga.s04{border-left-color:var(--p4);}
+  .saga.s04 .saga-sub{color:#A98BD8;}
+  .saga.s07{border-left-color:var(--p7);}
+  .saga.s07 .saga-sub{color:#D989B0;}
+  @media (max-width:820px){.saga{padding:20px 18px;}}
+
   /* ---------- Faz / grup ---------- */
   .p1{--accent:var(--p1);} .p2{--accent:var(--p2);} .p3{--accent:var(--p3);}
   .p4{--accent:var(--p4);} .p5{--accent:var(--p5);} .p6{--accent:var(--p6);} .p7{--accent:var(--p7);}
@@ -318,6 +348,27 @@
   .phase-meta{position:relative;z-index:1;}
   .phase-name{font-family:"Anton",sans-serif;font-size:22px;text-transform:uppercase;line-height:1.1;}
   .phase-years{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;opacity:.82;margin-top:4px;}
+  .phase-all{
+    margin-left:16px;position:relative;z-index:1;
+    display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.22);
+    border:1px solid rgba(255,255,255,.35);color:#fff;cursor:pointer;
+    padding:7px 11px;font-family:"IBM Plex Mono",monospace;font-size:11px;
+    letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;
+  }
+  .phase-all:hover{background:rgba(0,0,0,.4);border-color:#fff;}
+  .pa-box{
+    width:13px;height:13px;border:1.5px solid #fff;display:block;position:relative;flex:none;
+  }
+  .phase-all.on .pa-box{background:#fff;}
+  .phase-all.on .pa-box::after{
+    content:"";position:absolute;left:3px;top:0;width:4px;height:8px;
+    border:solid var(--accent);border-width:0 2px 2px 0;transform:rotate(45deg);
+  }
+  @media (max-width:820px){
+    .phase-all{margin-left:auto;padding:6px 8px;font-size:10px;}
+    .phase-all .pa-text{display:none;}
+  }
+
   .phase-count{
     margin-left:auto;position:relative;z-index:1;
     font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.1em;opacity:.9;
@@ -909,6 +960,12 @@
    <div class="layout">
     <div class="main lists">
 
+  <div class="saga s01">
+    <div class="saga-label">Saga</div>
+    <h2>Sonsuzluk Sagası</h2>
+    <div class="saga-sub">Faz 1 – 3 · 2008 – 2019</div>
+    <p>Iron Man'in mağarada yaptığı zırhtan Endgame'in son savaşına kadar uzanan ilk büyük hikâye. Altı Sonsuzluk Taşı ve Thanos'un gölgesi bu sagayı taşır.</p>
+  </div>
   <section class="phase p1">
     <div class="phase-head">
       <div class="phase-no">01</div>
@@ -962,6 +1019,12 @@
   <div class="note note-stop">
     <h2>Burada durabilirsin</h2>
     <p>Yukarıdaki 23 film, Sonsuzluk Sagası'nı baştan sona kapatır. Devamı yeni bir hikâye: Çoklu Evren Sagası. Diziler buradan sonra listeye giriyor — istersen sadece "Önemli" ve "Kesinlikle izlemelisin" olanları takip edip gerisini atlayabilirsin, ana olay örgüsünü kaçırmazsın.</p>
+  </div>
+  <div class="saga s04">
+    <div class="saga-label">Saga</div>
+    <h2>Çoklu Evren Sagası</h2>
+    <div class="saga-sub">Faz 4 – 6 · 2021 – 2027</div>
+    <p>Endgame'in açtığı zaman yarıklarından sonra evren çoğaldı. Diziler bu dönemde devreye girdi, kadro yenilendi ve hikâye Doktor Doom'a doğru ilerliyor.</p>
   </div>
   <section class="phase p4">
     <div class="phase-head">
@@ -1038,6 +1101,12 @@
       <li class="soon" data-id="secretwars" data-list="mcu" data-kind="film" data-rating="5" data-min="150" data-title="Avengers: Secret Wars" data-date="17 Ara 2027" data-search="Avengers: Secret Wars" data-season="" data-type="movie" data-year="2027"><span class="box"></span><span class="n">70</span><span class="poster" data-wiki="Avengers:_Secret_Wars"><span class="ph">A</span></span><span class="t" data-num="70">Avengers: Secret Wars</span><span class="r lv5" title="Önem 5/5">Kesinlikle izlemelisin</span><span class="score">·</span><button type="button" class="myscore" aria-label="Puan ver"></button><span class="y">17 Ara 2027<i>2s 30dk</i></span><button type="button" class="epbtn" hidden aria-label="Kaçıncı bölümdesin">–</button><button type="button" class="info" aria-label="Detay">i</button></li>
     </ol>
   </section>
+  <div class="saga s07">
+    <div class="saga-label">Saga</div>
+    <h2>Mutant Sagası</h2>
+    <div class="saga-sub">Faz 7 · 2028 –</div>
+    <p>Secret Wars'tan sonrası. Kevin Feige'nin yeni dönem için kullandığı ad; odak Avengers'tan X-Men'e kayıyor.</p>
+  </div>
   <section class="phase p7">
     <div class="phase-head">
       <div class="phase-no">07</div>
@@ -2179,6 +2248,41 @@
         phase.querySelector(".phase-head").appendChild(badge);
       }
       badge.textContent = hit + "/" + rows.length;
+
+      // "Hepsini İzledim" — fazın tamamını tek hamlede işaretler
+      var toplu = phase.querySelector(".phase-all");
+      if (!toplu) {
+        toplu = document.createElement("button");
+        toplu.type = "button";
+        toplu.className = "phase-all";
+        toplu.innerHTML = '<span class="pa-box"></span><span class="pa-text">Hepsini izledim</span>';
+        toplu.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var hedefler = [].slice.call(phase.querySelectorAll("ol.list li"))
+            .filter(function (r) { return !r.classList.contains("soon"); });
+          if (!hedefler.length) return;
+          var hepsi = hedefler.every(function (r) { return watched[r.dataset.id]; });
+          hedefler.forEach(function (r) {
+            var id = r.dataset.id;
+            if (hepsi) {
+              delete watched[id];
+              delete gunluk[id];
+            } else if (!watched[id]) {
+              watched[id] = 1;
+              gunluk[id] = new Date().toISOString().slice(0, 10);
+            }
+          });
+          if (!sharedMode) { save(watched); saveGunluk(); }
+          paint();
+          render();
+        });
+        phase.querySelector(".phase-head").appendChild(toplu);
+      }
+      var cikmis = [].slice.call(rows).filter(function (r) { return !r.classList.contains("soon"); });
+      var tamam = cikmis.length > 0 && cikmis.every(function (r) { return watched[r.dataset.id]; });
+      toplu.classList.toggle("on", tamam);
+      toplu.setAttribute("aria-pressed", tamam ? "true" : "false");
+      toplu.querySelector(".pa-text").textContent = tamam ? "Hepsi izlendi" : "Hepsini izledim";
     });
 
     renderNext();
