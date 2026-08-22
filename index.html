@@ -201,6 +201,19 @@
     font-weight:400;color:var(--ink-soft);margin-top:6px;letter-spacing:0;
   }
 
+  .fresh{
+    display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+    background:#123D24;border:1px solid #2E9E45;color:#D6F0DC;
+    padding:13px 16px;margin:0 0 18px;font-size:16px;
+  }
+  .fresh b{color:#7CE096;}
+  .fresh .btn{border-color:rgba(255,255,255,.35);color:#D6F0DC;margin-left:auto;}
+  .fresh .btn:hover{background:rgba(255,255,255,.12);}
+  #rollLimit{
+    width:100%;padding:8px 10px;margin-bottom:10px;border:1px solid var(--line);
+    background:var(--card);color:var(--ink);font-family:inherit;font-size:15px;
+  }
+
   /* ---------- Sıradaki ---------- */
   .nextup{
     background:var(--card);border:1px solid var(--line);border-left:5px solid var(--p3);
@@ -716,6 +729,35 @@
   }
   @media (max-width:820px){
     body{font-size:17px;}
+    .wrap{padding:0 12px 56px;}
+    .masthead{margin:0 -12px 0;padding:28px 16px 24px;}
+    .tabs{
+      margin:0 -12px 20px;padding:0 12px;flex-wrap:nowrap;overflow-x:auto;
+      -webkit-overflow-scrolling:touch;scrollbar-width:none;
+    }
+    .tabs::-webkit-scrollbar{display:none;}
+    .tab{flex:0 0 auto;padding:12px 13px;font-size:11px;white-space:nowrap;}
+    .scoreboard{margin:0 -12px 22px;padding:26px 16px 24px;}
+    .mast-cd{max-width:none;padding:14px;}
+    .countdown div{padding:8px 1px;}
+    .countdown b{font-size:18px;}
+    .deck{font-size:16px;}
+    .progress-text{flex-wrap:wrap;}
+    .searchbar{gap:8px;}
+    .searchbar input{flex:1 1 100%;font-size:16px;}
+    .chip{padding:9px 11px;}
+    .statgrid div{flex:1 1 132px;padding:14px;}
+    .statgrid b{font-size:26px;}
+    .badge{flex:1 1 100px;padding:12px 8px;}
+    .charcard{flex-direction:row;}
+    .sheet-top{flex-direction:column;gap:14px;padding:18px;}
+    .sheet-poster{width:120px;}
+    .sheet-body{padding:18px;}
+    .modal{padding:2vh 10px;}
+    .pop{width:206px;}
+    .pop.vert{width:132px;max-height:52vh;}
+    .fresh{font-size:15px;}
+    .fresh .btn{margin-left:0;}
     .list-head{display:none;}
     ol.list li{
       grid-template-columns:74px minmax(0,1fr) auto auto;
@@ -792,10 +834,9 @@
   <nav class="tabs" role="tablist" aria-label="Listeler">
     <button type="button" class="tab" role="tab" data-tab="mcu" aria-selected="true">Çıkış Sırası</button>
     <button type="button" class="tab" role="tab" data-tab="chrono" aria-selected="false">Kronolojik</button>
-    <button type="button" class="tab" role="tab" data-tab="nonmcu" aria-selected="false">MCU Dışı Marvel</button>
+    <button type="button" class="tab" role="tab" data-tab="nonmcu" aria-selected="false">MCU Dışı</button>
     <button type="button" class="tab" role="tab" data-tab="side" aria-selected="false">Yan Yollar</button>
-    <button type="button" class="tab" role="tab" data-tab="cast" aria-selected="false">Oyuncular</button>
-    <button type="button" class="tab" role="tab" data-tab="characters" aria-selected="false">Tüm Karakterler</button>
+    <button type="button" class="tab" role="tab" data-tab="cast" aria-selected="false">Kim Kimdir</button>
     <button type="button" class="tab" role="tab" data-tab="stats" aria-selected="false">İzleme Listem</button>
     <button type="button" class="tab" role="tab" data-tab="vs" aria-selected="false">Kıyasla</button>
   </nav>
@@ -822,6 +863,11 @@
     <div class="list-head"><span>Afiş</span><span>Yapım</span><span>Doomsday İçin İzlenmeli Mi</span><button type="button" class="sortable" data-sort="score">Puan</button><button type="button" class="sortable" data-sort="mine">Senin Puanın</button><span>Tarih</span><span>Kaçıncı Bölümdesin</span><span>İzledim</span><span></span></div>
     <ol class="list" id="sortList"></ol>
   </section>
+
+  <div class="fresh hidden" id="freshBar">
+    <div id="freshText"></div>
+    <button type="button" class="btn" id="freshDismiss">Tamam</button>
+  </div>
 
   <div class="shared-banner hidden" id="sharedBanner">
     <span>Paylaşılan bir ilerlemeye bakıyorsun.</span>
@@ -1003,6 +1049,13 @@
       <div class="railcard">
         <h3>Ne izlesem?</h3>
         <div class="wheel" id="wheel"><div class="wheel-strip" id="wheelStrip"></div></div>
+        <select id="rollLimit" aria-label="Süre sınırı">
+          <option value="0">Süre farketmez</option>
+          <option value="95">90 dakikaya kadar</option>
+          <option value="125">2 saate kadar</option>
+          <option value="155">2,5 saate kadar</option>
+          <option value="9999">Sadece filmler</option>
+        </select>
         <div class="nextup-actions">
           <button type="button" class="btn primary" id="rollBtn">Çarkı çevir</button>
           <button type="button" class="btn" id="rollDetail" hidden>Detay</button>
@@ -1042,7 +1095,7 @@
         <div class="sb-share">
           <button type="button" class="btn" id="shareBtn">İlerlemeni paylaş</button>
           <button type="button" class="btn" id="compareBtn">Karşılaştır</button>
-          <button type="button" class="btn" id="exportBtn">Verileri dışa aktar</button>
+          <button type="button" class="btn" id="exportBtn">Veri dosyası oluştur</button>
           <input type="text" id="shareUrl" class="hidden" readonly aria-label="Paylaşım bağlantısı">
           <p class="sb-hint" id="shareHint">Bu bağlantı işaretlediklerini içinde taşır; arkadaşın açtığında senin ilerlemeni görür.</p>
         </div>
@@ -1502,6 +1555,11 @@
 
   <!-- ============ OYUNCULAR ============ -->
   <div class="panel hidden" id="panel-cast" role="tabpanel">
+    <div class="toolbar" role="group" aria-label="Kim kimdir">
+      <button type="button" class="chip" id="tabActors" aria-pressed="true">Oyuncular</button>
+      <button type="button" class="chip" id="tabChars" aria-pressed="false">Karakterler</button>
+    </div>
+    <div id="castZone">
     <div class="castbar">
       <input type="search" id="castSearch" placeholder="Oyuncu veya karakter ara…" aria-label="Oyuncu ara">
       <button type="button" class="chip" id="castAll" aria-pressed="false">Tek yapımlıkları da göster</button>
@@ -1509,16 +1567,17 @@
     </div>
 
     <div id="castList"></div>
-  </div>
-
-  <!-- ============ TÜM KARAKTERLER ============ -->
-  <div class="panel hidden" id="panel-characters" role="tabpanel">
+    </div>
+    <div id="charZone" class="hidden">
     <div class="castbar">
       <input type="search" id="charSearch" placeholder="Karakter ara…" aria-label="Karakter ara">
       <span class="cstatus" id="charStatus">Yükleniyor…</span>
     </div>
     <div id="charGrid" class="chargrid"></div>
+    </div>
   </div>
+
+  <!-- ============ TÜM KARAKTERLER ============ -->
 
   <!-- ============ KIYASLA ============ -->
   <div class="panel hidden" id="panel-vs" role="tabpanel">
@@ -1564,6 +1623,22 @@
     <span style="text-transform:none;letter-spacing:0">Veriler TMDB ve OMDb'den alınmıştır. This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
   </footer>
 
+</div>
+
+<div class="modal" id="hello" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="helloTitle">
+    <div class="sheet-body">
+      <h2 id="helloTitle" style="font-family:Anton,sans-serif;font-size:26px;margin:0 0 14px">Hoş geldin</h2>
+      <p style="margin:0 0 12px">Bu liste Marvel Sinematik Evreni'nin tamamını çıkış sırasına göre gösterir. Kullanımı üç hareketten ibaret:</p>
+      <ul style="margin:0 0 16px;padding-left:20px">
+        <li style="margin-bottom:7px"><b>Satıra tıkla</b> — izlediklerini işaretlersin.</li>
+        <li style="margin-bottom:7px"><b>Yıldıza tıkla</b> — o yapıma 10 üzerinden kendi puanını verirsin.</li>
+        <li style="margin-bottom:7px"><b>Afişe tıkla</b> — konu, fragman, oyuncular ve not alanı açılır.</li>
+      </ul>
+      <p style="margin:0 0 16px;color:var(--ink-soft)">İşaretlerin, puanların ve notların <b>yalnızca bu tarayıcıda</b> saklanır; sunucuya gitmez. Cihaz değiştireceksen "İzleme Listem" sekmesinden yedek alabilirsin.</p>
+      <button type="button" class="btn primary" id="helloClose">Başlayalım</button>
+    </div>
+  </div>
 </div>
 
 <div class="modal" id="modal" hidden>
@@ -1618,9 +1693,6 @@
 </div>
 
 <script>
-/* ==== GÖMÜLÜ VERİ — "Verileri dışa aktar" düğmesinin verdiği satırı buraya yapıştır ==== */
-var PRELOAD = {};
-/* ===================================================================================== */
 (function () {
   var KEY = "mcu-izleme-sirasi-v4";
   var A = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
@@ -1851,7 +1923,7 @@ var PRELOAD = {};
       p.classList.toggle("hidden", p.id !== "panel-" + name);
     });
     $("controls").classList.toggle("hidden",
-      name === "cast" || name === "stats" || name === "vs" || name === "characters");
+      name === "cast" || name === "stats" || name === "vs");
     // bu iki listede filtre çipleri anlamsız; yalnızca arama kalsın
     $("controls").classList.toggle("only-search", name === "nonmcu" || name === "side");
     if (name === "mcu" || name === "chrono") {
@@ -1870,8 +1942,8 @@ var PRELOAD = {};
     }
     if (name === "nonmcu" || name === "side" || name === "chrono") listeYukle(name === "chrono" ? "mcu" : name);
     if (name === "vs") { listeYukle("nonmcu"); listeYukle("side"); }
-    if (name === "cast") { listeYukle("nonmcu"); startCast(); }
-    else if (name === "characters") { listeYukle("mcu"); startCharacters(); }
+    if (name === "cast") { listeYukle("nonmcu"); startCast(); if (!$("charZone").classList.contains("hidden")) startCharacters(); }
+
     else if (name === "stats") { renderStats(); }
     else if (name === "vs") { initVs(); }
     else { applyView(); }
@@ -2070,14 +2142,14 @@ var PRELOAD = {};
       var m = meta[id];
       if (m && m.p) out[id] = m;
     });
-    var text = "var PRELOAD = " + JSON.stringify(out) + ";";
-    var blob = new Blob([text], { type: "text/plain" });
+    var blob = new Blob([JSON.stringify(out)], { type: "application/json" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "mcu-preload.txt";
+    a.download = "veri.json";
     a.click();
-    $("shareHint").textContent = "İndirilen dosyanın içeriğini index.html'deki \"var PRELOAD = {};\" satırının " +
-      "yerine yapıştır. Not: yalnızca açtığın sekmelerin verisi gömülür.";
+    $("shareHint").textContent = "İnen veri.json dosyasını index.html'in yanına, deponun ana " +
+      "dizinine yükle. Site bundan sonra afiş, puan, süre ve kadroları oradan okur; " +
+      "TMDB ve OMDb'yi hiç beklemez. Şu an " + Object.keys(out).length + " yapım kayıtlı.";
   });
 
   /* ---- karşılaştırma ---- */
@@ -2147,7 +2219,18 @@ var PRELOAD = {};
 
   var meta = {};
   try { meta = JSON.parse(localStorage.getItem(MKEY)) || {}; } catch (e) { meta = {}; }
-  for (var pk in PRELOAD) meta[pk] = PRELOAD[pk];
+  // Depoda veri.json varsa API beklemeden oradan okunur.
+  // "Veri dosyası oluştur" düğmesiyle üretip repoya yüklemen yeterli.
+  var veriHazir = fetch("veri.json", { cache: "no-cache" })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (!d) return false;
+      for (var k in d) { if (!meta[k] || !meta[k].p) meta[k] = d[k]; }
+      keys.forEach(paintMeta);
+      dirty = true;
+      return true;
+    })
+    .catch(function () { return false; });
   var dirty = false;
   setInterval(function () {
     if (!dirty) return;
@@ -2424,7 +2507,7 @@ var PRELOAD = {};
     status();
     bekleyen.forEach(function (id, i) { setTimeout(function () { fetchItem(id); }, i * 55); });
   }
-  listeYukle("mcu");
+  veriHazir.then(function () { listeYukle("mcu"); });
 
   /* ================= DETAY PENCERESİ ================= */
   var modal = $("modal");
@@ -2618,11 +2701,19 @@ var PRELOAD = {};
   }
   var rollPick = null;
   function initWheel() {
+    var sinir = +($("rollLimit") ? $("rollLimit").value : 0);
     var aday = mcu.filter(function (r) {
-      return !watched[r.dataset.id] && !r.classList.contains("soon");
+      if (watched[r.dataset.id] || r.classList.contains("soon")) return false;
+      if (sinir === 9999) return r.dataset.kind === "film";
+      if (sinir > 0) {
+        var d = +r.dataset.min || 0;
+        return d > 0 && d <= sinir;
+      }
+      return true;
     });
     if (!aday.length) {
-      $("wheelStrip").innerHTML = '<div class="wheel-item"><span>Yayınlanmış her şeyi izlemişsin.</span></div>';
+      $("wheelStrip").innerHTML =
+        '<div class="wheel-item"><span>Bu koşullara uyan izlenmemiş yapım yok.</span></div>';
       return null;
     }
     return aday;
@@ -2677,6 +2768,10 @@ var PRELOAD = {};
       }
     }
     requestAnimationFrame(adim);
+  });
+  if ($("rollLimit")) $("rollLimit").addEventListener("change", function () {
+    $("rollDetail").hidden = true;
+    initWheelOnce();
   });
   $("rollDetail").addEventListener("click", function () {
     if (rollPick) openSheet(rollPick.dataset.id);
@@ -2862,6 +2957,65 @@ var PRELOAD = {};
     };
     fr.readAsText(f);
   });
+
+  /* ---- Kim kimdir: oyuncular / karakterler ---- */
+  $("tabActors").addEventListener("click", function () {
+    $("castZone").classList.remove("hidden");
+    $("charZone").classList.add("hidden");
+    $("tabActors").setAttribute("aria-pressed", "true");
+    $("tabChars").setAttribute("aria-pressed", "false");
+  });
+  $("tabChars").addEventListener("click", function () {
+    $("castZone").classList.add("hidden");
+    $("charZone").classList.remove("hidden");
+    $("tabActors").setAttribute("aria-pressed", "false");
+    $("tabChars").setAttribute("aria-pressed", "true");
+    listeYukle("mcu");
+    startCharacters();
+  });
+
+  /* ================= YENİ ÇIKANLAR ================= */
+  (function () {
+    var FKEY = "mcu-yeni-kapatilan-v1";
+    var kapatilan = {};
+    try { kapatilan = JSON.parse(localStorage.getItem(FKEY)) || {}; } catch (e) {}
+    var simdi = new Date();
+    var esik = new Date(simdi.getTime() - 45 * 86400000);
+    var yeniler = [];
+    all.forEach(function (r) {
+      if (r.dataset.list !== "mcu") return;
+      var t = tariheCevir(r.dataset.date);
+      if (!t || !t.kesin) return;
+      if (t.d <= simdi && t.d >= esik && !kapatilan[r.dataset.id]) {
+        yeniler.push(r);
+      }
+    });
+    if (!yeniler.length) return;
+    var adlar = yeniler.map(function (r) { return "<b>" + r.dataset.title + "</b>"; });
+    $("freshText").innerHTML = (yeniler.length === 1 ? "Yeni çıktı: " : "Yeni çıkanlar: ") +
+      adlar.join(", ") + " — listede seni bekliyor.";
+    $("freshBar").classList.remove("hidden");
+    $("freshDismiss").addEventListener("click", function () {
+      yeniler.forEach(function (r) { kapatilan[r.dataset.id] = 1; });
+      try { localStorage.setItem(FKEY, JSON.stringify(kapatilan)); } catch (e) {}
+      $("freshBar").classList.add("hidden");
+    });
+  })();
+
+  /* ================= İLK ZİYARET ================= */
+  (function () {
+    var HKEY = "mcu-karsilama-v1";
+    var gordu = null;
+    try { gordu = localStorage.getItem(HKEY); } catch (e) {}
+    if (gordu) return;
+    $("hello").hidden = false;
+    function kapat() {
+      $("hello").hidden = true;
+      try { localStorage.setItem(HKEY, "1"); } catch (e) {}
+    }
+    $("helloClose").addEventListener("click", kapat);
+    $("hello").addEventListener("click", function (e) { if (e.target === $("hello")) kapat(); });
+  })();
 
   /* ================= KIYASLA ================= */
   var vsReady = false;
