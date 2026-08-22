@@ -44,6 +44,7 @@
   body.dark .btn:hover{background:#232B34;}
   body.dark .info{border-color:#3C4855;color:#8A97A5;}
   body.dark .info:hover{background:var(--ink);color:#0D1218;}
+  body.dark .soonbar{background:#0E2740;border-color:#265B8C;}
   body.dark .shared-banner{background:#3A2F14;border-color:#6B5A24;color:#F0E3C0;}
   body.dark .sheet-close{background:var(--p3);}
   body.dark li.done .t{color:#6E7A87;}
@@ -213,33 +214,35 @@
   }
 
   .soonbar{
-    display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;
-    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--p1);
-    padding:12px 16px;margin:0 0 18px;font-size:16px;color:var(--ink-soft);
+    display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+    background:#12304F;border:1px solid #2F6DA6;color:#D6E4F0;
+    padding:12px 16px;margin:0 0 18px;font-size:16px;
   }
   .soonbar span{
     font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;
     text-transform:uppercase;color:var(--p1);font-weight:600;
   }
+  #freshText{display:flex;flex-wrap:wrap;align-items:center;gap:14px;}
   .serit-label{
     font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;
     text-transform:uppercase;font-weight:600;flex:none;
   }
   .fresh .serit-label{color:#7CE096;}
-  .soonbar .serit-label{color:var(--p1);}
+  .soonbar .serit-label{color:#8CC0F0;}
   .serit-item{
     background:none;border:none;padding:0;cursor:pointer;display:inline-flex;align-items:center;
     font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:18px;
     color:inherit;border-bottom:1px solid transparent;
   }
   .fresh .serit-item{color:#fff;}
-  .soonbar .serit-item{color:var(--ink);}
+  .soonbar .serit-item{color:#fff;}
   .serit-item:hover{border-bottom-color:currentColor;}
   .serit-date{
-    font-family:"IBM Plex Mono",monospace;font-size:13px;opacity:.85;margin-left:auto;
+    font-family:"IBM Plex Mono",monospace;font-size:13px;color:#9FC4E4;
+    padding-left:4px;border-left:1px solid rgba(255,255,255,.25);margin-left:2px;
   }
   @media (max-width:820px){
-    .serit-date{margin-left:0;width:100%;}
+    .serit-date{border-left:none;padding-left:0;margin-left:0;}
   }
   #rollLimit{
     width:100%;padding:8px 10px;margin-bottom:10px;border:1px solid var(--line);
@@ -3359,6 +3362,7 @@
       });
     }
     return mcu.filter(function (r) {
+      if (r.classList.contains("soon")) return false;   // henüz çıkmamışlar sıralanamaz
       var f = r.dataset.kind === "film";
       return tierMode === "film" ? f : !f;
     }).map(function (r) {
