@@ -210,8 +210,17 @@
     padding:13px 16px;margin:0 0 18px;font-size:16px;
   }
   .fresh b{color:#7CE096;}
-  .fresh .btn{border-color:rgba(255,255,255,.35);color:#D6F0DC;margin-left:auto;}
-  .fresh .btn:hover{background:rgba(255,255,255,.12);}
+  .soonbar{
+    display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--p1);
+    padding:12px 16px;margin:0 0 18px;font-size:16px;color:var(--ink-soft);
+  }
+  .soonbar span{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--p1);font-weight:600;
+  }
+  .soonbar b{color:var(--ink);font-size:17px;}
+  .soonbar em{font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:13px;}
   #rollLimit{
     width:100%;padding:8px 10px;margin-bottom:10px;border:1px solid var(--line);
     background:var(--card);color:var(--ink);font-family:inherit;font-size:15px;
@@ -778,7 +787,7 @@
     .pop{width:206px;}
     .pop.vert{width:132px;max-height:52vh;}
     .fresh{font-size:15px;}
-    .fresh .btn{margin-left:0;}
+    .soonbar{font-size:15px;}
     .list-head{display:none;}
     ol.list li{
       grid-template-columns:74px minmax(0,1fr) auto auto;
@@ -885,10 +894,8 @@
     <ol class="list" id="sortList"></ol>
   </section>
 
-  <div class="fresh hidden" id="freshBar">
-    <div id="freshText"></div>
-    <button type="button" class="btn" id="freshDismiss">Tamam</button>
-  </div>
+  <div class="fresh hidden" id="freshBar"><div id="freshText"></div></div>
+  <div class="soonbar hidden" id="soonBar"></div>
 
   <div class="shared-banner hidden" id="sharedBanner">
     <span>Paylaşılan bir ilerlemeye bakıyorsun.</span>
@@ -1681,7 +1688,13 @@
         <li style="margin-bottom:7px"><b>Afişe tıkla</b> — konu, fragman, oyuncular ve not alanı açılır.</li>
       </ul>
       <p style="margin:0 0 16px;color:var(--ink-soft)">İşaretlerin, puanların ve notların <b>yalnızca bu tarayıcıda</b> saklanır; sunucuya gitmez. Cihaz değiştireceksen "İzleme Listem" sekmesinden yedek alabilirsin.</p>
-      <button type="button" class="btn primary" id="helloClose">Başlayalım</button>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+        <button type="button" class="btn primary" id="helloClose">Başlayalım</button>
+        <label style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--ink-soft);cursor:pointer">
+          <input type="checkbox" id="helloNever" style="width:16px;height:16px;cursor:pointer">
+          Bunu bir daha gösterme
+        </label>
+      </div>
     </div>
   </div>
 </div>
@@ -3048,44 +3061,55 @@
     startCharacters();
   });
 
-  /* ================= YENİ ÇIKANLAR ================= */
+  /* ================= YENİ ÇIKANLAR + YAKINDA ================= */
   (function () {
-    var FKEY = "mcu-yeni-kapatilan-v1";
-    var kapatilan = {};
-    try { kapatilan = JSON.parse(localStorage.getItem(FKEY)) || {}; } catch (e) {}
     var simdi = new Date();
     var esik = new Date(simdi.getTime() - 45 * 86400000);
-    var yeniler = [];
+    var yeniler = [], yakin = null, yakinRow = null;
+
     all.forEach(function (r) {
       if (r.dataset.list !== "mcu") return;
       var t = tariheCevir(r.dataset.date);
-      if (!t || !t.kesin) return;
-      if (t.d <= simdi && t.d >= esik && !kapatilan[r.dataset.id]) {
-        yeniler.push(r);
+      if (!t) return;
+      if (t.d <= simdi) {
+        if (t.kesin && t.d >= esik) yeniler.push(r);
+      } else if (!yakin || t.d < yakin) {
+        yakin = t.d; yakinRow = r;
       }
     });
-    if (!yeniler.length) return;
-    var adlar = yeniler.map(function (r) { return "<b>" + r.dataset.title + "</b>"; });
-    $("freshText").innerHTML = (yeniler.length === 1 ? "Yeni çıktı: " : "Yeni çıkanlar: ") +
-      adlar.join(", ") + " — listede seni bekliyor.";
-    $("freshBar").classList.remove("hidden");
-    $("freshDismiss").addEventListener("click", function () {
-      yeniler.forEach(function (r) { kapatilan[r.dataset.id] = 1; });
-      try { localStorage.setItem(FKEY, JSON.stringify(kapatilan)); } catch (e) {}
-      $("freshBar").classList.add("hidden");
-    });
+
+    if (yeniler.length) {
+      var adlar = yeniler.map(function (r) { return "<b>" + r.dataset.title + "</b>"; });
+      $("freshText").innerHTML = (yeniler.length === 1 ? "Yeni çıktı: " : "Yeni çıkanlar: ") +
+        adlar.join(", ");
+      $("freshBar").classList.remove("hidden");
+    }
+
+    if (yakinRow) {
+      var t2 = tariheCevir(yakinRow.dataset.date);
+      var tarihMetni = t2.kesin
+        ? t2.d.getDate() + " " + AYUZUN[t2.d.getMonth()] + " " + t2.d.getFullYear()
+        : yakinRow.dataset.date;
+      var kalanGun = Math.ceil((yakin - simdi) / 86400000);
+      $("soonBar").innerHTML = "<span>Yakında:</span> <b>" + yakinRow.dataset.title + "</b>" +
+        " · " + tarihMetni + " <em>(" + kalanGun + " gün)</em>";
+      $("soonBar").classList.remove("hidden");
+    }
   })();
 
   /* ================= İLK ZİYARET ================= */
   (function () {
-    var HKEY = "mcu-karsilama-v1";
-    var gordu = null;
-    try { gordu = localStorage.getItem(HKEY); } catch (e) {}
-    if (gordu) return;
+    // Karşılama her ziyarette çıkar; yalnızca kutuyu işaretleyen bir daha görmez.
+    var HKEY = "mcu-karsilama-gizle-v2";
+    var gizle = null;
+    try { gizle = localStorage.getItem(HKEY); } catch (e) {}
+    if (gizle === "1") return;
     $("hello").hidden = false;
     function kapat() {
       $("hello").hidden = true;
-      try { localStorage.setItem(HKEY, "1"); } catch (e) {}
+      if ($("helloNever") && $("helloNever").checked) {
+        try { localStorage.setItem(HKEY, "1"); } catch (e) {}
+      }
     }
     $("helloClose").addEventListener("click", kapat);
     $("hello").addEventListener("click", function (e) { if (e.target === $("hello")) kapat(); });
