@@ -11,6 +11,7 @@
 <meta property="og:image" content="https://hakairyuu00.github.io/mcu-izleme-listesi/og.png">
 <meta property="og:url" content="https://hakairyuu00.github.io/mcu-izleme-listesi/">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#101720">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -65,6 +66,23 @@
     content:"";position:absolute;inset:0;
     background-image:radial-gradient(rgba(255,255,255,.16) 1.1px, transparent 1.2px);
     background-size:9px 9px;opacity:.55;pointer-events:none;
+  }
+  .mast-grid{
+    display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:36px;align-items:center;
+    position:relative;z-index:1;
+  }
+  .mast-cd{
+    border:1px solid rgba(63,191,87,.45);background:rgba(8,13,18,.55);padding:18px;
+  }
+  .mast-cd h3{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;
+    text-transform:uppercase;color:#3FBF57;margin:0 0 14px;font-weight:600;
+  }
+  .mast-cd .countdown div{background:rgba(255,255,255,.05);}
+  .mast-cd .cd-target{color:#8FA3B8;}
+  @media (max-width:1000px){
+    .mast-grid{grid-template-columns:minmax(0,1fr);gap:24px;}
+    .mast-cd{max-width:420px;}
   }
   .eyebrow{
     font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.22em;
@@ -349,6 +367,7 @@
   .t{font-weight:700;font-size:26px;line-height:1.15;min-width:0;}
   .t::before{content:none;}
   .t small{display:block;font-weight:400;font-size:16px;color:var(--ink-soft);margin-top:4px;}
+  .t small.epbadge{color:var(--p3);font-weight:600;font-size:14px;}
   .r{
     font-size:15px;line-height:1.25;text-align:center;
     font-weight:600;letter-spacing:.005em;
@@ -708,6 +727,8 @@
 <div class="wrap">
 
   <header class="masthead">
+   <div class="mast-grid">
+    <div class="mast-main">
     <p class="eyebrow">Marvel Sinematik Evreni</p>
     <h1>MCU İzleme <em>Rehberi</em></h1>
     <p class="deck">Vizyona çıkış tarihine göre sıralı. Sağdaki önem derecesi, ana hikâyeyi takip etmek için o yapımın ne kadar gerekli olduğunu gösterir. İzlediğin satıra tıkla, işaretlensin.</p>
@@ -719,6 +740,21 @@
         <button type="button" class="reset" id="reset">Sıfırla</button></span>
       </div>
     </div>
+    </div>
+
+    <div class="mast-cd" id="countdownCard">
+      <h3 id="cdTitle">Avengers: Doomsday</h3>
+      <div class="countdown">
+        <div><b id="cdM">–</b><span>ay</span></div>
+        <div><b id="cdD">–</b><span>gün</span></div>
+        <div><b id="cdH">–</b><span>saat</span></div>
+        <div><b id="cdMin">–</b><span>dk</span></div>
+        <div><b id="cdS">–</b><span>sn</span></div>
+      </div>
+      <div class="cd-bar"><i id="cdBar"></i></div>
+      <div class="cd-target" id="cdDate">18 Aralık 2026 · vizyon</div>
+    </div>
+   </div>
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Listeler">
@@ -728,7 +764,7 @@
     <button type="button" class="tab" role="tab" data-tab="side" aria-selected="false">Yan Yollar</button>
     <button type="button" class="tab" role="tab" data-tab="cast" aria-selected="false">Oyuncular</button>
     <button type="button" class="tab" role="tab" data-tab="characters" aria-selected="false">Tüm Karakterler</button>
-    <button type="button" class="tab" role="tab" data-tab="stats" aria-selected="false">İstatistik</button>
+    <button type="button" class="tab" role="tab" data-tab="stats" aria-selected="false">İzleme Listem</button>
     <button type="button" class="tab" role="tab" data-tab="vs" aria-selected="false">Kıyasla</button>
   </nav>
 
@@ -940,19 +976,6 @@
           <button type="button" class="btn primary" id="rollBtn">Çarkı çevir</button>
           <button type="button" class="btn" id="rollDetail" hidden>Detay</button>
         </div>
-      </div>
-
-      <div class="railcard" id="countdownCard" style="border-color:#2E9E45">
-        <h3 style="color:#2E9E45">Avengers: Doomsday</h3>
-        <div class="countdown">
-          <div><b id="cdM">–</b><span>ay</span></div>
-          <div><b id="cdD">–</b><span>gün</span></div>
-          <div><b id="cdH">–</b><span>saat</span></div>
-          <div><b id="cdMin">–</b><span>dk</span></div>
-          <div><b id="cdS">–</b><span>sn</span></div>
-        </div>
-        <div class="cd-bar"><i id="cdBar"></i></div>
-        <div class="cd-target">18 Aralık 2026 · vizyon</div>
       </div>
 
       <div class="railcard">
@@ -1483,19 +1506,22 @@
   <!-- ============ İSTATİSTİK ============ -->
   <div class="panel hidden" id="panel-stats" role="tabpanel">
     <div class="statgrid" id="statTop"></div>
-    <div class="statcard"><h3>Rozetler</h3><div class="badges" id="statBadges"></div></div>
-    <div class="statcard"><h3>İzleme günlüğü</h3><div id="statLog"></div></div>
+
+    <div class="statcard"><h3>Fazları bitirdin mi</h3><div class="badges" id="statBadges"></div></div>
+    <div class="statcard"><h3>Devam eden diziler</h3><div id="statSeries"></div></div>
     <div class="statcard"><h3>Faz faz ilerleme</h3><div id="statPhases"></div></div>
-    <div class="statcard"><h3>Senin puanların ile IMDb</h3><div id="statDiff"></div></div>
-    <div class="statcard"><h3>En çok görünen oyuncular</h3><div id="statCast"></div></div>
+    <div class="statcard"><h3>İzleme günlüğü</h3><div id="statLog"></div></div>
+    <div class="statcard"><h3>İzlediklerin</h3><div id="statWatched"></div></div>
+
     <div class="statcard">
       <h3>Eşleşmeyen veriler</h3>
-      <p style="margin:0 0 12px;color:var(--ink-soft)">Afişi veya puanı çekilemeyen satırlar. Buradakileri bana söylersen arama adlarını düzeltirim.</p>
+      <p style="margin:0 0 12px;color:var(--ink-soft)">Afişi veya puanı çekilemeyen satırlar.</p>
       <div id="statMissing"></div>
     </div>
+
     <div class="statcard">
       <h3>Yedekleme</h3>
-      <p style="margin:0 0 12px;color:var(--ink-soft)">İşaretlerin, puanların ve notların yalnızca bu tarayıcıda duruyor. Tarayıcı verisini temizlersen kaybolur.</p>
+      <p style="margin:0 0 12px;color:var(--ink-soft)">İşaretlerin, puanların, notların ve bölüm ilerlemen yalnızca bu tarayıcıda duruyor.</p>
       <div class="nextup-actions">
         <button type="button" class="btn primary" id="backupBtn">Yedek al</button>
         <button type="button" class="btn" id="restoreBtn">Yedeği geri yükle</button>
@@ -1507,6 +1533,8 @@
 
   <footer>
     76 MCU yapımı · 71 MCU dışı · 19 yan yol · Süreler yaklaşıktır<br>Son Güncelleme: Ağustos 2026
+  <br>
+    <span style="text-transform:none;letter-spacing:0">Veriler TMDB ve OMDb'den alınmıştır. This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
   </footer>
 
 </div>
@@ -1524,6 +1552,7 @@
     </div>
     <div class="sheet-body">
       <div id="mVideo" hidden style="margin:0 0 20px">
+        <h3 id="mVideoLabel" style="margin:0 0 8px">Fragman</h3>
         <div style="position:relative;padding-top:56.25%">
           <iframe id="mFrame" style="position:absolute;inset:0;width:100%;height:100%;border:0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -1532,6 +1561,10 @@
       </div>
       <h3>Konu</h3>
       <p id="mOverview">—</p>
+      <div id="mEpWrap" hidden>
+        <h3>Kaçıncı bölümdesin?</h3>
+        <div class="myrate" id="mEp"></div>
+      </div>
       <h3>Notun</h3>
       <textarea id="mNote" rows="3" placeholder="Bu yapım hakkında kendine not bırak…"
         style="width:100%;padding:10px 12px;border:1px solid var(--line);background:var(--card);
@@ -1600,6 +1633,11 @@ var PRELOAD = {};
     return bits;
   }
 
+  var BKEY = "mcu-bolum-v1";
+  var bolum = {};
+  try { bolum = JSON.parse(localStorage.getItem(BKEY)) || {}; } catch (e) { bolum = {}; }
+  function saveBolum() { try { localStorage.setItem(BKEY, JSON.stringify(bolum)); } catch (e) {} }
+
   var GKEY = "mcu-gunluk-v1";
   var gunluk = {};
   try { gunluk = JSON.parse(localStorage.getItem(GKEY)) || {}; } catch (e) { gunluk = {}; }
@@ -1615,7 +1653,18 @@ var PRELOAD = {};
   function saveMine() { try { localStorage.setItem(RKEY, JSON.stringify(mine)); } catch (e) {} }
 
   var watched = load();
+  var surumM = location.hash.match(/v=(\d+)/);
   var m = location.hash.match(/p=([A-Za-z0-9\-_]+)/);
+  if (m && surumM && +surumM[1] !== ids.length) {
+    // liste o bağlantı üretildikten sonra değişmiş; işaretler kaymış olurdu
+    m = null;
+    setTimeout(function () {
+      var b = $("sharedBanner");
+      b.classList.remove("hidden");
+      b.firstElementChild.textContent =
+        "Bu bağlantı listenin eski bir sürümü için üretilmiş, işaretler doğru eşleşmediği için uygulanmadı.";
+    }, 0);
+  }
   if (m) {
     var bits = decode(m[1]);
     if (bits) {
@@ -1687,7 +1736,14 @@ var PRELOAD = {};
   }
   function matches(row) {
     var k = row.dataset.kind;
-    if (view.q && row.dataset.title.toLocaleLowerCase("tr").indexOf(view.q) < 0) return false;
+    if (view.q) {
+      var havuz = row.dataset.title.toLocaleLowerCase("tr");
+      var kadro = (meta[row.dataset.id] || {}).c || [];
+      for (var ki = 0; ki < kadro.length; ki++) {
+        havuz += " " + (kadro[ki][0] || "") + " " + (kadro[ki][1] || "");
+      }
+      if (havuz.toLocaleLowerCase("tr").indexOf(view.q) < 0) return false;
+    }
     if (view.filter === "film") return k === "film";
     if (view.filter === "tv") return k !== "film";
     if (view.filter === "key") return +row.dataset.rating >= 4;
@@ -1704,7 +1760,7 @@ var PRELOAD = {};
 
   function applyView() {
     var tab = view.tab;
-    if (tab === "cast") return;
+    if (tab === "cast" || tab === "characters" || tab === "stats" || tab === "vs") return;
     var rows = rowsFor(tab);
     var panel = $("panel-" + tab);
     var sortPanel = $("sortPanel"), sortList = $("sortList");
@@ -1779,7 +1835,7 @@ var PRELOAD = {};
     if (name === "nonmcu" || name === "side" || name === "chrono") listeYukle(name === "chrono" ? "mcu" : name);
     if (name === "vs") { listeYukle("nonmcu"); listeYukle("side"); }
     if (name === "cast") { listeYukle("nonmcu"); startCast(); }
-    else if (name === "characters") { startCharacters(); }
+    else if (name === "characters") { listeYukle("mcu"); startCharacters(); }
     else if (name === "stats") { renderStats(); }
     else if (name === "vs") { initVs(); }
     else { applyView(); }
@@ -1934,7 +1990,7 @@ var PRELOAD = {};
 
   /* ---- paylaşım ---- */
   $("shareBtn").addEventListener("click", function () {
-    var url = location.origin + location.pathname + "#p=" + encode();
+    var url = location.origin + location.pathname + "#v=" + ids.length + "&p=" + encode();
     var box = $("shareUrl");
     box.classList.remove("hidden");
     box.value = url;
@@ -1956,9 +2012,16 @@ var PRELOAD = {};
     document.body.classList.toggle("dark", dark);
     $("theme").textContent = dark ? "Gündüz modu" : "Gece modu";
     try { localStorage.setItem(TKEY, dark ? "1" : "0"); } catch (e) {}
+    var tc = document.querySelector('meta[name="theme-color"]');
+    if (tc) tc.setAttribute("content", dark ? "#0D1218" : "#101720");
   }
-  var savedTheme = "0";
-  try { savedTheme = localStorage.getItem(TKEY) || "0"; } catch (e) {}
+  var savedTheme = null;
+  try { savedTheme = localStorage.getItem(TKEY); } catch (e) {}
+  if (savedTheme === null) {
+    // ilk ziyaret: cihazın tercihine uy
+    savedTheme = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ? "1" : "0";
+  }
   setTheme(savedTheme === "1");
   $("theme").addEventListener("click", function () {
     setTheme(!document.body.classList.contains("dark"));
@@ -1986,7 +2049,15 @@ var PRELOAD = {};
     $("compareBox").classList.toggle("hidden");
   });
   $("compareGo").addEventListener("click", function () {
+    var vs = $("compareUrl").value.match(/v=(\d+)/);
     var v = $("compareUrl").value.match(/p=([A-Za-z0-9\-_]+)/);
+    if (vs && +vs[1] !== ids.length) {
+      $("compareResult").classList.remove("hidden");
+      $("compareResult").innerHTML =
+        "<p>Bu bağlantı listenin eski bir sürümüne ait, karşılaştırma yanıltıcı olurdu. " +
+        "Arkadaşından güncel siteden yeni bir bağlantı almasını iste.</p>";
+      return;
+    }
     var box = $("compareResult");
     if (!v) { box.classList.remove("hidden"); box.innerHTML = "<p>Bağlantıda ilerleme kodu bulunamadı.</p>"; return; }
     var bits = decode(v[1]);
@@ -2036,7 +2107,7 @@ var PRELOAD = {};
   var OMDB_KEY = "95b00b72";
   var IMG = "https://image.tmdb.org/t/p/w185";
   var API = "https://en.wikipedia.org/w/api.php";
-  var MKEY = "mcu-veri-v5";
+  var MKEY = "mcu-veri-v6";
 
   var meta = {};
   try { meta = JSON.parse(localStorage.getItem(MKEY)) || {}; } catch (e) { meta = {}; }
@@ -2139,6 +2210,19 @@ var PRELOAD = {};
           ms.style.borderColor = "";
         }
       }
+      var ep = m.ep || 0;
+      var bo = bolum[id] || 0;
+      var eti = row.querySelector(".epbadge");
+      if (ep && !watched[id] && bo > 0) {
+        if (!eti) {
+          eti = document.createElement("small");
+          eti.className = "epbadge";
+          row.querySelector(".t").appendChild(eti);
+        }
+        eti.textContent = ep + " bölümün " + bo + ". bölümündesin";
+      } else if (eti) {
+        eti.remove();
+      }
       if (m.r) {
         row.dataset.min = m.r;
         var d = row.querySelector(".y i");
@@ -2209,14 +2293,15 @@ var PRELOAD = {};
 
   function detail(id, hit, season) {
     return fetch(tmdbUrl("/" + hit.media_type + "/" + hit.id,
-      "&language=tr-TR&append_to_response=credits,videos&include_video_language=en,tr,null"))
+      "&language=tr-TR&append_to_response=credits,videos&include_video_language=tr,en,null"))
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        var mins = 0;
+        var mins = 0, bolumSayisi = 0;
         if (hit.media_type === "movie") { mins = d.runtime || 0; }
         else if (d.episode_run_time && d.episode_run_time[0] && d.number_of_episodes) {
           mins = d.episode_run_time[0] * d.number_of_episodes;
         }
+        if (hit.media_type === "tv" && d.number_of_episodes) bolumSayisi = d.number_of_episodes;
         var dir = "";
         if (hit.media_type === "movie" && d.credits && d.credits.crew) {
           var c = d.credits.crew.filter(function (x) { return x.job === "Director"; });
@@ -2224,14 +2309,22 @@ var PRELOAD = {};
         } else if (d.created_by && d.created_by.length) {
           dir = d.created_by.map(function (x) { return x.name; }).slice(0, 2).join(", ");
         }
-        var vid = ((d.videos && d.videos.results) || []).filter(function (v) {
-          return v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser");
-        })[0];
+        var vids = ((d.videos && d.videos.results) || []).filter(function (v) {
+          return v.site === "YouTube";
+        });
+        function sec(f) { return vids.filter(f)[0]; }
+        // önce Türkçe fragman, sonra Türkçe herhangi bir video, sonra İngilizce
+        var vid = sec(function (v) { return v.iso_639_1 === "tr" && v.type === "Trailer"; }) ||
+                  sec(function (v) { return v.iso_639_1 === "tr"; }) ||
+                  sec(function (v) { return v.type === "Trailer"; }) ||
+                  sec(function (v) { return v.type === "Teaser"; });
+        var trTrailer = vid && vid.iso_639_1 === "tr";
         var cast = ((d.credits && d.credits.cast) || []).map(function (c) {
           return [c.name, c.character || "", c.profile_path || "", c.id || ""];
         });
         store(id, {
-          o: d.overview || "", d: dir, y: vid ? vid.key : "",
+          o: d.overview || "", d: dir, y: vid ? vid.key : "", ytr: trTrailer ? 1 : 0,
+          ep: bolumSayisi || undefined,
           c: cast, r: mins || undefined
         });
 
@@ -2243,7 +2336,8 @@ var PRELOAD = {};
               (sd.episodes || []).forEach(function (e) { sm += e.runtime || 0; });
               store(id, {
                 p: sd.poster_path ? IMG + sd.poster_path : undefined,
-                r: sm || undefined
+                r: sm || undefined,
+                ep: (sd.episodes && sd.episodes.length) || undefined
               });
               settle(id);
             })
@@ -2317,11 +2411,49 @@ var PRELOAD = {};
     var tr = $("mTrailer");
     if (m.y) {
       tr.href = "https://www.youtube.com/watch?v=" + m.y; tr.hidden = false;
-      $("mFrame").src = "https://www.youtube-nocookie.com/embed/" + m.y;
+      $("mFrame").src = "https://www.youtube-nocookie.com/embed/" + m.y +
+        "?cc_load_policy=1&cc_lang_pref=tr&hl=tr";
       $("mVideo").hidden = false;
+      var et = $("mVideoLabel");
+      if (et) {
+        et.textContent = m.ytr
+          ? "Türkçe fragman"
+          : "Fragman · Türkçe altyazı varsa otomatik açılır";
+      }
     } else {
       tr.hidden = true; $("mVideo").hidden = true; $("mFrame").src = "";
     }
+    var ep = m.ep || 0;
+    var wrap = $("mEpWrap"), kutu = $("mEp");
+    if (ep > 1) {
+      wrap.hidden = false;
+      kutu.innerHTML = "";
+      for (var e = 1; e <= ep; e++) {
+        (function (n) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = n;
+          b.setAttribute("aria-pressed", (bolum[id] || 0) === n ? "true" : "false");
+          b.addEventListener("click", function () {
+            bolum[id] = n;
+            saveBolum();
+            if (n >= ep && !watched[id]) { toggle(id); }
+            paintMeta(id);
+            openSheet(id);
+          });
+          kutu.appendChild(b);
+        })(e);
+      }
+      var sil = document.createElement("button");
+      sil.type = "button"; sil.className = "clear"; sil.textContent = "Sıfırla";
+      sil.addEventListener("click", function () {
+        delete bolum[id]; saveBolum(); paintMeta(id); openSheet(id);
+      });
+      kutu.appendChild(sil);
+    } else {
+      wrap.hidden = true;
+    }
+
     var nt = $("mNote");
     nt.value = notes[id] || "";
     nt.oninput = function () {
@@ -2493,27 +2625,26 @@ var PRELOAD = {};
       if (watched[r.dataset.id]) doneMin += v;
     });
 
-    var mineVals = [], imdbVals = [], diffs = [];
-    mcu.forEach(function (r) {
-      var id = r.dataset.id, m = meta[id] || {};
-      if (mine[id]) {
-        mineVals.push(mine[id]);
-        var im = parseFloat(m.v);
-        if (im) {
-          imdbVals.push(im);
-          diffs.push({ t: r.dataset.title, d: mine[id] - im, mine: mine[id], im: im });
-        }
-      }
-    });
+    var mineVals = [];
+    mcu.forEach(function (r) { if (mine[r.dataset.id]) mineVals.push(mine[r.dataset.id]); });
     function ort(a) { return a.length ? (a.reduce(function (x, y) { return x + y; }, 0) / a.length).toFixed(1) : "–"; }
 
+    var filmSay = mcu.filter(function (r) {
+      return r.dataset.kind === "film" && watched[r.dataset.id];
+    }).length;
+    var filmTop = mcu.filter(function (r) { return r.dataset.kind === "film"; }).length;
+    var diziSay = mcu.filter(function (r) {
+      return r.dataset.kind !== "film" && watched[r.dataset.id];
+    }).length;
+
     $("statTop").innerHTML =
-      '<div><b>' + done.length + '</b><span>izlenen yapım</span></div>' +
+      '<div><b>' + filmSay + '</b><span>izlenen film<br>(' + filmTop + ' film içinde)</span></div>' +
+      '<div><b>' + diziSay + '</b><span>izlenen dizi ve özel</span></div>' +
+      '<div><b>' + done.length + '</b><span>toplam yapım</span></div>' +
       '<div><b>' + sure(doneMin).replace("dk", "") + '</b><span>izlenen süre</span></div>' +
       '<div><b>' + Math.round(done.length / mcu.length * 100) + '%</b><span>tamamlandı</span></div>' +
       '<div><b>' + mineVals.length + '</b><span>puanladığın</span></div>' +
-      '<div><b>' + ort(mineVals) + '</b><span>senin ortalaman</span></div>' +
-      '<div><b>' + ort(imdbVals) + '</b><span>IMDb ortalaması</span></div>';
+      '<div><b>' + ort(mineVals) + '</b><span>senin ortalaman</span></div>';
 
     // ---- rozetler ----
     var rozet = [];
@@ -2598,34 +2729,32 @@ var PRELOAD = {};
         '<i><b style="width:' + pct + '%"></b></i><em>' + p[1] + '/' + p[2] + '</em></div>';
     }).join("") || "<p>Faz bilgisi yok.</p>";
 
-    if (!diffs.length) {
-      $("statDiff").innerHTML = "<p>Henüz puan vermemişsin. Satırlardaki daireye tıklayarak puan verebilirsin.</p>";
-    } else {
-      diffs.sort(function (a, b) { return b.d - a.d; });
-      var yuk = diffs.slice(0, 5), dus = diffs.slice(-5).reverse();
-      function sat(x) {
-        return '<div><span>' + x.t + '</span><b>' + x.mine + " / " + x.im.toFixed(1) +
-          " (" + (x.d > 0 ? "+" : "") + x.d.toFixed(1) + ")</b></div>";
-      }
-      $("statDiff").innerHTML =
-        '<p style="margin:0 0 8px"><b>Senin daha çok sevdiklerin</b></p><div class="difflist">' +
-        yuk.map(sat).join("") + "</div>" +
-        '<p style="margin:16px 0 8px"><b>Senin daha az sevdiklerin</b></p><div class="difflist">' +
-        dus.map(sat).join("") + "</div>";
-    }
 
-    var people = {};
-    mcu.forEach(function (r) {
-      ((meta[r.dataset.id] || {}).c || []).forEach(function (c) {
-        people[c[0]] = (people[c[0]] || 0) + 1;
-      });
+    // ---- devam eden diziler ----
+    var seri = [];
+    mcu.concat(all.filter(function (r) { return r.dataset.list === "side"; })).forEach(function (r) {
+      var id = r.dataset.id, m = meta[id] || {};
+      if (!m.ep || m.ep < 2) return;
+      var bo = bolum[id] || 0;
+      if (watched[id]) return;
+      if (!bo) return;
+      seri.push([r.dataset.title, bo, m.ep]);
     });
-    var top = Object.keys(people).sort(function (a, b) { return people[b] - people[a]; }).slice(0, 12);
-    var max = top.length ? people[top[0]] : 1;
-    $("statCast").innerHTML = top.map(function (n) {
-      return '<div class="bar"><span>' + n + '</span><i><b style="width:' +
-        (people[n] / max * 100) + '%"></b></i><em>' + people[n] + '</em></div>';
-    }).join("") || "<p>Oyuncular sekmesini bir kez aç, veri gelsin.</p>";
+    $("statSeries").innerHTML = seri.length
+      ? seri.map(function (x) {
+          return '<div class="bar"><span>' + x[0] + '</span><i><b style="width:' +
+            (x[1] / x[2] * 100) + '%"></b></i><em>' + x[1] + "/" + x[2] + "</em></div>";
+        }).join("")
+      : "<p>Yarım kalmış dizin yok. Bir dizinin detayını açıp kaçıncı bölümde olduğunu işaretleyebilirsin.</p>";
+
+    // ---- izlediklerin ----
+    var izlenenler = mcu.filter(function (r) { return watched[r.dataset.id]; });
+    $("statWatched").innerHTML = izlenenler.length
+      ? '<div class="miss">' + izlenenler.map(function (r) {
+          var g = gunluk[r.dataset.id];
+          return "<span>" + r.dataset.title + (g ? " · " + g : "") + "</span>";
+        }).join("") + "</div>"
+      : "<p>Henüz hiçbir şey işaretlemedin.</p>";
 
     var eksik = [];
     all.forEach(function (r) {
@@ -2644,7 +2773,7 @@ var PRELOAD = {};
 
   /* ---- yedekleme ---- */
   $("backupBtn").addEventListener("click", function () {
-    var paket = { v: 2, tarih: new Date().toISOString(), watched: watched, mine: mine, notes: notes, gunluk: gunluk };
+    var paket = { v: 2, tarih: new Date().toISOString(), watched: watched, mine: mine, notes: notes, gunluk: gunluk, bolum: bolum };
     var blob = new Blob([JSON.stringify(paket)], { type: "application/json" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -2663,6 +2792,7 @@ var PRELOAD = {};
         if (p.watched) { watched = p.watched; save(watched); }
         if (p.mine) { mine = p.mine; saveMine(); }
         if (p.gunluk) { gunluk = p.gunluk; saveGunluk(); }
+        if (p.bolum) { bolum = p.bolum; saveBolum(); }
         if (p.notes) {
           notes = p.notes;
           try { localStorage.setItem(NKEY, JSON.stringify(notes)); } catch (e) {}
@@ -2733,18 +2863,63 @@ var PRELOAD = {};
     renderVs();
   });
 
-  /* ================= GERİ SAYIM ================= */
+  /* ================= TARİH MANTIĞI + GERİ SAYIM ================= */
+  var AYKISA = { "Oca":0,"Şub":1,"Mar":2,"Nis":3,"May":4,"Haz":5,
+                 "Tem":6,"Ağu":7,"Eyl":8,"Eki":9,"Kas":10,"Ara":11 };
+  var AYUZUN = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran",
+                "Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+  var MEVSIM = { "Kış":0, "Bahar":3, "İlkbahar":3, "Yaz":6, "Sonbahar":9 };
+
+  // "18 Ara 2026", "Oca 2026", "Sonbahar 2026", "2027" gibi yazımları tarihe çevirir
+  function tariheCevir(metin) {
+    if (!metin) return null;
+    var m = metin.match(/^(\d{1,2})\s+(\S+)\s+(\d{4})$/);
+    if (m && m[2] in AYKISA) return { d: new Date(+m[3], AYKISA[m[2]], +m[1]), kesin: true };
+    m = metin.match(/^(\S+)\s+(\d{4})$/);
+    if (m && m[1] in AYKISA) return { d: new Date(+m[2], AYKISA[m[1]], 1), kesin: false };
+    if (m && m[1] in MEVSIM) return { d: new Date(+m[2], MEVSIM[m[1]], 1), kesin: false };
+    m = metin.match(/^(\d{4})$/);
+    if (m) return { d: new Date(+m[1], 11, 31), kesin: false };
+    return null;
+  }
+
+  // "Henüz çıkmadı" bilgisini dosyaya değil bugünün tarihine göre belirle
+  function cikmisMi(row) {
+    var t = tariheCevir(row.dataset.date);
+    if (!t) return true;
+    return t.d <= new Date();
+  }
+  function soonGuncelle() {
+    all.forEach(function (r) { r.classList.toggle("soon", !cikmisMi(r)); });
+  }
+  soonGuncelle();
+
   (function () {
-    var hedef = new Date(2026, 11, 18, 0, 0, 0);
+    // en yakın çıkacak yapımı bul; Doomsday çıkınca sayaç kendiliğinden sonrakine kayar
+    var simdi = new Date(), hedef = null, hedefAd = "", oncekiCikis = null;
+    mcu.forEach(function (r) {
+      var t = tariheCevir(r.dataset.date);
+      if (!t) return;
+      if (t.d > simdi) {
+        if (!hedef || t.d < hedef) { hedef = t.d; hedefAd = r.dataset.title; }
+      } else if (!oncekiCikis || t.d > oncekiCikis) {
+        oncekiCikis = t.d;
+      }
+    });
+    if (!hedef) {
+      $("countdownCard").style.display = "none";
+      return;
+    }
+    $("cdTitle").textContent = hedefAd;
+    $("cdDate").textContent = hedef.getDate() + " " + AYUZUN[hedef.getMonth()] + " " +
+      hedef.getFullYear() + " · vizyon";
+    var basla = oncekiCikis ? oncekiCikis.getTime() : hedef.getTime() - 31536000000;
+
     function iki(n) { return (n < 10 ? "0" : "") + n; }
     function tik() {
       var now = new Date();
       var fark = hedef - now;
-      if (fark <= 0) {
-        $("countdownCard").querySelector("h3").textContent = "Avengers: Doomsday çıktı";
-        ["cdM", "cdD", "cdH", "cdMin", "cdS"].forEach(function (k) { set(k, "0"); });
-        return;
-      }
+      if (fark <= 0) { location.reload(); return; }
       var ay = 0, imle = new Date(now);
       while (true) {
         var n = new Date(imle);
@@ -2753,15 +2928,13 @@ var PRELOAD = {};
         imle = n; ay++;
       }
       var kalan = hedef - imle;
-      var gun = Math.floor(kalan / 86400000);
-      var saat = Math.floor(kalan / 3600000) % 24;
-      var dk = Math.floor(kalan / 60000) % 60;
-      var sn = Math.floor(kalan / 1000) % 60;
-      var basla = new Date(2025, 6, 25).getTime();
       var oran = Math.max(0, Math.min(1, (now - basla) / (hedef - basla)));
       $("cdBar").style.width = (oran * 100) + "%";
-      set("cdM", ay); set("cdD", gun);
-      set("cdH", iki(saat)); set("cdMin", iki(dk)); set("cdS", iki(sn));
+      set("cdM", ay);
+      set("cdD", Math.floor(kalan / 86400000));
+      set("cdH", iki(Math.floor(kalan / 3600000) % 24));
+      set("cdMin", iki(Math.floor(kalan / 60000) % 60));
+      set("cdS", iki(Math.floor(kalan / 1000) % 60));
     }
     tik();
     setInterval(tik, 1000);
@@ -3082,13 +3255,40 @@ var PRELOAD = {};
   var charImg = {}, charStarted = false;
   var charStatus = { loaded: 0, total: 0 };
 
+  // Wikipedia bulamazsa: karakteri oynayan oyuncunun TMDB fotoğrafı
+  function oyuncudanGorsel(i) {
+    var c = CHARACTERS[i];
+    var ad = (c.n || "").toLocaleLowerCase("tr");
+    var gercek = (c.a || "").toLocaleLowerCase("tr");
+    var bulunan = "";
+    all.some(function (r) {
+      var kadro = (meta[r.dataset.id] || {}).c || [];
+      return kadro.some(function (k) {
+        var rol = (k[1] || "").toLocaleLowerCase("tr");
+        if (!rol || !k[2]) return false;
+        if (rol.indexOf(ad) >= 0 || (gercek && rol.indexOf(gercek) >= 0)) {
+          bulunan = "https://image.tmdb.org/t/p/w300" + k[2];
+          return true;
+        }
+        return false;
+      });
+    });
+    return bulunan;
+  }
+
+  function charKaydet(i) {
+    charCache[CHARACTERS[i].q] = charImg[i] || "";
+    charDirty = true;
+  }
+
   function fetchCharImg(i) {
     var c = CHARACTERS[i];
     var restUrl = "https://en.wikipedia.org/api/rest_v1/page/summary/" +
       encodeURIComponent(c.q).replace(/%20/g, "_");
     function viaSearch() {
       return fetch(CHAR_API + "?action=query&format=json&origin=*&generator=search&gsrlimit=1" +
-        "&prop=pageimages&piprop=thumbnail&pithumbsize=300&gsrsearch=" + encodeURIComponent(c.q))
+        "&prop=pageimages&piprop=thumbnail&pithumbsize=300&gsrsearch=" +
+        encodeURIComponent(c.q + " Marvel"))
         .then(function (r) { return r.json(); })
         .then(function (d) {
           var pages = d && d.query && d.query.pages;
@@ -3105,8 +3305,22 @@ var PRELOAD = {};
         charImg[i] = src;
       })
       .catch(viaSearch)
-      .then(function () { charStatus.loaded++; });
+      .then(function () {
+        if (!charImg[i]) charImg[i] = oyuncudanGorsel(i);
+        charStatus.loaded++;
+        charKaydet(i);
+      });
   }
+
+  var CHKEY = "mcu-karakter-gorsel-v1";
+  var charCache = {};
+  try { charCache = JSON.parse(localStorage.getItem(CHKEY)) || {}; } catch (e) { charCache = {}; }
+  var charDirty = false;
+  setInterval(function () {
+    if (!charDirty) return;
+    charDirty = false;
+    try { localStorage.setItem(CHKEY, JSON.stringify(charCache)); } catch (e) {}
+  }, 3000);
 
   function renderCharacters() {
     var box = $("charGrid");
@@ -3144,14 +3358,62 @@ var PRELOAD = {};
     if (charStarted) return;
     charStarted = true;
     charStatus.total = CHARACTERS.length;
+
+    // daha önce bulunmuş görselleri tarayıcıdan geri yükle
+    // ---- devam eden diziler ----
+    var seri = [];
+    mcu.concat(all.filter(function (r) { return r.dataset.list === "side"; })).forEach(function (r) {
+      var id = r.dataset.id, m = meta[id] || {};
+      if (!m.ep || m.ep < 2) return;
+      var bo = bolum[id] || 0;
+      if (watched[id]) return;
+      if (!bo) return;
+      seri.push([r.dataset.title, bo, m.ep]);
+    });
+    $("statSeries").innerHTML = seri.length
+      ? seri.map(function (x) {
+          return '<div class="bar"><span>' + x[0] + '</span><i><b style="width:' +
+            (x[1] / x[2] * 100) + '%"></b></i><em>' + x[1] + "/" + x[2] + "</em></div>";
+        }).join("")
+      : "<p>Yarım kalmış dizin yok. Bir dizinin detayını açıp kaçıncı bölümde olduğunu işaretleyebilirsin.</p>";
+
+    // ---- izlediklerin ----
+    var izlenenler = mcu.filter(function (r) { return watched[r.dataset.id]; });
+    $("statWatched").innerHTML = izlenenler.length
+      ? '<div class="miss">' + izlenenler.map(function (r) {
+          var g = gunluk[r.dataset.id];
+          return "<span>" + r.dataset.title + (g ? " · " + g : "") + "</span>";
+        }).join("") + "</div>"
+      : "<p>Henüz hiçbir şey işaretlemedin.</p>";
+
+    var eksik = [];
+    CHARACTERS.forEach(function (c, i) {
+      if (charCache[c.q]) {
+        charImg[i] = charCache[c.q];
+        charStatus.loaded++;
+      } else {
+        eksik.push(i);
+      }
+    });
+
     renderCharacters();
     updateCharStatus();
-    CHARACTERS.forEach(function (c, i) { fetchCharImg(i); });
+    // hepsini aynı anda istemek Wikipedia tarafından kısılmaya yol açıyor
+    eksik.forEach(function (i, s) { setTimeout(function () { fetchCharImg(i); }, s * 60); });
+    var tur = 0;
     var t = setInterval(function () {
+      // TMDB kadroları sonradan geldiği için boş kalanları birkaç tur daha dene
+      CHARACTERS.forEach(function (c, i) {
+        if (!charImg[i]) {
+          var alt = oyuncudanGorsel(i);
+          if (alt) { charImg[i] = alt; charKaydet(i); }
+        }
+      });
       renderCharacters();
       updateCharStatus();
-      if (charStatus.loaded >= charStatus.total) clearInterval(t);
-    }, 1200);
+      tur++;
+      if (charStatus.loaded >= charStatus.total && tur > 12) clearInterval(t);
+    }, 1500);
   }
 
   $("charSearch").addEventListener("input", function () { if (charStarted) renderCharacters(); });
