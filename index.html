@@ -777,7 +777,6 @@
       <button type="button" class="chip" data-f="key" aria-pressed="false">Doomsday İçin Neler İzlenmeli</button>
       <button type="button" class="chip" data-f="unseen" aria-pressed="false">İzlemediklerim</button>
     </div>
-    <span id="posterStatus" class="pstatus"></span>
   </div>
 
   <section class="phase p3 hidden" id="sortPanel">
@@ -1513,10 +1512,6 @@
     <div class="statcard"><h3>İzleme günlüğü</h3><div id="statLog"></div></div>
     <div class="statcard"><h3>İzlediklerin</h3><div id="statWatched"></div></div>
 
-    <div class="statcard">
-      <h3>Eşleşmeyen veriler</h3>
-      <p style="margin:0 0 12px;color:var(--ink-soft)">Afişi veya puanı çekilemeyen satırlar.</p>
-      <div id="statMissing"></div>
     </div>
 
     <div class="statcard">
@@ -1827,11 +1822,24 @@ var PRELOAD = {};
     document.querySelectorAll(".panel").forEach(function (p) {
       p.classList.toggle("hidden", p.id !== "panel-" + name);
     });
-    $("controls").classList.toggle("hidden", name === "cast" || name === "stats" || name === "vs" || name === "characters");
+    $("controls").classList.toggle("hidden",
+      name === "cast" || name === "stats" || name === "vs" ||
+      name === "characters" || name === "nonmcu" || name === "side");
     if (name === "mcu" || name === "chrono") {
       $("panel-" + name).querySelector(".layout").appendChild($("rail"));
     }
     window.scrollTo({ top: 0 });
+    if (name === "nonmcu" || name === "side") {
+      // bu listelerde filtre ve sıralama anlamsız; sıfırla ki liste eksik görünmesin
+      view.filter = "all"; view.sort = "release"; view.q = "";
+      var ar = $("search"); if (ar) ar.value = "";
+      document.querySelectorAll("[data-f]").forEach(function (c) {
+        c.setAttribute("aria-pressed", c.dataset.f === "all" ? "true" : "false");
+      });
+      document.querySelectorAll(".sortable").forEach(function (x) {
+        x.setAttribute("aria-pressed", "false");
+      });
+    }
     if (name === "nonmcu" || name === "side" || name === "chrono") listeYukle(name === "chrono" ? "mcu" : name);
     if (name === "vs") { listeYukle("nonmcu"); listeYukle("side"); }
     if (name === "cast") { listeYukle("nonmcu"); startCast(); }
@@ -2132,13 +2140,8 @@ var PRELOAD = {};
   }
   function rowOf(id) { return rowsOf(id)[0]; }
 
-  function status() {
-    var el = $("posterStatus");
-    if (!el) return;
-    if (settled < hedefSayi) { el.textContent = "Veriler yükleniyor… " + settled + "/" + hedefSayi; }
-    else if (!gotPoster) { el.textContent = "Veri çekilemedi — siteyi adresinden açtığından emin ol."; }
-    else { el.textContent = gotPoster + " afiş"; }
-  }
+  // durum yazısı kaldırıldı; işlev diğer çağrıların bozulmaması için duruyor
+  function status() {}
 
   function renkCikar(id, src) {
     var m = meta[id] || {};
@@ -2756,19 +2759,6 @@ var PRELOAD = {};
         }).join("") + "</div>"
       : "<p>Henüz hiçbir şey işaretlemedin.</p>";
 
-    var eksik = [];
-    all.forEach(function (r) {
-      if (r.dataset.list !== "mcu" && r.dataset.list !== "nonmcu" && r.dataset.list !== "side") return;
-      var m = meta[r.dataset.id] || {};
-      var yokAfis = !m.p || m.p === "-";
-      var yokPuan = !m.v;
-      if ((yokAfis || yokPuan) && r.dataset.search) {
-        eksik.push(r.dataset.title + (yokAfis && yokPuan ? " (afiş+puan)" : yokAfis ? " (afiş)" : " (puan)"));
-      }
-    });
-    $("statMissing").innerHTML = eksik.length
-      ? '<div class="miss">' + eksik.map(function (t) { return "<span>" + t + "</span>"; }).join("") + "</div>"
-      : "<p>Her satırın afişi ve puanı yerinde.</p>";
   }
 
   /* ---- yedekleme ---- */
@@ -2897,11 +2887,22 @@ var PRELOAD = {};
   (function () {
     // en yakın çıkacak yapımı bul; Doomsday çıkınca sayaç kendiliğinden sonrakine kayar
     var simdi = new Date(), hedef = null, hedefAd = "", oncekiCikis = null;
+
+    // önce büyük olaylar: Doomsday, sonra Secret Wars, sonra en yakın çıkacak yapım
+    var oncelik = ["doomsday", "secretwars"];
+    oncelik.some(function (slug) {
+      var r = mcu.filter(function (x) { return x.dataset.id === slug; })[0];
+      if (!r) return false;
+      var t = tariheCevir(r.dataset.date);
+      if (t && t.d > simdi) { hedef = t.d; hedefAd = r.dataset.title; return true; }
+      return false;
+    });
+
     mcu.forEach(function (r) {
       var t = tariheCevir(r.dataset.date);
       if (!t) return;
       if (t.d > simdi) {
-        if (!hedef || t.d < hedef) { hedef = t.d; hedefAd = r.dataset.title; }
+        if (!hedef) { hedef = t.d; hedefAd = r.dataset.title; }
       } else if (!oncekiCikis || t.d > oncekiCikis) {
         oncekiCikis = t.d;
       }
