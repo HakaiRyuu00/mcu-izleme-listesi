@@ -14,6 +14,9 @@
 <meta name="theme-color" content="#101720">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="og.png">
+<link rel="canonical" href="https://hakairyuu00.github.io/mcu-izleme-listesi/">
+<meta name="author" content="HakaiRyuu00">
+<meta name="robots" content="index, follow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -706,6 +709,24 @@
     font-family:"IBM Plex Mono",monospace;font-size:12px;
   }
   .sb-hint{font-size:15px;color:#8FA3B8;margin:10px 0 0;max-width:56ch;}
+
+  .about{
+    display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-bottom:26px;
+    text-transform:none;letter-spacing:0;font-family:"Barlow Semi Condensed",sans-serif;
+    font-size:16px;color:var(--ink-soft);line-height:1.5;
+  }
+  .about h4{
+    font-family:"Anton",sans-serif;font-size:15px;text-transform:uppercase;
+    letter-spacing:.04em;color:var(--ink);margin:0 0 8px;
+  }
+  .about p{margin:0 0 10px;}
+  .about a{color:var(--p3);text-decoration:none;border-bottom:1px solid currentColor;}
+  .about a:hover{color:var(--ink);}
+  .foot-bar{
+    display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;
+    padding-top:16px;border-top:1px solid var(--line);
+  }
+  @media (max-width:820px){.about{grid-template-columns:1fr;gap:22px;}}
 
   footer{
     margin-top:36px;padding-top:16px;border-top:1px solid var(--line);
@@ -1618,9 +1639,33 @@
   </div>
 
   <footer>
-    76 MCU yapımı · 71 MCU dışı · 19 yan yol · Süreler yaklaşıktır<br>Son Güncelleme: Ağustos 2026
-  <br>
-    <span style="text-transform:none;letter-spacing:0">Veriler TMDB ve OMDb'den alınmıştır. This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
+    <div class="about">
+      <div>
+        <h4>Hakkında</h4>
+        <p>MCU İzleme Rehberi, Marvel Sinematik Evreni'ni takip etmeyi kolaylaştırmak için hazırlanmış
+        kişisel bir hayran projesidir. Marvel Studios, Disney veya TMDB ile hiçbir bağı yoktur.
+        Amacı, hangi yapımın ne zaman çıktığını ve ana hikâye için ne kadar gerekli olduğunu tek
+        yerde göstermek; izlediklerini işaretleyip nerede kaldığını hatırlatmaktır.</p>
+        <p>İşaretlerin, puanların ve notların yalnızca kendi tarayıcında saklanır. Hiçbir veri
+        sunucuya gönderilmez, hesap açılmaz, çerez kullanılmaz.</p>
+      </div>
+      <div>
+        <h4>İletişim</h4>
+        <p>Eksik veya yanlış bir bilgi gördüysen, eklenmesini istediğin bir yapım varsa yaz:</p>
+        <p><a href="https://github.com/HakaiRyuu00/mcu-izleme-listesi/issues" target="_blank" rel="noopener">GitHub üzerinden bildir</a><br>
+        <a href="https://github.com/HakaiRyuu00" target="_blank" rel="noopener">github.com/HakaiRyuu00</a></p>
+
+        <h4 style="margin-top:18px">Kaynaklar</h4>
+        <p>Afiş, özet, süre ve kadro bilgileri TMDB'den; puanlar OMDb üzerinden IMDb'den;
+        karakter görselleri Wikipedia'dan alınmıştır.<br>
+        This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+      </div>
+    </div>
+
+    <div class="foot-bar">
+      <span>76 MCU yapımı · 71 MCU dışı · 19 yan yol · Süreler yaklaşıktır · Son güncelleme: Ağustos 2026</span>
+      <span>&copy; 2026 MCU İzleme Rehberi · Tüm hakları saklıdır</span>
+    </div>
   </footer>
 
 </div>
@@ -1704,6 +1749,35 @@
   var sharedMode = false;
 
   function $(id) { return document.getElementById(id); }
+
+  var AYKISA = { "Oca":0,"Şub":1,"Mar":2,"Nis":3,"May":4,"Haz":5,
+                 "Tem":6,"Ağu":7,"Eyl":8,"Eki":9,"Kas":10,"Ara":11 };
+  var AYUZUN = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran",
+                "Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+  var MEVSIM = { "Kış":0, "Bahar":3, "İlkbahar":3, "Yaz":6, "Sonbahar":9 };
+
+  // "18 Ara 2026", "Oca 2026", "Sonbahar 2026", "2027" gibi yazımları tarihe çevirir
+  function tariheCevir(metin) {
+    if (!metin) return null;
+    var m = metin.match(/^(\d{1,2})\s+(\S+)\s+(\d{4})$/);
+    if (m && m[2] in AYKISA) return { d: new Date(+m[3], AYKISA[m[2]], +m[1]), kesin: true };
+    m = metin.match(/^(\S+)\s+(\d{4})$/);
+    if (m && m[1] in AYKISA) return { d: new Date(+m[2], AYKISA[m[1]], 1), kesin: false };
+    if (m && m[1] in MEVSIM) return { d: new Date(+m[2], MEVSIM[m[1]], 1), kesin: false };
+    m = metin.match(/^(\d{4})$/);
+    if (m) return { d: new Date(+m[1], 11, 31), kesin: false };
+    return null;
+  }
+
+  // "Henüz çıkmadı" bilgisini dosyaya değil bugünün tarihine göre belirle
+  function cikmisMi(row) {
+    var t = tariheCevir(row.dataset.date);
+    if (!t) return true;
+    return t.d <= new Date();
+  }
+  function soonGuncelle() {
+    all.forEach(function (r) { r.classList.toggle("soon", !cikmisMi(r)); });
+  }
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
   function save(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} }
   function sure(m) {
@@ -3072,34 +3146,6 @@
   });
 
   /* ================= TARİH MANTIĞI + GERİ SAYIM ================= */
-  var AYKISA = { "Oca":0,"Şub":1,"Mar":2,"Nis":3,"May":4,"Haz":5,
-                 "Tem":6,"Ağu":7,"Eyl":8,"Eki":9,"Kas":10,"Ara":11 };
-  var AYUZUN = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran",
-                "Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
-  var MEVSIM = { "Kış":0, "Bahar":3, "İlkbahar":3, "Yaz":6, "Sonbahar":9 };
-
-  // "18 Ara 2026", "Oca 2026", "Sonbahar 2026", "2027" gibi yazımları tarihe çevirir
-  function tariheCevir(metin) {
-    if (!metin) return null;
-    var m = metin.match(/^(\d{1,2})\s+(\S+)\s+(\d{4})$/);
-    if (m && m[2] in AYKISA) return { d: new Date(+m[3], AYKISA[m[2]], +m[1]), kesin: true };
-    m = metin.match(/^(\S+)\s+(\d{4})$/);
-    if (m && m[1] in AYKISA) return { d: new Date(+m[2], AYKISA[m[1]], 1), kesin: false };
-    if (m && m[1] in MEVSIM) return { d: new Date(+m[2], MEVSIM[m[1]], 1), kesin: false };
-    m = metin.match(/^(\d{4})$/);
-    if (m) return { d: new Date(+m[1], 11, 31), kesin: false };
-    return null;
-  }
-
-  // "Henüz çıkmadı" bilgisini dosyaya değil bugünün tarihine göre belirle
-  function cikmisMi(row) {
-    var t = tariheCevir(row.dataset.date);
-    if (!t) return true;
-    return t.d <= new Date();
-  }
-  function soonGuncelle() {
-    all.forEach(function (r) { r.classList.toggle("soon", !cikmisMi(r)); });
-  }
   soonGuncelle();
 
   (function () {

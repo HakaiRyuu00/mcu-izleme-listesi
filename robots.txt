@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hakairyuu00.github.io/mcu-izleme-listesi/sitemap.xml
