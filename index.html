@@ -235,13 +235,10 @@
   .fresh .serit-item{color:#fff;}
   .soonbar .serit-item{color:var(--ink);}
   .serit-item:hover{border-bottom-color:currentColor;}
-  .serit-item img{height:36px;width:auto;display:block;}
-  .serit-item:hover img{filter:brightness(1.15);}
   .serit-date{
     font-family:"IBM Plex Mono",monospace;font-size:13px;opacity:.85;margin-left:auto;
   }
   @media (max-width:820px){
-    .serit-item img{height:28px;}
     .serit-date{margin-left:0;width:100%;}
   }
   #rollLimit{
@@ -976,8 +973,10 @@
     <ol class="list" id="sortList"></ol>
   </section>
 
-  <div class="fresh hidden" id="freshBar"><div id="freshText"></div></div>
-  <div class="soonbar hidden" id="soonBar"></div>
+  <div id="bars">
+    <div class="fresh hidden" id="freshBar"><div id="freshText"></div></div>
+    <div class="soonbar hidden" id="soonBar"></div>
+  </div>
 
   <div class="shared-banner hidden" id="sharedBanner">
     <span>Paylaşılan bir ilerlemeye bakıyorsun.</span>
@@ -2111,6 +2110,8 @@
     });
     $("controls").classList.toggle("hidden",
       name === "cast" || name === "stats" || name === "vs");
+    // çıkan/çıkacak şeritleri yalnızca liste sıralarında anlamlı
+    $("bars").style.display = (name === "mcu" || name === "chrono") ? "" : "none";
     // bu iki listede filtre çipleri anlamsız; yalnızca arama kalsın
     $("controls").classList.toggle("only-search", name === "nonmcu" || name === "side");
     if (name === "mcu" || name === "chrono") {
@@ -3197,25 +3198,6 @@
   });
 
   /* ================= YENİ ÇIKANLAR + YAKINDA ================= */
-  // Elde hazır bulunan logolar; diğerleri TMDB'den çekilir, o da yoksa ad yazılır.
-  var YEREL_LOGO = { doomsday: "doomsday.png", brandnewday: "brandnewday.png" };
-
-  function logoBul(id, cb) {
-    if (YEREL_LOGO[id]) { cb(YEREL_LOGO[id]); return; }
-    var m = meta[id] || {};
-    if (m.lg) { cb(m.lg); return; }
-    if (m.lg === "-") { cb(null); return; }
-    if (!m.id || !TMDB_KEY) { cb(null); return; }
-    fetch(tmdbUrl("/" + m.t + "/" + m.id + "/images", "&include_image_language=tr,en,null"))
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        var l = (d.logos || []).filter(function (x) { return x.file_path; })[0];
-        store(id, { lg: l ? IMG.replace("w185", "w300") + l.file_path : "-" });
-        cb(l ? IMG.replace("w185", "w300") + l.file_path : null);
-      })
-      .catch(function () { cb(null); });
-  }
-
   function seritIcerik(kap, oncu, satirlar) {
     kap.innerHTML = "";
     var bas = document.createElement("span");
@@ -3230,10 +3212,6 @@
       b.textContent = r.dataset.title;
       b.addEventListener("click", function (e) { e.stopPropagation(); openSheet(r.dataset.id); });
       kap.appendChild(b);
-      logoBul(r.dataset.id, function (src) {
-        if (!src) return;
-        b.innerHTML = '<img src="' + src + '" alt="' + r.dataset.title + '">';
-      });
     });
     return kap;
   }
@@ -3274,8 +3252,6 @@
       }
     }
     ciz();
-    // TMDB verisi sonradan gelirse logolar için bir kez daha dene
-    setTimeout(ciz, 6000);
   })();
 
   /* ================= İLK ZİYARET ================= */
