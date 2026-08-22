@@ -80,7 +80,9 @@
   .mast-cd h3{
     font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;
     text-transform:uppercase;color:#3FBF57;margin:0 0 14px;font-weight:600;
+    display:flex;justify-content:center;align-items:center;min-height:22px;
   }
+  .mast-cd h3 img{width:100%;max-width:260px;height:auto;display:block;}
   .mast-cd .countdown div{background:rgba(255,255,255,.05);}
   .mast-cd .cd-target{color:#8FA3B8;}
   @media (max-width:1000px){
@@ -847,7 +849,7 @@
     </div>
 
     <div class="mast-cd" id="countdownCard">
-      <h3 id="cdTitle">Avengers: Doomsday</h3>
+      <h3 id="cdTitle"><span>Avengers: Doomsday</span></h3>
       <div class="countdown">
         <div><b id="cdM">–</b><span>ay</span></div>
         <div><b id="cdD">–</b><span>gün</span></div>
@@ -3174,7 +3176,7 @@
 
   (function () {
     // en yakın çıkacak yapımı bul; Doomsday çıkınca sayaç kendiliğinden sonrakine kayar
-    var simdi = new Date(), hedef = null, hedefAd = "", oncekiCikis = null;
+    var simdi = new Date(), hedef = null, hedefAd = "", hedefSlug = "", oncekiCikis = null;
 
     // önce büyük olaylar: Doomsday, sonra Secret Wars, sonra en yakın çıkacak yapım
     var oncelik = ["doomsday", "secretwars"];
@@ -3182,7 +3184,7 @@
       var r = mcu.filter(function (x) { return x.dataset.id === slug; })[0];
       if (!r) return false;
       var t = tariheCevir(r.dataset.date);
-      if (t && t.d > simdi) { hedef = t.d; hedefAd = r.dataset.title; return true; }
+      if (t && t.d > simdi) { hedef = t.d; hedefAd = r.dataset.title; hedefSlug = slug; return true; }
       return false;
     });
 
@@ -3190,7 +3192,7 @@
       var t = tariheCevir(r.dataset.date);
       if (!t) return;
       if (t.d > simdi) {
-        if (!hedef) { hedef = t.d; hedefAd = r.dataset.title; }
+        if (!hedef) { hedef = t.d; hedefAd = r.dataset.title; hedefSlug = r.dataset.id; }
       } else if (!oncekiCikis || t.d > oncekiCikis) {
         oncekiCikis = t.d;
       }
@@ -3199,7 +3201,13 @@
       $("countdownCard").style.display = "none";
       return;
     }
-    $("cdTitle").textContent = hedefAd;
+    if (hedefSlug === "doomsday") {
+      $("cdTitle").innerHTML =
+        '<img src="doomsday.png" alt="Avengers: Doomsday" ' +
+        'onerror="this.parentNode.textContent=\'Avengers: Doomsday\'">';
+    } else {
+      $("cdTitle").textContent = hedefAd;
+    }
     $("cdDate").textContent = hedef.getDate() + " " + AYUZUN[hedef.getMonth()] + " " +
       hedef.getFullYear() + " · vizyon";
     var basla = oncekiCikis ? oncekiCikis.getTime() : hedef.getTime() - 31536000000;
